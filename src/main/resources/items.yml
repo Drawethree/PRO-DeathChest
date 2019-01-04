@@ -1,0 +1,27 @@
+items:
+  next_item:
+    displayname: "&eNext Page"
+    material: ARROW
+    amount: 1
+    lore:
+    - "&7Click to the next page"
+  prev_item:
+    displayname: "&ePrevious Page"
+    material: ARROW
+    amount: 1
+    lore:
+    - "&7Click to the previous page"
+  deathchest_item:
+    displayname: "&a%player%'s DeathChest"
+    material: CHEST
+    amount: 1
+    lore:
+    - "&7Location:"
+    - "&e  X: %xloc%"
+    - "&e  Y: %yloc%"
+    - "&e  Z: %zloc%"
+    - "&e  World: %world%"
+    - "&7Locked: &e%locked%"
+    - "&7Chest Type: &e%chesttype%"
+    - ""
+    - "&7Click to teleport to this deathchestpro !"

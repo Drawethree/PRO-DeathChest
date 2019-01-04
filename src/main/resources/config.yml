@@ -1,0 +1,14 @@
+remove_chest_time: 120
+protect_chests: true
+deathchest_fireworks: true
+disabled_worlds:
+ - example_world
+sounds:
+  click: UI_BUTTON_CLICK
+  gui_open: ENTITY_EXPERIENCE_ORB_PICKUP
+hologram:
+  display_player_head: true
+  lines:
+  - "%locked%"
+  - "Owner: %player%"
+  - "%timeleft% left"

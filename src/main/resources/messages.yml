@@ -1,0 +1,12 @@
+prefix: "&6[&aDeathChestPro&6] "
+no_permission: "&cYou don't have permission!"
+deathchest_list_inv_title: "&fYour DeathChests Page "
+deathchest_located: "&aYour DeathChest chest is located at &6X:%xloc%, Y:%yloc%, Z:%zloc%, World:%world%"
+deathchest_will_disappear: "&aYour chest will disappear in %time% seconds !"
+deathchest_disappeared: "&cYour DeathChest disappeared !"
+deathchest_cannot_break: "&cYou cannot break this chest !"
+deathchest_cannot_open: "&cThis is not your DeathChest !"
+deathchest_locked: "&c&lLOCKED"
+deathchest_unlocked: "&a&lUNLOCKED"
+
+
