@@ -84,18 +84,18 @@ public class Time {
 
         long time = this.milliseconds;
 
-        time = this.appendTime(time, YEAR_MS, "years", timeString);
-        time = this.appendTime(time, DAY_MS, "days", timeString);
-        time = this.appendTime(time, HOUR_MS, "hours", timeString);
-        time = this.appendTime(time, MINUTE_MS, "minutes", timeString);
-        time = this.appendTime(time, SECOND_MS, "seconds", timeString);
+        time = this.appendTime(time, YEAR_MS, Message.YEARS.getMessage(), timeString);
+        time = this.appendTime(time, DAY_MS, Message.DAYS.getMessage(), timeString);
+        time = this.appendTime(time, HOUR_MS, Message.HOURS.getMessage(), timeString);
+        time = this.appendTime(time, MINUTE_MS, Message.MINUTES.getMessage(), timeString);
+        time = this.appendTime(time, SECOND_MS, Message.SECONDS.getMessage(), timeString);
 
         if (time != 0) {
             timeString.append(", ").append(time).append(" ms");
         }
 
         if (timeString.length() == 0) {
-            return "0 seconds";
+            return "0 " + Message.SECONDS.getMessage();
         }
 
         return timeString.substring(2);

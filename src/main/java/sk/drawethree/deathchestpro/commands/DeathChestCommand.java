@@ -13,19 +13,26 @@ public class DeathChestCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) {
         if (cmd.getName().equalsIgnoreCase("deathchest")) {
-            if (args.length > 0) {
+            if (args.length == 1) {
                 String subCommand = args[0].toLowerCase();
                 switch (subCommand) {
                     case "reload":
                         return reloadSubCommand(sender);
                     case "list":
                         return listSubCommand(sender);
+                    default:
+                        return invalidUsage(sender);
                 }
             } else {
-                return listSubCommand(sender);
+                return invalidUsage(sender);
             }
         }
         return false;
+    }
+
+    private boolean invalidUsage(CommandSender sender) {
+        sender.sendMessage(Message.INVALID_USAGE.getChatMessage());
+        return true;
     }
 
     private boolean listSubCommand(CommandSender sender) {

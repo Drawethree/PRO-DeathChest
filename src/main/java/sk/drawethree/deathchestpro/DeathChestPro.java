@@ -1,6 +1,7 @@
 package sk.drawethree.deathchestpro;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import sk.drawethree.deathchestpro.commands.DeathChestCommand;
 import sk.drawethree.deathchestpro.listeners.DeathChestListener;
@@ -8,7 +9,6 @@ import sk.drawethree.deathchestpro.managers.FileManager;
 import sk.drawethree.deathchestpro.utils.Items;
 import sk.drawethree.deathchestpro.utils.Message;
 
-import java.io.File;
 import java.util.List;
 
 public final class DeathChestPro extends JavaPlugin {
@@ -52,7 +52,14 @@ public final class DeathChestPro extends JavaPlugin {
         this.disabledworlds = fileManager.getConfig("config.yml").get().getStringList("disabled_worlds");
         this.displayPlayerHead = fileManager.getConfig("config.yml").get().getBoolean("hologram.display_player_head");
         this.deathchestFireworks = fileManager.getConfig("config.yml").get().getBoolean("deathchest_fireworks");
-        this.hologramLines = fileManager.getConfig("config.yml").get().getStringList("hologram.lines");
+        this.hologramLines = color(fileManager.getConfig("config.yml").get().getStringList("hologram.lines"));
+    }
+
+    private List<String> color(List<String> stringList) {
+        for (int i = 0; i < stringList.size(); i++) {
+            stringList.set(i, ChatColor.translateAlternateColorCodes('&', stringList.get(i)));
+        }
+        return stringList;
     }
 
     private void loadAllConfigs() {
@@ -63,7 +70,7 @@ public final class DeathChestPro extends JavaPlugin {
     }
 
     private void reloadAllConfigs() {
-        for(FileManager.Config c : FileManager.configs.values()) {
+        for (FileManager.Config c : FileManager.configs.values()) {
             c.reload();
         }
     }

@@ -14,7 +14,13 @@ public enum Message {
     DEATHCHEST_CANNOT_OPEN("deathchest_cannot_open"),
     DEATHCHEST_LOCKED("deathchest_locked"),
     DEATHCHEST_UNLOCKED("deathchest_unlocked"),
-    NO_PERMISSION("no_permission");
+    NO_PERMISSION("no_permission"),
+    INVALID_USAGE("invalid_usage"),
+    YEARS("time.years"),
+    DAYS("time.days"),
+    HOURS("time.hours"),
+    MINUTES("time.minutes"),
+    SECONDS("time.seconds");
 
     private String path;
     private String message;

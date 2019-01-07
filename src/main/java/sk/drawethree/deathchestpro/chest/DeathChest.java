@@ -179,7 +179,10 @@ public class DeathChest {
             removeTask.cancel();
         }
 
-        this.hologram.delete();
+        if (hologram != null) {
+            hologram.delete();
+        }
+        
         this.removeChests();
 
         if (this.player.isOnline()) {
