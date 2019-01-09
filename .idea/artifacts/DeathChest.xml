@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="DeathChest">
+    <output-path>$PROJECT_DIR$/../../DeathChest</output-path>
+    <root id="archive" name="DeathChest.jar">
+      <element id="module-output" name="DeathChestPro" />
+    </root>
+  </artifact>
+</component>
