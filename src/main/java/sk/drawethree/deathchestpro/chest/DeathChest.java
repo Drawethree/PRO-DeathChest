@@ -39,10 +39,18 @@ public class DeathChest {
 
     private void setupHologram() {
         if (DeathChestPro.getInstance().isUseHolograms()) {
-            this.hologram = HologramsAPI.createHologram(DeathChestPro.getInstance(), this.chests.get(0).getLocation().clone().add(0, 2.5, 0));
+
+            Location hologramLoc = LocationUtil.getCenter(this.chests.get(0).getLocation()).add(0, 2.5, 0);
+
+            if (this.chests.size() == 2) {
+                hologramLoc = hologramLoc.add(0.5, 0, 0);
+            }
+            this.hologram = HologramsAPI.createHologram(DeathChestPro.getInstance(), hologramLoc);
+
             if (DeathChestPro.getInstance().isDisplayPlayerHead()) {
                 hologram.appendItemLine(ItemUtil.getPlayerSkull(player, null, null));
             }
+
             for (String s : DeathChestPro.getInstance().getHologramLines()) {
                 hologram.appendTextLine(s
                         .replaceAll("%locked%", getLockedString())
@@ -150,7 +158,7 @@ public class DeathChest {
 
     public boolean areChestsEmpty() {
         boolean b = false;
-        for (Chest c : getChests()) {
+        for (Chest c : chests) {
             if (DeathChestManager.isInventoryEmpty(c.getBlockInventory())) {
                 b = true;
             } else {
@@ -182,7 +190,7 @@ public class DeathChest {
         if (hologram != null) {
             hologram.delete();
         }
-        
+
         this.removeChests();
 
         if (this.player.isOnline()) {
@@ -210,6 +218,11 @@ public class DeathChest {
     }
 
     public void announce(Player p) {
+        /*if (DeathChestPro.getInstance().isClickableMessage()) {
+            TextComponent msg = new TextComponent(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.chests.get(0).getLocation().getBlockX())).replaceAll("%yloc%", String.valueOf(this.chests.get(0).getLocation().getBlockY())).replaceAll("%zloc%", String.valueOf(this.chests.get(0).getLocation().getBlockZ())).replaceAll("%world%", this.chests.get(0).getLocation().getWorld().getName()));
+            msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Message.DEATHCHEST_LOCATED_HOVER.getMessage()).create()));
+            msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tp " + player.getName() + " " + this.chests.get(0).getX() + " " + this.chests.get(0).getY() + " " + this.chests.get(0).getZ()));
+            player.spigot().sendMessage(msg);*/
         p.sendMessage(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.chests.get(0).getLocation().getBlockX())).replaceAll("%yloc%", String.valueOf(this.chests.get(0).getLocation().getBlockY())).replaceAll("%zloc%", String.valueOf(this.chests.get(0).getLocation().getBlockZ())).replaceAll("%world%", this.chests.get(0).getLocation().getWorld().getName()));
         p.sendMessage(Message.DEATHCHEST_WILL_DISAPPEAR.getChatMessage().replaceAll("%time%", String.valueOf(DeathChestPro.getInstance().getConfig().getInt("remove_chest_time"))));
         this.announced = true;

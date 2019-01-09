@@ -107,7 +107,7 @@ public class DeathChestManager {
         for (ArrayList<DeathChest> list : deathChests.values()) {
             for (DeathChest dc : list) {
                 for (Chest c : dc.getChests()) {
-                    if (c.getInventory().equals(inv)) {
+                    if (c.getBlockInventory().equals(inv)) {
                         return dc;
                     }
                 }

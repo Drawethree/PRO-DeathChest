@@ -50,17 +50,16 @@ public class DeathChestListener implements Listener {
             DeathChestManager.getInstance().getOpenedInventories().remove(p);
         }
 
+        Chest c = null;
         if (inv.getHolder() instanceof Chest) {
-            DeathChest dc = DeathChestManager.getInstance().getDeathChestByInventory(inv);
-            if (dc != null) {
-                if (dc.areChestsEmpty()) {
-                    dc.removeDeathChest(true);
-                }
-            }
+            c = (Chest) inv.getHolder();
         } else if (inv.getHolder() instanceof DoubleChest) {
             DoubleChest doubleChest = (DoubleChest) inv.getHolder();
-            Chest oneChest = (Chest) doubleChest.getLocation().getBlock().getState();
-            DeathChest dc = DeathChestManager.getInstance().getDeathChestByChest(oneChest);
+            c = (Chest) doubleChest.getRightSide();
+        }
+
+        if (c != null) {
+            DeathChest dc = DeathChestManager.getInstance().getDeathChestByChest(c);
             if (dc != null) {
                 if (dc.areChestsEmpty()) {
                     dc.removeDeathChest(true);
