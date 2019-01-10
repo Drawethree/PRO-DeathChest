@@ -29,7 +29,6 @@ public class FileManager {
         return getConfig(name).save();
     }
 
-
     public Config reloadConfig(String name) {
         return getConfig(name).reload();
     }

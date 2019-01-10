@@ -41,6 +41,8 @@ public class DeathChestCommand implements CommandExecutor {
             if (p.hasPermission("deathchestpro.list")) {
                 DeathChestManager.getInstance().openDeathchestList(p, 1);
                 return true;
+            } else {
+                p.sendMessage(Message.NO_PERMISSION.getChatMessage());
             }
         }
         return false;

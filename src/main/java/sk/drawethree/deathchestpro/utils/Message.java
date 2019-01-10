@@ -20,7 +20,8 @@ public enum Message {
     DAYS("time.days"),
     HOURS("time.hours"),
     MINUTES("time.minutes"),
-    SECONDS("time.seconds");
+    SECONDS("time.seconds"),
+    DEATHCHEST_TELEPORTED("deathchest_teleported");
 
     private String path;
     private String message;

@@ -94,14 +94,16 @@ public class DeathChestListener implements Listener {
 
     @EventHandler
     public void onDeathChestBreak(BlockBreakEvent e) {
-        if (!DeathChestPro.getInstance().isProtectChests()) return;
-        Player p = e.getPlayer();
-        Block b = e.getBlock();
-        if (b.getState() instanceof Chest) {
-            DeathChest dc = DeathChestManager.getInstance().getDeathChestByChest((Chest) b.getState());
+        if (e.getBlock().getState() instanceof Chest) {
+            final Player p = e.getPlayer();
+            final DeathChest dc = DeathChestManager.getInstance().getDeathChestByChest((Chest) e.getBlock().getState());
             if (dc != null) {
-                e.setCancelled(true);
-                p.sendMessage(Message.DEATHCHEST_CANNOT_BREAK.getChatMessage());
+                if (!DeathChestPro.getInstance().isAllowBreakChests() || (dc.isLocked() && !dc.getPlayer().equals(p))) {
+                    e.setCancelled(true);
+                    p.sendMessage(Message.DEATHCHEST_CANNOT_BREAK.getChatMessage());
+                } else {
+                    dc.removeChests();
+                }
             }
         }
     }
@@ -118,7 +120,7 @@ public class DeathChestListener implements Listener {
             int page = (int) e.getInventory().getTitle().charAt(e.getInventory().getTitle().length() - 1);
             DeathChest clickedChest = DeathChestManager.getInstance().getDeathChest(e.getCurrentItem());
             if (clickedChest != null) {
-                e.getWhoClicked().teleport(clickedChest.getFirstChest().getLocation().clone().add(0, 1, 0));
+                clickedChest.teleportPlayer(p);
                 e.setCancelled(true);
             } else if (e.getCurrentItem().isSimilar(Items.NEXT_ITEM.getItemStack())) {
                 DeathChestManager.getInstance().openDeathchestList(p, page + 1);

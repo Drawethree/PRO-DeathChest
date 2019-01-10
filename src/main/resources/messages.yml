@@ -8,6 +8,7 @@ deathchest_cannot_break: "&cYou cannot break this chest !"
 deathchest_cannot_open: "&cThis is not your DeathChest !"
 deathchest_locked: "&c&lLOCKED"
 deathchest_unlocked: "&a&lUNLOCKED"
+deathchest_teleported: "&aYou have been teleported to your DeathChest!"
 invalid_usage: "&cInvalid usage ! Available commands: \n &e/dc reload &8- &7Reloads the configs \n &e/dc list &8- &7Show your active DeathChests"
 time:
   years: "Years"

@@ -1,6 +1,7 @@
 remove_chest_time: 120
-protect_chests: true
+allow_break_chests: true
 deathchest_fireworks: true
+spawn_chest_on_highest_block: false
 disabled_worlds:
  - example_world
 sounds:

@@ -63,8 +63,13 @@ public class DeathChest {
 
     private void setupChests(Location loc, List<ItemStack> items) {
         this.chests = new ArrayList<>();
-        loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
+
+        if (DeathChestPro.getInstance().isSpawnChestOnHighestBlock()) {
+            loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
+        }
+
         this.type = DeathChestType.CHEST;
+
         loc.getBlock().setType(CompMaterial.CHEST.getMaterial());
 
         Chest chest1 = (Chest) loc.getBlock().getState();
@@ -82,9 +87,9 @@ public class DeathChest {
 
         if (items.size() > 27) {
             this.type = DeathChestType.DOUBLE_CHEST;
-            loc.clone().add(1, 0, 0).getBlock().setType(CompMaterial.CHEST.getMaterial());
+            loc.add(1, 0, 0).getBlock().setType(CompMaterial.CHEST.getMaterial());
 
-            Chest chest2 = (Chest) loc.clone().add(1, 0, 0).getBlock().getState();
+            Chest chest2 = (Chest) loc.getBlock().getState();
             this.chests.add(chest2);
 
             for (int i = 27; i < items.size(); i++) {
@@ -230,5 +235,16 @@ public class DeathChest {
 
     private String getLockedString() {
         return locked ? Message.DEATHCHEST_LOCKED.getMessage() : Message.DEATHCHEST_UNLOCKED.getMessage();
+    }
+
+    public boolean teleportPlayer(Player p) {
+        if (p.hasPermission("deathchestpro.teleport")) {
+            p.teleport(this.chests.get(0).getLocation().clone().add(0, 1, 0));
+            p.sendMessage(Message.DEATHCHEST_TELEPORTED.getChatMessage());
+            return true;
+        } else {
+            p.sendMessage(Message.NO_PERMISSION.getChatMessage());
+            return false;
+        }
     }
 }

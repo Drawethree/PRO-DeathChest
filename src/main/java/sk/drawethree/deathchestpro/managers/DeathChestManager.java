@@ -1,10 +1,14 @@
 package sk.drawethree.deathchestpro.managers;
 
+import com.bekvon.bukkit.residence.Residence;
+import com.bekvon.bukkit.residence.containers.Flags;
+import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
 import sk.drawethree.deathchestpro.utils.CompSound;
 import sk.drawethree.deathchestpro.utils.Items;
@@ -148,12 +152,30 @@ public class DeathChestManager {
     }
 
     public void createDeathChest(Player p, List<ItemStack> drops) {
+        if (!canPlace(p)) {
+            return;
+        }
+
+        /*if(DeathChestPro.getInstance().isUseDeathFeathers()) {
+
+        }*/
         if (deathChests.get(p.getUniqueId()) == null) {
             deathChests.put(p.getUniqueId(), new ArrayList<>());
         }
         ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
         currentChests.add(new DeathChest(p, drops));
         deathChests.put(p.getUniqueId(), currentChests);
+    }
 
+    private boolean canPlace(Player p) {
+        //Residence Check
+        if (DeathChestPro.getInstance().isUseResidence()) {
+            final ClaimedResidence res = Residence.getInstance().getResidenceManager().getByLoc(p);
+            if (res != null && !res.getPermissions().playerHas(p, Flags.build, true)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
