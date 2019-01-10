@@ -25,6 +25,8 @@ public final class DeathChestPro extends JavaPlugin {
     private boolean displayPlayerHead = true;
     private boolean deathchestFireworks = true;
     private boolean spawnChestOnHighestBlock = true;
+    private boolean dropItemsAfterExpire = false;
+
     private List<String> hologramLines;
     private int removeChestAfter = 20;
 
@@ -74,6 +76,7 @@ public final class DeathChestPro extends JavaPlugin {
         this.deathchestFireworks = fileManager.getConfig("config.yml").get().getBoolean("deathchest_fireworks");
         this.hologramLines = color(fileManager.getConfig("config.yml").get().getStringList("hologram.lines"));
         this.spawnChestOnHighestBlock = fileManager.getConfig("config.yml").get().getBoolean("spawn_chest_on_highest_block");
+        this.dropItemsAfterExpire = fileManager.getConfig("config.yml").get().getBoolean("drop_items_after_expire");
     }
 
     private void approveConfigChanges() {
@@ -161,5 +164,9 @@ public final class DeathChestPro extends JavaPlugin {
 
     public boolean isUseDeathFeathers() {
         return useDeathFeathers;
+    }
+
+    public boolean isDropItemsAfterExpire() {
+        return dropItemsAfterExpire;
     }
 }

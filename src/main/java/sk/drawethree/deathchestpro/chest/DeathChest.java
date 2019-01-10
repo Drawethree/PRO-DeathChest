@@ -177,6 +177,13 @@ public class DeathChest {
         Iterator it = chests.iterator();
         while (it.hasNext()) {
             Chest c = (Chest) it.next();
+            if (!DeathChestPro.getInstance().isDropItemsAfterExpire()) {
+                for (ItemStack item : c.getBlockInventory().getContents()) {
+                    if (item != null) {
+                        c.getBlockInventory().remove(item);
+                    }
+                }
+            }
             c.getBlock().setType(CompMaterial.AIR.getMaterial());
             it.remove();
         }
