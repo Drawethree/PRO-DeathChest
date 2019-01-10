@@ -128,7 +128,7 @@ public class DeathChest {
             @Override
             public void run() {
                 if (timeLeft == 0) {
-                    removeDeathChest(true);
+                    removeDeathChest();
                     cancel();
                 } else {
                     timeLeft--;
@@ -174,20 +174,15 @@ public class DeathChest {
     }
 
     public void removeChests() {
-        Iterator it = getChests().iterator();
+        Iterator it = chests.iterator();
         while (it.hasNext()) {
             Chest c = (Chest) it.next();
-            for (ItemStack item : c.getBlockInventory().getContents()) {
-                if (item != null) {
-                    c.getBlockInventory().remove(item);
-                }
-            }
             c.getBlock().setType(CompMaterial.AIR.getMaterial());
             it.remove();
         }
     }
 
-    public void removeDeathChest(boolean removeFromList) {
+    public void removeDeathChest() {
         if (removeTask != null) {
             removeTask.cancel();
         }
@@ -201,9 +196,7 @@ public class DeathChest {
         if (this.player.isOnline()) {
             this.player.sendMessage(Message.DEATHCHEST_DISAPPEARED.getChatMessage());
         }
-        if (removeFromList) {
-            DeathChestManager.getInstance().removeDeathChest(this);
-        }
+        DeathChestManager.getInstance().removeDeathChest(this);
     }
 
     public DeathChestType getType() {

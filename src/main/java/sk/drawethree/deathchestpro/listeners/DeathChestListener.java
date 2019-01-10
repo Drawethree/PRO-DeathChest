@@ -62,7 +62,7 @@ public class DeathChestListener implements Listener {
             DeathChest dc = DeathChestManager.getInstance().getDeathChestByChest(c);
             if (dc != null) {
                 if (dc.areChestsEmpty()) {
-                    dc.removeDeathChest(true);
+                    dc.removeDeathChest();
                 }
             }
         }
@@ -102,7 +102,8 @@ public class DeathChestListener implements Listener {
                     e.setCancelled(true);
                     p.sendMessage(Message.DEATHCHEST_CANNOT_BREAK.getChatMessage());
                 } else {
-                    dc.removeChests();
+                    e.setCancelled(true);
+                    dc.removeDeathChest();
                 }
             }
         }
