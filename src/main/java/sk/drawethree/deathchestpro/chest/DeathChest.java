@@ -55,8 +55,7 @@ public class DeathChest {
                 hologram.appendTextLine(s
                         .replaceAll("%locked%", getLockedString())
                         .replaceAll("%player%", player.getName())
-                        .replaceAll("%timeleft%", new Time(DeathChestPro.getInstance().getRemoveChestAfter(), TimeUnit.SECONDS).toString())
-                );
+                        .replaceAll("%timeleft%", new Time(DeathChestPro.getInstance().getRemoveChestAfter(), TimeUnit.SECONDS).toString()));
             }
         }
     }

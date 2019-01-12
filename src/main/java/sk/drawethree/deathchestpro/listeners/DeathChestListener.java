@@ -5,6 +5,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -17,6 +18,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
@@ -68,7 +70,7 @@ public class DeathChestListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDeath(PlayerDeathEvent e) {
         Player p = e.getEntity();
         if (!DeathChestPro.getInstance().getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
@@ -82,6 +84,7 @@ public class DeathChestListener implements Listener {
         Player p = e.getPlayer();
         ArrayList<DeathChest> chests = DeathChestManager.getInstance().getPlayerDeathChests(p);
         if (chests != null) {
+            p.getInventory().setArmorContents(null);
             p.getInventory().clear();
             for (DeathChest dc : chests) {
                 if (!dc.isAnnounced()) {
