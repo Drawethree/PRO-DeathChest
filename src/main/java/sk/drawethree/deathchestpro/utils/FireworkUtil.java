@@ -5,8 +5,9 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.entity.Firework;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.metadata.FixedMetadataValue;
+import sk.drawethree.deathchestpro.DeathChestPro;
 
 import java.util.Random;
 
@@ -19,6 +20,7 @@ public class FireworkUtil {
                 .withColor(randomColor()).withFade(randomColor()).build());
         fm.setPower(1);
         f.setFireworkMeta(fm);
+        f.setMetadata("deathchestfw", new FixedMetadataValue(DeathChestPro.getInstance(), "deathchestfw"));
     }
 
     public static boolean randomBoolean() {
