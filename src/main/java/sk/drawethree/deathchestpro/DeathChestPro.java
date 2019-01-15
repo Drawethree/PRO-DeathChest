@@ -26,6 +26,7 @@ public final class DeathChestPro extends JavaPlugin {
     private boolean deathchestFireworks = true;
     private boolean spawnChestOnHighestBlock = true;
     private boolean dropItemsAfterExpire = false;
+    private boolean clickableMessage = false;
 
     private List<String> hologramLines;
     private int removeChestAfter = 20;
@@ -56,11 +57,11 @@ public final class DeathChestPro extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage("§7(§2Info§7) §eDeathChestPro " + getDescription().getVersion() + " §8>> §aSuccessfully hooked into Residence !");
         }
 
-        if(this.useDeathFeathers) {
+        if (this.useDeathFeathers) {
             Bukkit.getConsoleSender().sendMessage("§7(§2Info§7) §eDeathChestPro " + getDescription().getVersion() + " §8>> §aSuccessfully hooked into DeathFeathers !");
         }
 
-        if(this.useHolograms) {
+        if (this.useHolograms) {
             Bukkit.getConsoleSender().sendMessage("§7(§2Info§7) §eDeathChestPro " + getDescription().getVersion() + " §8>> §aSuccessfully hooked into HolographicDisplays !");
         } else {
             Bukkit.getConsoleSender().sendMessage("§7(§4!§7) §eDeathChestPro " + getDescription().getVersion() + " §8>> §cHolograms plugin not found !");
@@ -77,6 +78,7 @@ public final class DeathChestPro extends JavaPlugin {
         this.hologramLines = color(fileManager.getConfig("config.yml").get().getStringList("hologram.lines"));
         this.spawnChestOnHighestBlock = fileManager.getConfig("config.yml").get().getBoolean("spawn_chest_on_highest_block");
         this.dropItemsAfterExpire = fileManager.getConfig("config.yml").get().getBoolean("drop_items_after_expire");
+        this.clickableMessage = fileManager.getConfig("config.yml").get().getBoolean("clickable_message");
     }
 
     private void approveConfigChanges() {
@@ -168,5 +170,9 @@ public final class DeathChestPro extends JavaPlugin {
 
     public boolean isDropItemsAfterExpire() {
         return dropItemsAfterExpire;
+    }
+
+    public boolean isClickableMessage() {
+        return clickableMessage;
     }
 }

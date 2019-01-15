@@ -21,7 +21,8 @@ public enum Message {
     HOURS("time.hours"),
     MINUTES("time.minutes"),
     SECONDS("time.seconds"),
-    DEATHCHEST_TELEPORTED("deathchest_teleported");
+    DEATHCHEST_TELEPORTED("deathchest_teleported"),
+    DEATHCHEST_LOCATED_HOVER("deathchest_located_hover");
 
     private String path;
     private String message;

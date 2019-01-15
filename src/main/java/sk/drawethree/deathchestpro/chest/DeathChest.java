@@ -2,6 +2,7 @@ package sk.drawethree.deathchestpro.chest;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import net.md_5.bungee.api.chat.*;
 import org.bukkit.Location;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
@@ -15,10 +16,12 @@ import sk.drawethree.deathchestpro.utils.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class DeathChest {
 
+    private UUID chestUUID;
     private Player player;
     private Hologram hologram;
     private List<Chest> chests;
@@ -29,6 +32,7 @@ public class DeathChest {
     private boolean announced;
 
     public DeathChest(Player p, List<ItemStack> items) {
+        this.chestUUID = UUID.randomUUID();
         this.player = p;
         this.locked = p.hasPermission("deathchestpro.lock");
         this.setupChests(p.getLocation(), items);
@@ -222,12 +226,16 @@ public class DeathChest {
     }
 
     public void announce(Player p) {
-        /*if (DeathChestPro.getInstance().isClickableMessage()) {
-            TextComponent msg = new TextComponent(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.chests.get(0).getLocation().getBlockX())).replaceAll("%yloc%", String.valueOf(this.chests.get(0).getLocation().getBlockY())).replaceAll("%zloc%", String.valueOf(this.chests.get(0).getLocation().getBlockZ())).replaceAll("%world%", this.chests.get(0).getLocation().getWorld().getName()));
-            msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Message.DEATHCHEST_LOCATED_HOVER.getMessage()).create()));
-            msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tp " + player.getName() + " " + this.chests.get(0).getX() + " " + this.chests.get(0).getY() + " " + this.chests.get(0).getZ()));
-            player.spigot().sendMessage(msg);*/
-        p.sendMessage(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.chests.get(0).getLocation().getBlockX())).replaceAll("%yloc%", String.valueOf(this.chests.get(0).getLocation().getBlockY())).replaceAll("%zloc%", String.valueOf(this.chests.get(0).getLocation().getBlockZ())).replaceAll("%world%", this.chests.get(0).getLocation().getWorld().getName()));
+        if (DeathChestPro.getInstance().isClickableMessage()) {
+            BaseComponent[] msg = TextComponent.fromLegacyText(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.chests.get(0).getLocation().getBlockX())).replaceAll("%yloc%", String.valueOf(this.chests.get(0).getLocation().getBlockY())).replaceAll("%zloc%", String.valueOf(this.chests.get(0).getLocation().getBlockZ())).replaceAll("%world%", this.chests.get(0).getLocation().getWorld().getName()));
+            for (BaseComponent bc : msg) {
+                bc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Message.DEATHCHEST_LOCATED_HOVER.getMessage()).create()));
+                bc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/dc teleport " + chestUUID.toString()));
+            }
+            player.spigot().sendMessage(msg);
+        } else {
+            p.sendMessage(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.chests.get(0).getLocation().getBlockX())).replaceAll("%yloc%", String.valueOf(this.chests.get(0).getLocation().getBlockY())).replaceAll("%zloc%", String.valueOf(this.chests.get(0).getLocation().getBlockZ())).replaceAll("%world%", this.chests.get(0).getLocation().getWorld().getName()));
+        }
         p.sendMessage(Message.DEATHCHEST_WILL_DISAPPEAR.getChatMessage().replaceAll("%time%", String.valueOf(DeathChestPro.getInstance().getConfig().getInt("remove_chest_time"))));
         this.announced = true;
     }
@@ -245,5 +253,9 @@ public class DeathChest {
             p.sendMessage(Message.NO_PERMISSION.getChatMessage());
             return false;
         }
+    }
+
+    public UUID getChestUUID() {
+        return chestUUID;
     }
 }

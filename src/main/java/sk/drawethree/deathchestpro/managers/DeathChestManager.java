@@ -24,10 +24,13 @@ public class DeathChestManager {
     private static DeathChestManager ourInstance = new DeathChestManager();
 
     private HashMap<UUID, ArrayList<DeathChest>> deathChests;
+    private HashMap<UUID, DeathChest> deathChestsByUUID;
+
     private List<Player> openedInventories;
 
     private DeathChestManager() {
         deathChests = new HashMap<>();
+        deathChestsByUUID = new HashMap<>();
         openedInventories = new ArrayList<>();
     }
 
@@ -104,6 +107,7 @@ public class DeathChestManager {
         } else {
             deathChests.put(dc.getPlayer().getUniqueId(), list);
         }
+        deathChestsByUUID.remove(dc.getChestUUID());
         refreshDeathChestInventory(dc.getPlayer());
     }
 
@@ -163,8 +167,10 @@ public class DeathChestManager {
             deathChests.put(p.getUniqueId(), new ArrayList<>());
         }
         ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
-        currentChests.add(new DeathChest(p, drops));
+        DeathChest dc = new DeathChest(p, drops);
+        currentChests.add(dc);
         deathChests.put(p.getUniqueId(), currentChests);
+        deathChestsByUUID.put(dc.getChestUUID(), dc);
     }
 
     private boolean canPlace(Player p) {
@@ -177,5 +183,13 @@ public class DeathChestManager {
         }
 
         return true;
+    }
+
+    public DeathChest getDeathChest(String id) {
+        return deathChestsByUUID.get(UUID.fromString(id));
+    }
+
+    public HashMap<UUID, DeathChest> getDeathChestsByUUID() {
+        return deathChestsByUUID;
     }
 }
