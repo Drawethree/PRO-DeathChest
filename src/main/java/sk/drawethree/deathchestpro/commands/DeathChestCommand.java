@@ -9,40 +9,30 @@ import sk.drawethree.deathchestpro.chest.DeathChest;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.utils.Message;
 
+import java.util.Arrays;
+
 public class DeathChestCommand implements CommandExecutor {
+
+    private static DeathChestSubCommand[] availableSubCommands = new DeathChestSubCommand[]{
+            new ListSubCommand(),
+            new ReloadSubCommand(),
+            new TeleportSubCommand()
+    };
+
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) {
         if (cmd.getName().equalsIgnoreCase("deathchest")) {
             if (args.length > 0) {
-                String subCommand = args[0].toLowerCase();
-                switch (subCommand) {
-                    case "reload":
-                        return reloadSubCommand(sender);
-                    case "list":
-                        return listSubCommand(sender);
-                    case "teleport":
-                        return teleportSubCommand(sender, args);
-                    default:
-                        return invalidUsage(sender);
+                DeathChestSubCommand subCommand = getSubCommand(args[0]);
+                if (subCommand != null) {
+                    subCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length));
+                } else {
+                    return invalidUsage(sender);
                 }
             } else {
                 return invalidUsage(sender);
             }
-        }
-        return false;
-    }
-
-    private boolean teleportSubCommand(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player) || args.length != 2) {
-            return false;
-        }
-
-        Player p = (Player) sender;
-        DeathChest dc = DeathChestManager.getInstance().getDeathChest(args[1]);
-        if (dc != null) {
-            dc.teleportPlayer(p);
-            return true;
         }
         return false;
     }
@@ -52,27 +42,12 @@ public class DeathChestCommand implements CommandExecutor {
         return true;
     }
 
-    private boolean listSubCommand(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
-            if (p.hasPermission("deathchestpro.list")) {
-                DeathChestManager.getInstance().openDeathchestList(p, 1);
-                return true;
-            } else {
-                p.sendMessage(Message.NO_PERMISSION.getChatMessage());
+    private DeathChestSubCommand getSubCommand(String subCommandName) {
+        for (DeathChestSubCommand subCommand : availableSubCommands) {
+            if (subCommand.getSubCommandName().equalsIgnoreCase(subCommandName)) {
+                return subCommand;
             }
         }
-        return false;
-    }
-
-    private boolean reloadSubCommand(CommandSender sender) {
-        if (sender.hasPermission("deathchestpro.reload")) {
-            DeathChestPro.getInstance().reloadPlugin();
-            sender.sendMessage(Message.PREFIX.getMessage() + "Plugin reloaded !");
-            return true;
-        } else {
-            sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
-        }
-        return false;
+        return null;
     }
 }
