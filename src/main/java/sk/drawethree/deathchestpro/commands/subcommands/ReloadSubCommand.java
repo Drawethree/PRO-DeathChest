@@ -1,4 +1,4 @@
-package sk.drawethree.deathchestpro.commands;
+package sk.drawethree.deathchestpro.commands.subcommands;
 
 import org.bukkit.command.CommandSender;
 import sk.drawethree.deathchestpro.DeathChestPro;
@@ -7,7 +7,7 @@ import sk.drawethree.deathchestpro.utils.Message;
 public class ReloadSubCommand extends DeathChestSubCommand {
 
     public ReloadSubCommand() {
-        super("reload");
+        super("reload", "Reloads the plugin");
     }
 
     @Override

@@ -1,4 +1,4 @@
-package sk.drawethree.deathchestpro.commands;
+package sk.drawethree.deathchestpro.commands.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -8,7 +8,7 @@ import sk.drawethree.deathchestpro.managers.DeathChestManager;
 public class TeleportSubCommand extends DeathChestSubCommand {
 
     public TeleportSubCommand() {
-        super("teleport");
+        super("teleport", "Teleport to DeathChest");
     }
 
     @Override

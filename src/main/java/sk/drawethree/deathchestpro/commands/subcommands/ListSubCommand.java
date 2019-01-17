@@ -1,4 +1,4 @@
-package sk.drawethree.deathchestpro.commands;
+package sk.drawethree.deathchestpro.commands.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -8,7 +8,7 @@ import sk.drawethree.deathchestpro.utils.Message;
 public class ListSubCommand extends DeathChestSubCommand {
 
     public ListSubCommand() {
-        super("list");
+        super("list", "Opens your DeathChest GUI");
     }
 
     @Override
