@@ -3,18 +3,19 @@ package sk.drawethree.deathchestpro.chest;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.md_5.bungee.api.chat.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Chest;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.utils.*;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -24,31 +25,46 @@ public class DeathChest {
     private UUID chestUUID;
     private Player player;
     private Hologram hologram;
-    private List<Chest> chests;
+    private Location location;
+    private Inventory chestInventory;
     private BukkitTask removeTask;
-    private boolean locked;
     private ItemStack listItem;
-    private DeathChestType type;
     private boolean announced;
+    private boolean locked;
 
     public DeathChest(Player p, List<ItemStack> items) {
         this.chestUUID = UUID.randomUUID();
         this.player = p;
         this.locked = p.hasPermission("deathchestpro.lock");
-        this.setupChests(p.getLocation(), items);
+        this.setupChest(p.getLocation(), items);
         this.setupHologram();
-        this.listItem = ItemUtil.createListItem(this);
+        this.listItem = createListItem();
         this.announced = false;
+    }
+
+    private ItemStack createListItem() {
+        final ItemStack returnItem = Items.DEATHCHEST_LIST_ITEM.getItemStack().clone();
+        final ItemMeta meta = returnItem.getItemMeta();
+        meta.setDisplayName(meta.getDisplayName().replaceAll("%player%", player.getName()));
+        final List<String> lore = meta.getLore();
+        for (int i = 0; i < lore.size(); i++) {
+            lore.set(i, lore.get(i).replaceAll("%xloc%", String.valueOf(location.getBlockX())).
+                    replaceAll("%yloc%", String.valueOf(location.getBlockY())).
+                    replaceAll("%zloc%", String.valueOf(location.getBlockZ())).
+                    replaceAll("%world%", location.getWorld().getName()).
+                    replaceAll("%locked%", String.valueOf(locked).toUpperCase()).
+                    replaceAll("%chesttype%", "§oPlease remove this placeholder from config !"));
+        }
+        meta.setLore(lore);
+        returnItem.setItemMeta(meta);
+        return returnItem;
     }
 
     private void setupHologram() {
         if (DeathChestPro.getInstance().isUseHolograms()) {
 
-            Location hologramLoc = LocationUtil.getCenter(this.chests.get(0).getLocation()).add(0, 2.5, 0);
+            Location hologramLoc = LocationUtil.getCenter(this.location.clone().add(0, 2.5, 0));
 
-            if (this.chests.size() == 2) {
-                hologramLoc = hologramLoc.add(0.5, 0, 0);
-            }
             this.hologram = HologramsAPI.createHologram(DeathChestPro.getInstance(), hologramLoc);
 
             if (DeathChestPro.getInstance().isDisplayPlayerHead()) {
@@ -64,46 +80,17 @@ public class DeathChest {
         }
     }
 
-    private void setupChests(Location loc, List<ItemStack> items) {
-        this.chests = new ArrayList<>();
-
+    private void setupChest(Location loc, List<ItemStack> items) {
         if (DeathChestPro.getInstance().isSpawnChestOnHighestBlock()) {
             loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
         }
 
-        this.type = DeathChestType.CHEST;
-
         loc.getBlock().setType(CompMaterial.CHEST.getMaterial());
 
-        Chest chest1 = (Chest) loc.getBlock().getState();
-        this.chests.add(chest1);
-
-        for (int i = 0; i < 27; i++) {
-            try {
-                chest1.getBlockInventory().addItem(items.get(i));
-            } catch (ArrayIndexOutOfBoundsException e) {
-                return;
-            } catch (IndexOutOfBoundsException e) {
-                return;
-            }
-        }
-
-        if (items.size() > 27) {
-            this.type = DeathChestType.DOUBLE_CHEST;
-            loc.add(1, 0, 0).getBlock().setType(CompMaterial.CHEST.getMaterial());
-
-            Chest chest2 = (Chest) loc.getBlock().getState();
-            this.chests.add(chest2);
-
-            for (int i = 27; i < items.size(); i++) {
-                try {
-                    chest2.getBlockInventory().addItem(items.get(i));
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    return;
-                } catch (IndexOutOfBoundsException e) {
-                    return;
-                }
-            }
+        this.location = loc.getBlock().getLocation();
+        this.chestInventory = Bukkit.createInventory(null, items.size() > 27 ? 54 : 27, DeathChestPro.getInstance().getDeathChestInvTitle().replaceAll("%player%", player.getName()));
+        for (ItemStack i : items) {
+            this.chestInventory.addItem(i);
         }
     }
 
@@ -146,10 +133,6 @@ public class DeathChest {
         }.runTaskTimer(DeathChestPro.getInstance(), 20L, 20L);
     }
 
-    public List<Chest> getChests() {
-        return chests;
-    }
-
     private void updateHologram(int timeLeft) {
         for (int i = 0; i < DeathChestPro.getInstance().getHologramLines().size(); i++) {
             String line = DeathChestPro.getInstance().getHologramLines().get(i);
@@ -164,32 +147,28 @@ public class DeathChest {
         }
     }
 
-    public boolean areChestsEmpty() {
-        boolean b = false;
-        for (Chest c : chests) {
-            if (DeathChestManager.isInventoryEmpty(c.getBlockInventory())) {
-                b = true;
-            } else {
-                return false;
-            }
-        }
-        return b;
+    public boolean isChestEmpty() {
+        return DeathChestManager.isInventoryEmpty(this.chestInventory);
     }
 
     public void removeChests() {
-        Iterator it = chests.iterator();
-        while (it.hasNext()) {
-            Chest c = (Chest) it.next();
-            if (!DeathChestPro.getInstance().isDropItemsAfterExpire()) {
-                for (ItemStack item : c.getBlockInventory().getContents()) {
-                    if (item != null) {
-                        c.getBlockInventory().remove(item);
+        if (DeathChestPro.getInstance().isDropItemsAfterExpire()) {
+            for (ItemStack item : chestInventory.getContents()) {
+
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (item != null) {
+                            location.getWorld().dropItemNaturally(location, item);
+                            location.getWorld().playSound(location, CompSound.ITEM_PICKUP.getSound(), 1F, 1F);
+                        }
                     }
-                }
+                }.runTaskLater(DeathChestPro.getInstance(), 10L);
+
             }
-            c.getBlock().setType(CompMaterial.AIR.getMaterial());
-            it.remove();
         }
+
+        location.getBlock().setType(Material.AIR);
     }
 
     public void removeDeathChest() {
@@ -209,32 +188,20 @@ public class DeathChest {
         DeathChestManager.getInstance().removeDeathChest(this);
     }
 
-    public DeathChestType getType() {
-        return type;
-    }
-
-    public Chest getFirstChest() {
-        return this.chests.get(0);
-    }
-
-    public Chest getSecondChest() {
-        return this.chests.get(1);
-    }
-
     public boolean isAnnounced() {
         return announced;
     }
 
     public void announce(Player p) {
         if (DeathChestPro.getInstance().isClickableMessage()) {
-            BaseComponent[] msg = TextComponent.fromLegacyText(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.chests.get(0).getLocation().getBlockX())).replaceAll("%yloc%", String.valueOf(this.chests.get(0).getLocation().getBlockY())).replaceAll("%zloc%", String.valueOf(this.chests.get(0).getLocation().getBlockZ())).replaceAll("%world%", this.chests.get(0).getLocation().getWorld().getName()));
+            BaseComponent[] msg = TextComponent.fromLegacyText(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
             for (BaseComponent bc : msg) {
                 bc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Message.DEATHCHEST_LOCATED_HOVER.getMessage()).create()));
                 bc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/dc teleport " + chestUUID.toString()));
             }
             player.spigot().sendMessage(msg);
         } else {
-            p.sendMessage(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.chests.get(0).getLocation().getBlockX())).replaceAll("%yloc%", String.valueOf(this.chests.get(0).getLocation().getBlockY())).replaceAll("%zloc%", String.valueOf(this.chests.get(0).getLocation().getBlockZ())).replaceAll("%world%", this.chests.get(0).getLocation().getWorld().getName()));
+            p.sendMessage(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
         }
         p.sendMessage(Message.DEATHCHEST_WILL_DISAPPEAR.getChatMessage().replaceAll("%time%", String.valueOf(DeathChestPro.getInstance().getConfig().getInt("remove_chest_time"))));
         this.announced = true;
@@ -246,7 +213,7 @@ public class DeathChest {
 
     public boolean teleportPlayer(Player p) {
         if (p.hasPermission("deathchestpro.teleport")) {
-            p.teleport(this.chests.get(0).getLocation().clone().add(0, 1, 0));
+            p.teleport(this.location.clone().add(0, 1, 0));
             p.sendMessage(Message.DEATHCHEST_TELEPORTED.getChatMessage());
             return true;
         } else {
@@ -257,5 +224,13 @@ public class DeathChest {
 
     public UUID getChestUUID() {
         return chestUUID;
+    }
+
+    public Inventory getChestInventory() {
+        return chestInventory;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 }

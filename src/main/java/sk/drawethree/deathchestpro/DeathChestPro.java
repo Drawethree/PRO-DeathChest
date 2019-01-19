@@ -29,6 +29,7 @@ public final class DeathChestPro extends JavaPlugin {
     private boolean clickableMessage = false;
 
     private List<String> hologramLines;
+    private String deathChestInvTitle;
     private int removeChestAfter = 20;
 
     @Override
@@ -79,6 +80,7 @@ public final class DeathChestPro extends JavaPlugin {
         this.spawnChestOnHighestBlock = fileManager.getConfig("config.yml").get().getBoolean("spawn_chest_on_highest_block");
         this.dropItemsAfterExpire = fileManager.getConfig("config.yml").get().getBoolean("drop_items_after_expire");
         this.clickableMessage = fileManager.getConfig("config.yml").get().getBoolean("clickable_message");
+        this.deathChestInvTitle = ChatColor.translateAlternateColorCodes('&', fileManager.getConfig("config.yml").get().getString("deathchest_inv_title"));
     }
 
     private void approveConfigChanges() {
@@ -174,5 +176,9 @@ public final class DeathChestPro extends JavaPlugin {
 
     public boolean isClickableMessage() {
         return clickableMessage;
+    }
+
+    public String getDeathChestInvTitle() {
+        return deathChestInvTitle;
     }
 }

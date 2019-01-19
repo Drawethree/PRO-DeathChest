@@ -2,7 +2,6 @@ package sk.drawethree.deathchestpro.listeners;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,6 +23,7 @@ import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.utils.CompMaterial;
+import sk.drawethree.deathchestpro.utils.CompSound;
 import sk.drawethree.deathchestpro.utils.Items;
 import sk.drawethree.deathchestpro.utils.Message;
 
@@ -36,7 +36,7 @@ public class DeathChestListener implements Listener {
         for (Block b : e.blockList()) {
             if (b.getState() instanceof Chest) {
                 Chest c = (Chest) b.getState();
-                if (DeathChestManager.getInstance().getDeathChestByChest(c) != null) {
+                if (DeathChestManager.getInstance().getDeathChestByLocation(c.getLocation()) != null) {
                     e.blockList().remove(b);
                 }
             }
@@ -44,36 +44,27 @@ public class DeathChestListener implements Listener {
     }
 
     @EventHandler
-    public void onInvClose(InventoryCloseEvent e) {
+    public void onInvClose(final InventoryCloseEvent e) {
 
-        Inventory inv = e.getInventory();
-        Player p = (Player) e.getPlayer();
+        final Inventory inv = e.getInventory();
+        final Player p = (Player) e.getPlayer();
 
         if (DeathChestManager.getInstance().getOpenedInventories().contains(p)) {
             DeathChestManager.getInstance().getOpenedInventories().remove(p);
         }
-
-        Chest c = null;
-        if (inv.getHolder() instanceof Chest) {
-            c = (Chest) inv.getHolder();
-        } else if (inv.getHolder() instanceof DoubleChest) {
-            DoubleChest doubleChest = (DoubleChest) inv.getHolder();
-            c = (Chest) doubleChest.getRightSide();
-        }
-
-        if (c != null) {
-            DeathChest dc = DeathChestManager.getInstance().getDeathChestByChest(c);
-            if (dc != null) {
-                if (dc.areChestsEmpty()) {
-                    dc.removeDeathChest();
-                }
+        final DeathChest dc = DeathChestManager.getInstance().getDeathChestByInventory(inv);
+        if (dc != null) {
+            if (dc.isChestEmpty()) {
+                dc.removeDeathChest();
+            } else {
+                p.playSound(p.getLocation(), CompSound.CHEST_CLOSE.getSound(), 1F, 1F);
             }
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerDeath(PlayerDeathEvent e) {
-        Player p = e.getEntity();
+    public void onPlayerDeath(final PlayerDeathEvent e) {
+        final Player p = e.getEntity();
         if (!DeathChestPro.getInstance().getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
             DeathChestManager.getInstance().createDeathChest(p, e.getDrops());
             e.setKeepInventory(true);
@@ -91,9 +82,9 @@ public class DeathChestListener implements Listener {
     }
 
     @EventHandler
-    public void onRespawn(PlayerRespawnEvent e) {
-        Player p = e.getPlayer();
-        ArrayList<DeathChest> chests = DeathChestManager.getInstance().getPlayerDeathChests(p);
+    public void onRespawn(final PlayerRespawnEvent e) {
+        final Player p = e.getPlayer();
+        final ArrayList<DeathChest> chests = DeathChestManager.getInstance().getPlayerDeathChests(p);
         if (chests != null) {
             p.getInventory().setArmorContents(null);
             p.getInventory().clear();
@@ -107,10 +98,10 @@ public class DeathChestListener implements Listener {
     }
 
     @EventHandler
-    public void onDeathChestBreak(BlockBreakEvent e) {
+    public void onDeathChestBreak(final BlockBreakEvent e) {
         if (e.getBlock().getState() instanceof Chest) {
             final Player p = e.getPlayer();
-            final DeathChest dc = DeathChestManager.getInstance().getDeathChestByChest((Chest) e.getBlock().getState());
+            final DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(e.getBlock().getLocation());
             if (dc != null) {
                 if (!DeathChestPro.getInstance().isAllowBreakChests() || (dc.isLocked() && !dc.getPlayer().equals(p))) {
                     e.setCancelled(true);
@@ -124,16 +115,16 @@ public class DeathChestListener implements Listener {
     }
 
     @EventHandler
-    public void onInvClick(InventoryClickEvent e) {
+    public void onInvClick(final InventoryClickEvent e) {
         if (!(e.getWhoClicked() instanceof Player) || e.getInventory() == null || !e.getInventory().getTitle().contains(Message.DEATHCHEST_LIST_INV_TITLE.getMessage())) {
             return;
         }
 
-        Player p = (Player) e.getWhoClicked();
+        final Player p = (Player) e.getWhoClicked();
 
         if (e.getCurrentItem() != null && e.getCurrentItem().getType() != CompMaterial.AIR.getMaterial()) {
             int page = (int) e.getInventory().getTitle().charAt(e.getInventory().getTitle().length() - 1);
-            DeathChest clickedChest = DeathChestManager.getInstance().getDeathChest(e.getCurrentItem());
+            final DeathChest clickedChest = DeathChestManager.getInstance().getDeathChest(e.getCurrentItem());
             if (clickedChest != null) {
                 clickedChest.teleportPlayer(p);
                 e.setCancelled(true);
@@ -148,25 +139,31 @@ public class DeathChestListener implements Listener {
     }
 
     @EventHandler
-    public void onTryingOpen(PlayerInteractEvent e) {
+    public void onTryingOpen(final PlayerInteractEvent e) {
         if ((e.getClickedBlock() == null) || (!(e.getClickedBlock().getState() instanceof Chest))) {
             return;
         }
 
-        Player p = e.getPlayer();
-        Block b = e.getClickedBlock();
+        final Player p = e.getPlayer();
+        final Block b = e.getClickedBlock();
 
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            DeathChest dc = DeathChestManager.getInstance().getDeathChestByChest((Chest) b.getState());
-            if (dc != null && !dc.getPlayer().getName().equals(p.getName()) && ((!p.hasPermission("deathchestpro.see") || dc.isLocked()) && (!p.isOp()))) {
-                e.setCancelled(true);
-                p.sendMessage(Message.DEATHCHEST_CANNOT_OPEN.getChatMessage());
+            DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(b.getLocation());
+            if (dc != null) {
+                if (!dc.getPlayer().getName().equals(p.getName()) && ((!p.hasPermission("deathchestpro.see") || dc.isLocked()) && (!p.isOp()))) {
+                    e.setCancelled(true);
+                    p.sendMessage(Message.DEATHCHEST_CANNOT_OPEN.getChatMessage());
+                } else {
+                    e.setCancelled(true);
+                    p.playSound(p.getLocation(), CompSound.CHEST_OPEN.getSound(), 1F, 1F);
+                    p.openInventory(dc.getChestInventory());
+                }
             }
         }
     }
 
     @EventHandler
-    public void onHopperMove(InventoryMoveItemEvent e) {
+    public void onHopperMove(final InventoryMoveItemEvent e) {
         if (e.getDestination().getType() == InventoryType.HOPPER && DeathChestManager.getInstance().isInventoryDeathChestInv(e.getSource())) {
             e.setCancelled(true);
         }

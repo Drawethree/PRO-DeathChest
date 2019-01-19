@@ -3,10 +3,7 @@ package sk.drawethree.deathchestpro.commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import sk.drawethree.deathchestpro.commands.subcommands.DeathChestSubCommand;
-import sk.drawethree.deathchestpro.commands.subcommands.ListSubCommand;
-import sk.drawethree.deathchestpro.commands.subcommands.ReloadSubCommand;
-import sk.drawethree.deathchestpro.commands.subcommands.TeleportSubCommand;
+import sk.drawethree.deathchestpro.commands.subcommands.*;
 import sk.drawethree.deathchestpro.utils.Message;
 
 import java.util.Arrays;
@@ -16,7 +13,8 @@ public class DeathChestCommand implements CommandExecutor {
     private static DeathChestSubCommand[] availableSubCommands = new DeathChestSubCommand[]{
             new ListSubCommand(),
             new ReloadSubCommand(),
-            new TeleportSubCommand()
+            new TeleportSubCommand(),
+            new TestSubCommand()
     };
 
     @Override

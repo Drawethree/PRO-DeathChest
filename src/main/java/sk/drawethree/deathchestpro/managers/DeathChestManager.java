@@ -4,6 +4,7 @@ import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -114,20 +115,18 @@ public class DeathChestManager {
     public DeathChest getDeathChestByInventory(Inventory inv) {
         for (ArrayList<DeathChest> list : deathChests.values()) {
             for (DeathChest dc : list) {
-                for (Chest c : dc.getChests()) {
-                    if (c.getBlockInventory().equals(inv)) {
-                        return dc;
-                    }
+                if (dc.getChestInventory().equals(inv)) {
+                    return dc;
                 }
             }
         }
         return null;
     }
 
-    public DeathChest getDeathChestByChest(Chest c) {
+    public DeathChest getDeathChestByLocation(Location loc) {
         for (ArrayList<DeathChest> list : deathChests.values()) {
             for (DeathChest dc : list) {
-                if (dc.getChests().contains(c)) {
+                if (dc.getLocation().equals(loc)) {
                     return dc;
                 }
             }
@@ -136,16 +135,7 @@ public class DeathChestManager {
     }
 
     public boolean isInventoryDeathChestInv(Inventory inv) {
-        for (ArrayList<DeathChest> list : deathChests.values()) {
-            for (DeathChest dc : list) {
-                for (Chest c : dc.getChests()) {
-                    if (c.getInventory().equals(inv)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        return getDeathChestByInventory(inv) != null;
     }
 
     public static boolean isInventoryEmpty(Inventory inv) {

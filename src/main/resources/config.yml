@@ -15,3 +15,4 @@ hologram:
   - "%locked%"
   - "Owner: %player%"
   - "%timeleft% left"
+deathchest_inv_title: "&7%player%'s DeathChest"

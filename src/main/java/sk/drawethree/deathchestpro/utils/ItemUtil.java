@@ -105,24 +105,6 @@ public class ItemUtil {
         return item;
     }
 
-    public static ItemStack createListItem(DeathChest dc) {
-        ItemStack returnItem = Items.DEATHCHEST_LIST_ITEM.getItemStack().clone();
-        ItemMeta meta = returnItem.getItemMeta();
-        meta.setDisplayName(meta.getDisplayName().replaceAll("%player%", dc.getPlayer().getName()));
-        List<String> lore = meta.getLore();
-        for (int i = 0; i < lore.size(); i++) {
-            lore.set(i, lore.get(i).replaceAll("%xloc%", String.valueOf(dc.getFirstChest().getLocation().getBlockX())).
-                    replaceAll("%yloc%", String.valueOf(dc.getFirstChest().getLocation().getBlockY())).
-                    replaceAll("%zloc%", String.valueOf(dc.getFirstChest().getLocation().getBlockZ())).
-                    replaceAll("%world%", dc.getFirstChest().getLocation().getWorld().getName()).
-                    replaceAll("%locked%", String.valueOf(dc.isLocked()).toUpperCase()).
-                    replaceAll("%chesttype%", dc.getType().getName()));
-        }
-        meta.setLore(lore);
-        returnItem.setItemMeta(meta);
-        return returnItem;
-    }
-
     /*
      * replacing enchantment with string
      */
