@@ -22,5 +22,6 @@ items:
     - "&e  Z: %zloc%"
     - "&e  World: %world%"
     - "&7Locked: &e%locked%"
+    - "&7Chest Type: &e%chesttype%"
     - ""
-    - "&7Click to teleport to this DeathChest !"
+    - "&7Click to teleport to this DeathChest!"

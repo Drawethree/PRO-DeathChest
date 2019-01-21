@@ -1,7 +1,9 @@
 remove_chest_time: 120
 allow_break_chests: false
 drop_items_after_expire: false
-deathchest_fireworks: true
+deathchest_fireworks:
+  enabled: true
+  interval: 5
 clickable_message: true
 spawn_chest_on_highest_block: false
 disabled_worlds:

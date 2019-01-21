@@ -11,36 +11,20 @@ public enum Items {
 
     private ItemStack itemStack;
     private String path;
-    //private int slot;
 
     Items(String path) {
         this.path = path;
         this.itemStack = ItemUtil.loadItemFromConfig("items.yml", path);
-        //this.slot = Main.getFileManager().getConfig("items.yml").get().getInt(path + ".slot");
     }
 
     public ItemStack getItemStack() {
         return itemStack;
     }
 
-    /*public int getSlot() {
-        return slot;
-    }
-    */
-
-    public static Items getItem(ItemStack item) {
-        for (Items i : values()) {
-            if (i.getItemStack().equals(item)) {
-                return i;
-            }
-        }
-        return null;
-    }
 
     public static void reload() {
         for (Items i : values()) {
             i.setItemStack(ItemUtil.loadItemFromConfig("items.yml", i.path));
-            //i.setSlot(Casino.getFileManager().getConfig("items.yml").get().getInt(i.path + ".slot"));
         }
     }
 
@@ -48,11 +32,6 @@ public enum Items {
     private void setItemStack(ItemStack itemstack) {
         this.itemStack = itemstack;
     }
-
-   /* public void setSlot(int slot) {
-        this.slot = slot;
-    }
-    */
 
 
 }

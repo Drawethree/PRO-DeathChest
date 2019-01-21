@@ -30,6 +30,7 @@ public final class DeathChestPro extends JavaPlugin {
 
     private List<String> hologramLines;
     private String deathChestInvTitle;
+    private int fireworkInterval = 5;
     private int removeChestAfter = 20;
 
     @Override
@@ -75,7 +76,8 @@ public final class DeathChestPro extends JavaPlugin {
         this.removeChestAfter = fileManager.getConfig("config.yml").get().getInt("remove_chest_time");
         this.disabledworlds = fileManager.getConfig("config.yml").get().getStringList("disabled_worlds");
         this.displayPlayerHead = fileManager.getConfig("config.yml").get().getBoolean("hologram.display_player_head");
-        this.deathchestFireworks = fileManager.getConfig("config.yml").get().getBoolean("deathchest_fireworks");
+        this.deathchestFireworks = fileManager.getConfig("config.yml").get().getBoolean("deathchest_fireworks.enabled");
+        this.fireworkInterval = fileManager.getConfig("config.yml").get().getInt("deathchest_fireworks.interval");
         this.hologramLines = color(fileManager.getConfig("config.yml").get().getStringList("hologram.lines"));
         this.spawnChestOnHighestBlock = fileManager.getConfig("config.yml").get().getBoolean("spawn_chest_on_highest_block");
         this.dropItemsAfterExpire = fileManager.getConfig("config.yml").get().getBoolean("drop_items_after_expire");
@@ -180,5 +182,9 @@ public final class DeathChestPro extends JavaPlugin {
 
     public String getDeathChestInvTitle() {
         return deathChestInvTitle;
+    }
+
+    public int getFireworksInterval() {
+        return fireworkInterval;
     }
 }

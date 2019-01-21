@@ -5,7 +5,7 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -26,6 +26,7 @@ public class DeathChest {
     private Player player;
     private Hologram hologram;
     private Location location;
+    private BlockState replacedBlock;
     private Inventory chestInventory;
     private BukkitTask removeTask;
     private ItemStack listItem;
@@ -85,6 +86,7 @@ public class DeathChest {
             loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
         }
 
+        this.replacedBlock = loc.getBlock().getState();
         loc.getBlock().setType(CompMaterial.CHEST.getMaterial());
 
         this.location = loc.getBlock().getLocation();
@@ -114,6 +116,7 @@ public class DeathChest {
         this.removeTask = new BukkitRunnable() {
 
             int timeLeft = DeathChestPro.getInstance().getRemoveChestAfter();
+            int nextFireworkIn = DeathChestPro.getInstance().getFireworksInterval();
 
             @Override
             public void run() {
@@ -126,11 +129,16 @@ public class DeathChest {
                         updateHologram(timeLeft);
                     }
                     if (DeathChestPro.getInstance().isDeathchestFireworks()) {
-                        FireworkUtil.spawnRandomFirework(hologram.getLocation());
+                        nextFireworkIn--;
+                        if(nextFireworkIn == 0) {
+                            FireworkUtil.spawnRandomFirework(hologram.getLocation());
+                            nextFireworkIn = DeathChestPro.getInstance().getFireworksInterval();
+                        }
                     }
                 }
             }
         }.runTaskTimer(DeathChestPro.getInstance(), 20L, 20L);
+
     }
 
     private void updateHologram(int timeLeft) {
@@ -168,7 +176,7 @@ public class DeathChest {
             }
         }
 
-        location.getBlock().setType(Material.AIR);
+        replacedBlock.update(true);
     }
 
     public void removeDeathChest() {
