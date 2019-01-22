@@ -22,6 +22,7 @@ public enum Message {
     MINUTES("time.minutes"),
     SECONDS("time.seconds"),
     DEATHCHEST_TELEPORTED("deathchest_teleported"),
+    DEATHCHEST_FASTLOOT_COMPLETE("deathchest_fastloot_complete"),
     DEATHCHEST_LOCATED_HOVER("deathchest_located_hover");
 
     private String path;
@@ -45,7 +46,7 @@ public enum Message {
     }
 
     public static void reload() {
-        for(Message m : values()) {
+        for (Message m : values()) {
             m.setMessage(ChatColor.translateAlternateColorCodes('&', DeathChestPro.getFileManager().getConfig("messages.yml").get().getString(m.getPath())));
         }
     }

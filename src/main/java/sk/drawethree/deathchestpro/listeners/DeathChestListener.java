@@ -155,6 +155,10 @@ public class DeathChestListener implements Listener {
                     p.sendMessage(Message.DEATHCHEST_CANNOT_OPEN.getChatMessage());
                 } else {
                     e.setCancelled(true);
+                    if (p.isSneaking()) {
+                        dc.fastLoot(p);
+                        return;
+                    }
                     p.playSound(p.getLocation(), CompSound.CHEST_OPEN.getSound(), 1F, 1F);
                     p.openInventory(dc.getChestInventory());
                 }

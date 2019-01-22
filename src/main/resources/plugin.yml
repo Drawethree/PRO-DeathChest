@@ -1,5 +1,5 @@
 main: sk.drawethree.deathchestpro.DeathChestPro
-version: 2.0.2
+version: 2.0.3
 api-version: 1.13
 name: DeathChestPro
 author: TheRealDrawe
@@ -34,6 +34,9 @@ permissions:
     default: true
   deathchestpro.teleport:
     description: Allows to teleport to your deathchest
+    default: op
+  deathchestpro.fastloot:
+    description: Allows to fast loot your chest
     default: op
 commands:
   deathchest:

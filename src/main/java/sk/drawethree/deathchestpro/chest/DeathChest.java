@@ -130,7 +130,7 @@ public class DeathChest {
                     }
                     if (DeathChestPro.getInstance().isDeathchestFireworks()) {
                         nextFireworkIn--;
-                        if(nextFireworkIn == 0) {
+                        if (nextFireworkIn == 0) {
                             FireworkUtil.spawnRandomFirework(hologram.getLocation());
                             nextFireworkIn = DeathChestPro.getInstance().getFireworksInterval();
                         }
@@ -162,20 +162,12 @@ public class DeathChest {
     public void removeChests() {
         if (DeathChestPro.getInstance().isDropItemsAfterExpire()) {
             for (ItemStack item : chestInventory.getContents()) {
-
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (item != null) {
-                            location.getWorld().dropItemNaturally(location, item);
-                            location.getWorld().playSound(location, CompSound.ITEM_PICKUP.getSound(), 1F, 1F);
-                        }
-                    }
-                }.runTaskLater(DeathChestPro.getInstance(), 10L);
-
+                if (item != null) {
+                    location.getWorld().dropItemNaturally(location, item);
+                }
             }
+            location.getWorld().playSound(location, CompSound.ITEM_PICKUP.getSound(), 1F, 1F);
         }
-
         replacedBlock.update(true);
     }
 
@@ -227,6 +219,27 @@ public class DeathChest {
         } else {
             p.sendMessage(Message.NO_PERMISSION.getChatMessage());
             return false;
+        }
+    }
+
+    public void fastLoot(Player p) {
+        if (p.hasPermission("deathchestpro.fastloot")) {
+            for (ItemStack i : chestInventory.getContents()) {
+                if (i == null) continue;
+                if (p.getInventory().firstEmpty() == -1) {
+                    break;
+                }
+                chestInventory.remove(i);
+                p.getInventory().addItem(i);
+            }
+            p.playSound(p.getLocation(), CompSound.ITEM_PICKUP.getSound(), 1F, 1F);
+            if (isChestEmpty()) {
+                removeDeathChest();
+            } else {
+                p.sendMessage(Message.DEATHCHEST_FASTLOOT_COMPLETE.getChatMessage().replaceAll("%amount%", String.valueOf(DeathChestManager.getAmountOfItems(chestInventory))));
+            }
+        } else {
+            p.sendMessage(Message.NO_PERMISSION.getMessage());
         }
     }
 

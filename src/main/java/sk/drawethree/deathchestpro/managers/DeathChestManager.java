@@ -5,7 +5,6 @@ import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -143,6 +142,16 @@ public class DeathChestManager {
             if (item != null) return false;
         }
         return true;
+    }
+
+    public static int getAmountOfItems(Inventory inv) {
+        int amount = 0;
+        for (ItemStack item : inv.getContents()) {
+            if (item != null) {
+                amount += 1;
+            }
+        }
+        return amount;
     }
 
     public void createDeathChest(Player p, List<ItemStack> drops) {
