@@ -150,7 +150,7 @@ public class DeathChestListener implements Listener {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(b.getLocation());
             if (dc != null) {
-                if (!dc.getPlayer().getName().equals(p.getName()) && ((!p.hasPermission("deathchestpro.see") || dc.isLocked()) && (!p.isOp()))) {
+                if ((dc.isLocked() && !p.hasPermission("deathchestpro.see")) || (dc.isLocked() && !dc.getPlayer().getUniqueId().equals(p.getUniqueId()))) {
                     e.setCancelled(true);
                     p.sendMessage(Message.DEATHCHEST_CANNOT_OPEN.getChatMessage());
                 } else {

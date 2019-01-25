@@ -82,7 +82,7 @@ public class DeathChest {
     }
 
     private void setupChest(Location loc, List<ItemStack> items) {
-        if (DeathChestPro.getInstance().isSpawnChestOnHighestBlock()) {
+        if (DeathChestPro.getInstance().isSpawnChestOnHighestBlock() || loc.getY() <= 0) {
             loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
         }
 
