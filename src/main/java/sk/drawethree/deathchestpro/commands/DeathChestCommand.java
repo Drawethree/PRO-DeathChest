@@ -14,7 +14,7 @@ public class DeathChestCommand implements CommandExecutor {
             new ListSubCommand(),
             new ReloadSubCommand(),
             new TeleportSubCommand(),
-            new TestSubCommand()
+            //new TestSubCommand()
     };
 
     @Override
