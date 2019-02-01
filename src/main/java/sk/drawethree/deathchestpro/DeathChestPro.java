@@ -9,6 +9,8 @@ import sk.drawethree.deathchestpro.managers.FileManager;
 import sk.drawethree.deathchestpro.utils.Items;
 import sk.drawethree.deathchestpro.utils.Message;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public final class DeathChestPro extends JavaPlugin {
@@ -16,10 +18,12 @@ public final class DeathChestPro extends JavaPlugin {
     private static DeathChestPro instance;
     private static FileManager fileManager;
     private List<String> disabledworlds;
+    private List<String> disabledRegions;
 
     private boolean useResidence = false;
     private boolean useHolograms = false;
     private boolean useDeathFeathers = false;
+    private boolean useWorldGuard = false;
 
     private boolean allowBreakChests = false;
     private boolean displayPlayerHead = true;
@@ -53,10 +57,15 @@ public final class DeathChestPro extends JavaPlugin {
     private void hook() {
         this.useResidence = getServer().getPluginManager().isPluginEnabled("Residence");
         this.useHolograms = getServer().getPluginManager().isPluginEnabled("HolographicDisplays");
+        this.useWorldGuard = getServer().getPluginManager().isPluginEnabled("WorldGuard");
         //this.useDeathFeathers = getServer().getPluginManager().isPluginEnabled("DeathFeathers");
 
         if (this.useResidence) {
             Bukkit.getConsoleSender().sendMessage("§7(§2Info§7) §eDeathChestPro " + getDescription().getVersion() + " §8>> §aSuccessfully hooked into Residence !");
+        }
+
+        if (this.useWorldGuard) {
+            Bukkit.getConsoleSender().sendMessage("§7(§2Info§7) §eDeathChestPro " + getDescription().getVersion() + " §8>> §aSuccessfully hooked into WorldGuard !");
         }
 
         if (this.useDeathFeathers) {
@@ -75,6 +84,7 @@ public final class DeathChestPro extends JavaPlugin {
         this.allowBreakChests = fileManager.getConfig("config.yml").get().getBoolean("allow_break_chests");
         this.removeChestAfter = fileManager.getConfig("config.yml").get().getInt("remove_chest_time");
         this.disabledworlds = fileManager.getConfig("config.yml").get().getStringList("disabled_worlds");
+        this.disabledRegions = fileManager.getConfig("config.yml").get().getStringList("disabled_regions");
         this.displayPlayerHead = fileManager.getConfig("config.yml").get().getBoolean("hologram.display_player_head");
         this.deathchestFireworks = fileManager.getConfig("config.yml").get().getBoolean("deathchest_fireworks.enabled");
         this.fireworkInterval = fileManager.getConfig("config.yml").get().getInt("deathchest_fireworks.interval");
@@ -132,6 +142,10 @@ public final class DeathChestPro extends JavaPlugin {
         return useHolograms;
     }
 
+    public boolean isUseWorldGuard() {
+        return useWorldGuard;
+    }
+
     public boolean isUseResidence() {
         return useResidence;
     }
@@ -186,5 +200,9 @@ public final class DeathChestPro extends JavaPlugin {
 
     public int getFireworksInterval() {
         return fireworkInterval;
+    }
+
+    public List<String> getDisabledRegions() {
+        return disabledRegions;
     }
 }

@@ -7,7 +7,9 @@ deathchest_fireworks:
 clickable_message: true
 spawn_chest_on_highest_block: false
 disabled_worlds:
- - example_world
+  - example_world
+disabled_regions:
+  - example_region
 sounds:
   click: UI_BUTTON_CLICK
   gui_open: ENTITY_EXPERIENCE_ORB_PICKUP

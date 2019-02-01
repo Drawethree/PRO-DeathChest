@@ -3,6 +3,8 @@ package sk.drawethree.deathchestpro.managers;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -154,9 +156,9 @@ public class DeathChestManager {
         return amount;
     }
 
-    public void createDeathChest(Player p, List<ItemStack> drops) {
+    public boolean createDeathChest(Player p, List<ItemStack> drops) {
         if (!canPlace(p)) {
-            return;
+            return false;
         }
 
         /*if(DeathChestPro.getInstance().isUseDeathFeathers()) {
@@ -170,6 +172,7 @@ public class DeathChestManager {
         currentChests.add(dc);
         deathChests.put(p.getUniqueId(), currentChests);
         deathChestsByUUID.put(dc.getChestUUID(), dc);
+        return true;
     }
 
     private boolean canPlace(Player p) {
@@ -180,7 +183,19 @@ public class DeathChestManager {
                 return false;
             }
         }
-
+        //WorldGuard Check
+        if (DeathChestPro.getInstance().isUseWorldGuard()) {
+            try {
+                for (ProtectedRegion region : WorldGuardPlugin.inst().getRegionManager(p.getWorld()).getApplicableRegions(p.getLocation())) {
+                    if (DeathChestPro.getInstance().getDisabledRegions().contains(region.getId())) {
+                        return false;
+                    }
+                }
+            } catch (Throwable t) {
+                Bukkit.getConsoleSender().sendMessage("§7(§cWarn§7) §eDeathChestPro " + DeathChestPro.getInstance().getDescription().getVersion() + " §8>> §cYou are using not supported version of WorldGuard ! Please use any below version 7.0.0.");
+                return true;
+            }
+        }
         return true;
     }
 

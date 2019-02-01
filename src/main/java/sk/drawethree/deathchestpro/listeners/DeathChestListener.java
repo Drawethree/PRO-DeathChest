@@ -66,8 +66,9 @@ public class DeathChestListener implements Listener {
     public void onPlayerDeath(final PlayerDeathEvent e) {
         final Player p = e.getEntity();
         if (!DeathChestPro.getInstance().getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
-            DeathChestManager.getInstance().createDeathChest(p, e.getDrops());
-            e.setKeepInventory(true);
+            if(DeathChestManager.getInstance().createDeathChest(p, e.getDrops())) {
+                e.setKeepInventory(true);
+            }
         }
     }
 
