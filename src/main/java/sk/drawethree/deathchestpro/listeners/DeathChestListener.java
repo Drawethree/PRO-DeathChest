@@ -66,7 +66,7 @@ public class DeathChestListener implements Listener {
     public void onPlayerDeath(final PlayerDeathEvent e) {
         final Player p = e.getEntity();
         if (!DeathChestPro.getInstance().getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
-            if(DeathChestManager.getInstance().createDeathChest(p, e.getDrops())) {
+            if (DeathChestManager.getInstance().createDeathChest(p, e.getDrops())) {
                 e.setKeepInventory(true);
             }
         }
@@ -151,9 +151,11 @@ public class DeathChestListener implements Listener {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(b.getLocation());
             if (dc != null) {
-                if ((dc.isLocked() && !p.hasPermission("deathchestpro.see")) || (dc.isLocked() && !dc.getPlayer().getUniqueId().equals(p.getUniqueId()))) {
-                    e.setCancelled(true);
-                    p.sendMessage(Message.DEATHCHEST_CANNOT_OPEN.getChatMessage());
+                if (dc.isLocked()) {
+                    if (!dc.getPlayer().getUniqueId().equals(p.getUniqueId()) || !p.hasPermission("deathchestpro.see")) {
+                        e.setCancelled(true);
+                        p.sendMessage(Message.DEATHCHEST_CANNOT_OPEN.getChatMessage());
+                    }
                 } else {
                     e.setCancelled(true);
                     if (p.isSneaking()) {
