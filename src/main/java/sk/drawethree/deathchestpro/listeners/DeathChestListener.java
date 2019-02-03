@@ -104,7 +104,7 @@ public class DeathChestListener implements Listener {
             final Player p = e.getPlayer();
             final DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(e.getBlock().getLocation());
             if (dc != null) {
-                if (!DeathChestPro.getInstance().isAllowBreakChests() || (dc.isLocked() && !dc.getPlayer().equals(p))) {
+                if (!DeathChestPro.getInstance().isAllowBreakChests() || (dc.isLocked() && !dc.getPlayer().getUniqueId().equals(p.getUniqueId()))) {
                     e.setCancelled(true);
                     p.sendMessage(Message.DEATHCHEST_CANNOT_BREAK.getChatMessage());
                 } else {
@@ -152,19 +152,19 @@ public class DeathChestListener implements Listener {
             DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(b.getLocation());
             if (dc != null) {
                 if (dc.isLocked()) {
-                    if (!dc.getPlayer().getUniqueId().equals(p.getUniqueId()) || !p.hasPermission("deathchestpro.see")) {
+                    if (!dc.getPlayer().getUniqueId().equals(p.getUniqueId()) && !p.hasPermission("deathchestpro.see")) {
                         e.setCancelled(true);
                         p.sendMessage(Message.DEATHCHEST_CANNOT_OPEN.getChatMessage());
-                    }
-                } else {
-                    e.setCancelled(true);
-                    if (p.isSneaking()) {
-                        dc.fastLoot(p);
                         return;
                     }
-                    p.playSound(p.getLocation(), CompSound.CHEST_OPEN.getSound(), 1F, 1F);
-                    p.openInventory(dc.getChestInventory());
                 }
+                e.setCancelled(true);
+                if (p.isSneaking()) {
+                    dc.fastLoot(p);
+                    return;
+                }
+                p.playSound(p.getLocation(), CompSound.CHEST_OPEN.getSound(), 1F, 1F);
+                p.openInventory(dc.getChestInventory());
             }
         }
     }

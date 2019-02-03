@@ -239,7 +239,7 @@ public class DeathChest {
                 p.sendMessage(Message.DEATHCHEST_FASTLOOT_COMPLETE.getChatMessage().replaceAll("%amount%", String.valueOf(DeathChestManager.getAmountOfItems(chestInventory))));
             }
         } else {
-            p.sendMessage(Message.NO_PERMISSION.getMessage());
+            p.sendMessage(Message.NO_PERMISSION.getChatMessage());
         }
     }
 
