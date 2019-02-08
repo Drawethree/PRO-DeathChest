@@ -161,9 +161,6 @@ public class DeathChestManager {
             return false;
         }
 
-        /*if(DeathChestPro.getInstance().isUseDeathFeathers()) {
-
-        }*/
         if (deathChests.get(p.getUniqueId()) == null) {
             deathChests.put(p.getUniqueId(), new ArrayList<>());
         }

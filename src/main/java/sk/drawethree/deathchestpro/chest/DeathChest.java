@@ -16,6 +16,7 @@ import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.utils.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -76,8 +77,11 @@ public class DeathChest {
                 hologram.appendTextLine(s
                         .replaceAll("%locked%", getLockedString())
                         .replaceAll("%player%", player.getName())
-                        .replaceAll("%timeleft%", new Time(DeathChestPro.getInstance().getRemoveChestAfter(), TimeUnit.SECONDS).toString()));
+                        .replaceAll("%death_date%", DeathChestPro.getInstance().getDeathDateFormat().format(new Date()))
+                        .replaceAll("%timeleft%", new Time(DeathChestPro.getInstance().getRemoveChestAfter(), TimeUnit.SECONDS).toString()))
+                ;
             }
+            hologram.teleport(LocationUtil.getCenter(this.location.clone().add(0, 1 + hologram.getHeight(), 0)));
         }
     }
 

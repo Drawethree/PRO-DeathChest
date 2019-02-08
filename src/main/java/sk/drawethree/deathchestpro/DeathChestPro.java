@@ -9,8 +9,7 @@ import sk.drawethree.deathchestpro.managers.FileManager;
 import sk.drawethree.deathchestpro.utils.Items;
 import sk.drawethree.deathchestpro.utils.Message;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public final class DeathChestPro extends JavaPlugin {
@@ -32,6 +31,7 @@ public final class DeathChestPro extends JavaPlugin {
     private boolean dropItemsAfterExpire = false;
     private boolean clickableMessage = false;
 
+    private SimpleDateFormat deathDateFormat;
     private List<String> hologramLines;
     private String deathChestInvTitle;
     private int fireworkInterval = 5;
@@ -92,6 +92,7 @@ public final class DeathChestPro extends JavaPlugin {
         this.spawnChestOnHighestBlock = fileManager.getConfig("config.yml").get().getBoolean("spawn_chest_on_highest_block");
         this.dropItemsAfterExpire = fileManager.getConfig("config.yml").get().getBoolean("drop_items_after_expire");
         this.clickableMessage = fileManager.getConfig("config.yml").get().getBoolean("clickable_message");
+        this.deathDateFormat = new SimpleDateFormat(fileManager.getConfig("config.yml").get().getString("hologram.death_date_format"));
         this.deathChestInvTitle = ChatColor.translateAlternateColorCodes('&', fileManager.getConfig("config.yml").get().getString("deathchest_inv_title"));
     }
 
@@ -204,5 +205,9 @@ public final class DeathChestPro extends JavaPlugin {
 
     public List<String> getDisabledRegions() {
         return disabledRegions;
+    }
+
+    public SimpleDateFormat getDeathDateFormat() {
+        return deathDateFormat;
     }
 }

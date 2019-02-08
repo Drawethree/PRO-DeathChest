@@ -28,16 +28,19 @@ import sk.drawethree.deathchestpro.utils.Items;
 import sk.drawethree.deathchestpro.utils.Message;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class DeathChestListener implements Listener {
 
-    @EventHandler
-    public void onExplode(EntityExplodeEvent e) {
-        for (Block b : e.blockList()) {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onExplode(final EntityExplodeEvent e) {
+        final Iterator it = e.blockList().iterator();
+        while (it.hasNext()) {
+            final Block b = (Block) it.next();
             if (b.getState() instanceof Chest) {
-                Chest c = (Chest) b.getState();
+                final Chest c = (Chest) b.getState();
                 if (DeathChestManager.getInstance().getDeathChestByLocation(c.getLocation()) != null) {
-                    e.blockList().remove(b);
+                    it.remove();
                 }
             }
         }
