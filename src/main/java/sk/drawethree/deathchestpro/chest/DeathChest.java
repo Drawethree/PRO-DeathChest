@@ -132,7 +132,7 @@ public class DeathChest {
                     if (hologram != null) {
                         updateHologram(timeLeft);
                     }
-                    if (DeathChestPro.getInstance().isDeathchestFireworks()) {
+                    if (DeathChestPro.getInstance().isDeathchestFireworks() && hologram != null) {
                         nextFireworkIn--;
                         if (nextFireworkIn == 0) {
                             FireworkUtil.spawnRandomFirework(hologram.getLocation());
@@ -197,6 +197,9 @@ public class DeathChest {
     }
 
     public void announce(Player p) {
+        if (this.location.getBlock().getType() != CompMaterial.CHEST.getMaterial()) {
+            this.location.getBlock().setType(CompMaterial.CHEST.getMaterial());
+        }
         if (DeathChestPro.getInstance().isClickableMessage()) {
             BaseComponent[] msg = TextComponent.fromLegacyText(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
             for (BaseComponent bc : msg) {
@@ -207,7 +210,7 @@ public class DeathChest {
         } else {
             p.sendMessage(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
         }
-        p.sendMessage(Message.DEATHCHEST_WILL_DISAPPEAR.getChatMessage().replaceAll("%time%", String.valueOf(DeathChestPro.getInstance().getConfig().getInt("remove_chest_time"))));
+        p.sendMessage(Message.DEATHCHEST_WILL_DISAPPEAR.getChatMessage().replaceAll("%time%", String.valueOf(DeathChestPro.getInstance().getRemoveChestAfter())));
         this.announced = true;
     }
 
