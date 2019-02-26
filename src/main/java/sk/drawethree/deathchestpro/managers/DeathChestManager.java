@@ -7,6 +7,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -27,13 +28,12 @@ public class DeathChestManager {
 
     private HashMap<UUID, ArrayList<DeathChest>> deathChests;
     private HashMap<UUID, DeathChest> deathChestsByUUID;
-
-    private List<Player> openedInventories;
+    private HashMap<Player, OfflinePlayer> openedInventories;
 
     private DeathChestManager() {
         deathChests = new HashMap<>();
         deathChestsByUUID = new HashMap<>();
-        openedInventories = new ArrayList<>();
+        openedInventories = new HashMap<>();
     }
 
 
@@ -41,7 +41,7 @@ public class DeathChestManager {
         return ourInstance;
     }
 
-    public List<Player> getOpenedInventories() {
+    public HashMap<Player, OfflinePlayer> getOpenedInventories() {
         return openedInventories;
     }
 
@@ -60,16 +60,16 @@ public class DeathChestManager {
         return null;
     }
 
-    public ArrayList<DeathChest> getPlayerDeathChests(Player p) {
+    public ArrayList<DeathChest> getPlayerDeathChests(OfflinePlayer p) {
         return deathChests.get(p.getUniqueId());
     }
 
-    public void openDeathchestList(Player p, int page) {
-        int amountOfChests = deathChests.get(p.getUniqueId()) == null ? 0 : deathChests.get(p.getUniqueId()).size();
+    public void openDeathchestList(OfflinePlayer whoseChests, Player openTo, int page) {
+        int amountOfChests = deathChests.get(whoseChests.getUniqueId()) == null ? 0 : deathChests.get(whoseChests.getUniqueId()).size();
         if (page > 0) {
             if (amountOfChests >= (page * 45) - 45) {
                 Inventory inv = Bukkit.createInventory(null, 54, Message.DEATHCHEST_LIST_INV_TITLE.getMessage() + page);
-                List<DeathChest> deathChestsList = getPlayerDeathChests(p);
+                List<DeathChest> deathChestsList = getPlayerDeathChests(whoseChests);
                 int index = 0;
 
                 for (int i = (page * 45) - 45; i < page * 45; i++) {
@@ -82,18 +82,18 @@ public class DeathChestManager {
                 }
                 inv.setItem(45, Items.PREV_ITEM.getItemStack());
                 inv.setItem(53, Items.NEXT_ITEM.getItemStack());
-                p.playSound(p.getLocation(), CompSound.ORB_PICKUP.getSound(), 1, 1);
-                p.openInventory(inv);
-                openedInventories.add(p);
+                openTo.playSound(openTo.getLocation(), CompSound.ORB_PICKUP.getSound(), 1, 1);
+                openTo.openInventory(inv);
+                openedInventories.put(openTo,whoseChests);
             }
         }
     }
 
     private void refreshDeathChestInventory(Player p) {
-        if (openedInventories.contains(p)) {
+        if (openedInventories.containsKey(p)) {
             int page = getPageNumber(p.getOpenInventory().getTopInventory());
             p.closeInventory();
-            openDeathchestList(p, page);
+            openDeathchestList(openedInventories.get(p),p, page);
         }
     }
 

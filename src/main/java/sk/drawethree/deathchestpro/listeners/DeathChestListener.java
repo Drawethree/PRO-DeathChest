@@ -52,7 +52,7 @@ public class DeathChestListener implements Listener {
         final Inventory inv = e.getInventory();
         final Player p = (Player) e.getPlayer();
 
-        if (DeathChestManager.getInstance().getOpenedInventories().contains(p)) {
+        if (DeathChestManager.getInstance().getOpenedInventories().containsKey(p)) {
             DeathChestManager.getInstance().getOpenedInventories().remove(p);
         }
         final DeathChest dc = DeathChestManager.getInstance().getDeathChestByInventory(inv);
@@ -133,10 +133,10 @@ public class DeathChestListener implements Listener {
                 clickedChest.teleportPlayer(p);
                 e.setCancelled(true);
             } else if (e.getCurrentItem().isSimilar(Items.NEXT_ITEM.getItemStack())) {
-                DeathChestManager.getInstance().openDeathchestList(p, page + 1);
+                DeathChestManager.getInstance().openDeathchestList(DeathChestManager.getInstance().getOpenedInventories().get(p), p, page + 1);
                 e.setCancelled(true);
             } else if (e.getCurrentItem().isSimilar(Items.PREV_ITEM.getItemStack())) {
-                DeathChestManager.getInstance().openDeathchestList(p, page - 1);
+                DeathChestManager.getInstance().openDeathchestList(DeathChestManager.getInstance().getOpenedInventories().get(p), p, page - 1);
                 e.setCancelled(true);
             }
         }
