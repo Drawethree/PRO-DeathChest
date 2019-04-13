@@ -22,18 +22,20 @@ public class ListSubCommand extends DeathChestSubCommand {
 
             if (args.length == 1) {
                 whoChests = Bukkit.getOfflinePlayer(args[0]);
+            } else if (args.length > 1) {
+                return false;
             }
 
             boolean hasPerm;
 
-            if(!whoChests.getUniqueId().equals(p.getUniqueId())) {
+            if (!whoChests.getUniqueId().equals(p.getUniqueId())) {
                 hasPerm = p.hasPermission("deathchestpro.list.others");
             } else {
                 hasPerm = p.hasPermission("deathchestpro.list");
             }
 
-            if(hasPerm) {
-                DeathChestManager.getInstance().openDeathchestList(whoChests,p,1);
+            if (hasPerm) {
+                DeathChestManager.getInstance().openDeathchestList(whoChests, p, 1);
                 return true;
             } else {
                 p.sendMessage(Message.NO_PERMISSION.getChatMessage());

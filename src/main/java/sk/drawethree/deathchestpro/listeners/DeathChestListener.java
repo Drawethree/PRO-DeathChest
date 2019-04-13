@@ -52,9 +52,8 @@ public class DeathChestListener implements Listener {
         final Inventory inv = e.getInventory();
         final Player p = (Player) e.getPlayer();
 
-        if (DeathChestManager.getInstance().getOpenedInventories().containsKey(p)) {
-            DeathChestManager.getInstance().getOpenedInventories().remove(p);
-        }
+        DeathChestManager.getInstance().removeFromOpenedInventories(p);
+
         final DeathChest dc = DeathChestManager.getInstance().getDeathChestByInventory(inv);
         if (dc != null) {
             if (dc.isChestEmpty()) {
@@ -68,9 +67,11 @@ public class DeathChestListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDeath(final PlayerDeathEvent e) {
         final Player p = e.getEntity();
-        if (!DeathChestPro.getInstance().getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
+        if (!DeathChestPro.getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
             if (DeathChestManager.getInstance().createDeathChest(p, e.getDrops())) {
                 e.setKeepInventory(true);
+                p.getInventory().setArmorContents(null);
+                p.getInventory().clear();
             }
         }
     }
@@ -90,8 +91,6 @@ public class DeathChestListener implements Listener {
         final Player p = e.getPlayer();
         final ArrayList<DeathChest> chests = DeathChestManager.getInstance().getPlayerDeathChests(p);
         if (chests != null) {
-            p.getInventory().setArmorContents(null);
-            p.getInventory().clear();
             for (DeathChest dc : chests) {
                 if (!dc.isAnnounced()) {
                     dc.announce(p);
@@ -107,7 +106,7 @@ public class DeathChestListener implements Listener {
             final Player p = e.getPlayer();
             final DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(e.getBlock().getLocation());
             if (dc != null) {
-                if (!DeathChestPro.getInstance().isAllowBreakChests() || (dc.isLocked() && !dc.getPlayer().getUniqueId().equals(p.getUniqueId()))) {
+                if (!DeathChestPro.isAllowBreakChests() || (dc.isLocked() && !dc.getPlayer().getUniqueId().equals(p.getUniqueId()))) {
                     e.setCancelled(true);
                     p.sendMessage(Message.DEATHCHEST_CANNOT_BREAK.getChatMessage());
                 } else {
@@ -133,10 +132,10 @@ public class DeathChestListener implements Listener {
                 clickedChest.teleportPlayer(p);
                 e.setCancelled(true);
             } else if (e.getCurrentItem().isSimilar(Items.NEXT_ITEM.getItemStack())) {
-                DeathChestManager.getInstance().openDeathchestList(DeathChestManager.getInstance().getOpenedInventories().get(p), p, page + 1);
+                DeathChestManager.getInstance().openDeathchestList(DeathChestManager.getInstance().getOpenedInventory(p), p, page + 1);
                 e.setCancelled(true);
             } else if (e.getCurrentItem().isSimilar(Items.PREV_ITEM.getItemStack())) {
-                DeathChestManager.getInstance().openDeathchestList(DeathChestManager.getInstance().getOpenedInventories().get(p), p, page - 1);
+                DeathChestManager.getInstance().openDeathchestList(DeathChestManager.getInstance().getOpenedInventory(p), p, page - 1);
                 e.setCancelled(true);
             }
         }

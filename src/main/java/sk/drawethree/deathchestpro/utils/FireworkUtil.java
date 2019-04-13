@@ -13,6 +13,8 @@ import java.util.Random;
 
 public class FireworkUtil {
 
+    private static final String FIREWORK_METADATA = "deathchestfw";
+
     public static void spawnRandomFirework(Location location) {
         Firework f = location.getWorld().spawn(location, Firework.class);
         FireworkMeta fm = f.getFireworkMeta();
@@ -20,7 +22,7 @@ public class FireworkUtil {
                 .withColor(randomColor()).withFade(randomColor()).build());
         fm.setPower(1);
         f.setFireworkMeta(fm);
-        f.setMetadata("deathchestfw", new FixedMetadataValue(DeathChestPro.getInstance(), "deathchestfw"));
+        f.setMetadata(FireworkUtil.FIREWORK_METADATA, new FixedMetadataValue(DeathChestPro.getInstance(), FireworkUtil.FIREWORK_METADATA));
     }
 
     public static boolean randomBoolean() {

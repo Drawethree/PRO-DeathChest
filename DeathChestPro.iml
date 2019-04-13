@@ -34,7 +34,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-chat:1.13-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.sainttx.holograms:holograms-api:2.0.0-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.3.0" level="project" />
-    <orderEntry type="library" name="WorldGuard" level="project" />
-    <orderEntry type="library" name="WorldEdit" level="project" />
+    <orderEntry type="library" name="WorldEdit &amp; WorldGuard" level="project" />
   </component>
 </module>

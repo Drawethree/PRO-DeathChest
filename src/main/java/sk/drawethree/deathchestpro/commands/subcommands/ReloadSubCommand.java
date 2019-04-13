@@ -13,7 +13,7 @@ public class ReloadSubCommand extends DeathChestSubCommand {
     @Override
     public boolean execute(CommandSender sender, String[] args) {
         if (sender.hasPermission("deathchestpro.reload")) {
-            DeathChestPro.getInstance().reloadPlugin();
+            DeathChestPro.reloadPlugin();
             sender.sendMessage(Message.PREFIX.getMessage() + "Plugin reloaded !");
             return true;
         } else {

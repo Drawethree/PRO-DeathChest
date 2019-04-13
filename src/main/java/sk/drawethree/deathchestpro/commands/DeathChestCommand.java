@@ -7,15 +7,18 @@ import sk.drawethree.deathchestpro.commands.subcommands.*;
 import sk.drawethree.deathchestpro.utils.Message;
 
 import java.util.Arrays;
+import java.util.TreeMap;
 
 public class DeathChestCommand implements CommandExecutor {
 
-    private static DeathChestSubCommand[] availableSubCommands = new DeathChestSubCommand[]{
-            new ListSubCommand(),
-            new ReloadSubCommand(),
-            new TeleportSubCommand(),
-            //new TestSubCommand()
-    };
+
+    private static final TreeMap<String , DeathChestSubCommand> availableSubCommands = new TreeMap<>();
+
+    static {
+        availableSubCommands.put("list", new ListSubCommand());
+        availableSubCommands.put("reload", new ReloadSubCommand());
+        availableSubCommands.put("teleport", new TeleportSubCommand());
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) {
@@ -40,11 +43,6 @@ public class DeathChestCommand implements CommandExecutor {
     }
 
     private DeathChestSubCommand getSubCommand(String subCommandName) {
-        for (DeathChestSubCommand subCommand : availableSubCommands) {
-            if (subCommand.getSubCommandName().equalsIgnoreCase(subCommandName)) {
-                return subCommand;
-            }
-        }
-        return null;
+        return availableSubCommands.get(subCommandName.toLowerCase());
     }
 }

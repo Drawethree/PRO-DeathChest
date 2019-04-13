@@ -1,5 +1,7 @@
 package sk.drawethree.deathchestpro.utils;
 
+import sk.drawethree.deathchestpro.DeathChestPro;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;

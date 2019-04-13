@@ -5,6 +5,7 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -63,22 +64,22 @@ public class DeathChest {
     }
 
     private void setupHologram() {
-        if (DeathChestPro.getInstance().isUseHolograms()) {
+        if (DeathChestPro.isUseHolograms()) {
 
             Location hologramLoc = LocationUtil.getCenter(this.location.clone().add(0, 2.5, 0));
 
             this.hologram = HologramsAPI.createHologram(DeathChestPro.getInstance(), hologramLoc);
 
-            if (DeathChestPro.getInstance().isDisplayPlayerHead()) {
+            if (DeathChestPro.isDisplayPlayerHead()) {
                 hologram.appendItemLine(ItemUtil.getPlayerSkull(player, null, null));
             }
 
-            for (String s : DeathChestPro.getInstance().getHologramLines()) {
+            for (String s : DeathChestPro.getHologramLines()) {
                 hologram.appendTextLine(s
                         .replaceAll("%locked%", getLockedString())
                         .replaceAll("%player%", player.getName())
-                        .replaceAll("%death_date%", DeathChestPro.getInstance().getDeathDateFormat().format(new Date()))
-                        .replaceAll("%timeleft%", new Time(DeathChestPro.getInstance().getRemoveChestAfter(), TimeUnit.SECONDS).toString()))
+                        .replaceAll("%death_date%", DeathChestPro.getDeathDateFormat().format(new Date()))
+                        .replaceAll("%timeleft%", new Time(DeathChestPro.getRemoveChestAfter(), TimeUnit.SECONDS).toString()))
                 ;
             }
             hologram.teleport(LocationUtil.getCenter(this.location.clone().add(0, 1 + hologram.getHeight(), 0)));
@@ -86,18 +87,33 @@ public class DeathChest {
     }
 
     private void setupChest(Location loc, List<ItemStack> items) {
-        if (DeathChestPro.getInstance().isSpawnChestOnHighestBlock() || loc.getY() <= 0) {
+        if (DeathChestPro.isSpawnChestOnHighestBlock() || loc.getY() <= 0) {
             loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
         }
 
         this.replacedBlock = loc.getBlock().getState();
-        loc.getBlock().setType(CompMaterial.CHEST.getMaterial());
 
+        //Build glass cage if lava protection is on
+        if(loc.getBlock().getType() == CompMaterial.LAVA.getMaterial() && DeathChestPro.isLavaProtection()) {
+            this.buildProtectionCage(loc);
+        }
+
+        loc.getBlock().setType(CompMaterial.CHEST.getMaterial());
         this.location = loc.getBlock().getLocation();
-        this.chestInventory = Bukkit.createInventory(null, items.size() > 27 ? 54 : 27, DeathChestPro.getInstance().getDeathChestInvTitle().replaceAll("%player%", player.getName()));
+
+        this.chestInventory = Bukkit.createInventory(null, items.size() > 27 ? 54 : 27, DeathChestPro.getDeathChestInvTitle().replaceAll("%player%", player.getName()));
         for (ItemStack i : items) {
             this.chestInventory.addItem(i);
         }
+    }
+
+    private void buildProtectionCage(Location loc) {
+        loc.clone().add(1,0,0).getBlock().setType(CompMaterial.GLASS.getMaterial());
+        loc.clone().add(-1,0,0).getBlock().setType(CompMaterial.GLASS.getMaterial());
+        loc.clone().add(0,0,1).getBlock().setType(CompMaterial.GLASS.getMaterial());
+        loc.clone().add(0,0,-1).getBlock().setType(CompMaterial.GLASS.getMaterial());
+        loc.clone().add(0,1,0).getBlock().setType(CompMaterial.GLASS.getMaterial());
+        loc.clone().add(0,-1,0).getBlock().setType(CompMaterial.GLASS.getMaterial());
     }
 
     public Player getPlayer() {
@@ -119,8 +135,8 @@ public class DeathChest {
     public void runRemoveTask() {
         this.removeTask = new BukkitRunnable() {
 
-            int timeLeft = DeathChestPro.getInstance().getRemoveChestAfter();
-            int nextFireworkIn = DeathChestPro.getInstance().getFireworksInterval();
+            int timeLeft = DeathChestPro.getRemoveChestAfter();
+            int nextFireworkIn = DeathChestPro.getFireworkInterval();
 
             @Override
             public void run() {
@@ -132,11 +148,11 @@ public class DeathChest {
                     if (hologram != null) {
                         updateHologram(timeLeft);
                     }
-                    if (DeathChestPro.getInstance().isDeathchestFireworks() && hologram != null) {
+                    if (DeathChestPro.isDeathchestFireworks() && hologram != null) {
                         nextFireworkIn--;
                         if (nextFireworkIn == 0) {
                             FireworkUtil.spawnRandomFirework(hologram.getLocation());
-                            nextFireworkIn = DeathChestPro.getInstance().getFireworksInterval();
+                            nextFireworkIn = DeathChestPro.getFireworkInterval();
                         }
                     }
                 }
@@ -146,11 +162,11 @@ public class DeathChest {
     }
 
     private void updateHologram(int timeLeft) {
-        for (int i = 0; i < DeathChestPro.getInstance().getHologramLines().size(); i++) {
-            String line = DeathChestPro.getInstance().getHologramLines().get(i);
+        for (int i = 0; i < DeathChestPro.getHologramLines().size(); i++) {
+            String line = DeathChestPro.getHologramLines().get(i);
             if (line.contains("%timeleft%")) {
                 int lineNumber = i;
-                if (DeathChestPro.getInstance().isDisplayPlayerHead()) {
+                if (DeathChestPro.isDisplayPlayerHead()) {
                     lineNumber += 1;
                 }
                 hologram.removeLine(lineNumber);
@@ -164,7 +180,7 @@ public class DeathChest {
     }
 
     public void removeChests() {
-        if (DeathChestPro.getInstance().isDropItemsAfterExpire()) {
+        if (DeathChestPro.isDropItemsAfterExpire()) {
             for (ItemStack item : chestInventory.getContents()) {
                 if (item != null) {
                     location.getWorld().dropItemNaturally(location, item);
@@ -200,7 +216,7 @@ public class DeathChest {
         if (this.location.getBlock().getType() != CompMaterial.CHEST.getMaterial()) {
             this.location.getBlock().setType(CompMaterial.CHEST.getMaterial());
         }
-        if (DeathChestPro.getInstance().isClickableMessage()) {
+        if (DeathChestPro.isClickableMessage()) {
             BaseComponent[] msg = TextComponent.fromLegacyText(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
             for (BaseComponent bc : msg) {
                 bc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Message.DEATHCHEST_LOCATED_HOVER.getMessage()).create()));
@@ -210,7 +226,7 @@ public class DeathChest {
         } else {
             p.sendMessage(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
         }
-        p.sendMessage(Message.DEATHCHEST_WILL_DISAPPEAR.getChatMessage().replaceAll("%time%", String.valueOf(DeathChestPro.getInstance().getRemoveChestAfter())));
+        p.sendMessage(Message.DEATHCHEST_WILL_DISAPPEAR.getChatMessage().replaceAll("%time%", String.valueOf(DeathChestPro.getRemoveChestAfter())));
         this.announced = true;
     }
 

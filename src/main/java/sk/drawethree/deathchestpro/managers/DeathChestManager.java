@@ -25,7 +25,6 @@ import java.util.UUID;
 public class DeathChestManager {
 
     private static DeathChestManager ourInstance = new DeathChestManager();
-
     private HashMap<UUID, ArrayList<DeathChest>> deathChests;
     private HashMap<UUID, DeathChest> deathChestsByUUID;
     private HashMap<Player, OfflinePlayer> openedInventories;
@@ -39,14 +38,6 @@ public class DeathChestManager {
 
     public static DeathChestManager getInstance() {
         return ourInstance;
-    }
-
-    public HashMap<Player, OfflinePlayer> getOpenedInventories() {
-        return openedInventories;
-    }
-
-    public HashMap<UUID, ArrayList<DeathChest>> getDeathChests() {
-        return deathChests;
     }
 
     public DeathChest getDeathChest(ItemStack item) {
@@ -164,6 +155,7 @@ public class DeathChestManager {
         if (deathChests.get(p.getUniqueId()) == null) {
             deathChests.put(p.getUniqueId(), new ArrayList<>());
         }
+
         ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
         DeathChest dc = new DeathChest(p, drops);
         currentChests.add(dc);
@@ -174,22 +166,22 @@ public class DeathChestManager {
 
     private boolean canPlace(Player p) {
         //Residence Check
-        if (DeathChestPro.getInstance().isUseResidence()) {
+        if (DeathChestPro.isUseResidence()) {
             final ClaimedResidence res = Residence.getInstance().getResidenceManager().getByLoc(p);
             if (res != null && !res.getPermissions().playerHas(p, Flags.build, true)) {
                 return false;
             }
         }
         //WorldGuard Check
-        if (DeathChestPro.getInstance().isUseWorldGuard()) {
+        if (DeathChestPro.isUseWorldGuard()) {
             try {
                 for (ProtectedRegion region : WorldGuardPlugin.inst().getRegionManager(p.getWorld()).getApplicableRegions(p.getLocation())) {
-                    if (DeathChestPro.getInstance().getDisabledRegions().contains(region.getId())) {
+                    if (DeathChestPro.getDisabledRegions().contains(region.getId())) {
                         return false;
                     }
                 }
             } catch (Throwable t) {
-                Bukkit.getConsoleSender().sendMessage("§7(§cWarn§7) §eDeathChestPro " + DeathChestPro.getInstance().getDescription().getVersion() + " §8>> §cYou are using not supported version of WorldGuard ! Please use any below version 7.0.0.");
+                DeathChestPro.warn("You are using not supported version of WorldGuard ! Please use any below version 7.0.0.");
                 return true;
             }
         }
@@ -200,7 +192,11 @@ public class DeathChestManager {
         return deathChestsByUUID.get(UUID.fromString(id));
     }
 
-    public HashMap<UUID, DeathChest> getDeathChestsByUUID() {
-        return deathChestsByUUID;
+    public void removeFromOpenedInventories(Player p) {
+        openedInventories.remove(p);
+    }
+
+    public OfflinePlayer getOpenedInventory(Player p) {
+        return openedInventories.get(p);
     }
 }
