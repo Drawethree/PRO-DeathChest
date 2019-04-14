@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import sk.drawethree.deathchestpro.commands.DeathChestCommand;
 import sk.drawethree.deathchestpro.listeners.DeathChestListener;
+import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.managers.FileManager;
 import sk.drawethree.deathchestpro.utils.Items;
 import sk.drawethree.deathchestpro.utils.Message;
@@ -34,6 +35,7 @@ public final class DeathChestPro extends JavaPlugin {
     private static boolean dropItemsAfterExpire = false;
     private static boolean clickableMessage = false;
     private static boolean lavaProtection = false;
+    private static boolean saveXP = false;
 
     private static SimpleDateFormat deathDateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
     private static List<String> hologramLines = new ArrayList<>();
@@ -51,6 +53,8 @@ public final class DeathChestPro extends JavaPlugin {
         setupVariables();
 
         hook();
+
+        DeathChestManager.getInstance().loadDeathChests();
 
         getServer().getPluginManager().registerEvents(new DeathChestListener(), this);
         getCommand("deathchest").setExecutor(new DeathChestCommand());
@@ -107,6 +111,7 @@ public final class DeathChestPro extends JavaPlugin {
             deathDateFormat = new SimpleDateFormat(fileManager.getConfig("config.yml").get().getString("hologram.death_date_format"));
             deathChestInvTitle = ChatColor.translateAlternateColorCodes('&', fileManager.getConfig("config.yml").get().getString("deathchest_inv_title"));
             lavaProtection = fileManager.getConfig("config.yml").get().getBoolean("lava_protection");
+            saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
         }
     }
 
@@ -153,7 +158,7 @@ public final class DeathChestPro extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        DeathChestManager.getInstance().saveDeathChests();
     }
 
     public static List<String> getDisabledworlds() {
@@ -230,5 +235,9 @@ public final class DeathChestPro extends JavaPlugin {
 
     public static boolean isLavaProtection() {
         return lavaProtection;
+    }
+
+    public static boolean isSaveXP() {
+        return saveXP;
     }
 }

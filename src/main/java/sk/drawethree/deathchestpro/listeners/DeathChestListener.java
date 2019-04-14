@@ -93,7 +93,7 @@ public class DeathChestListener implements Listener {
         if (chests != null) {
             for (DeathChest dc : chests) {
                 if (!dc.isAnnounced()) {
-                    dc.announce(p);
+                    dc.announce();
                     dc.runRemoveTask();
                 }
             }
@@ -106,7 +106,7 @@ public class DeathChestListener implements Listener {
             final Player p = e.getPlayer();
             final DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(e.getBlock().getLocation());
             if (dc != null) {
-                if (!DeathChestPro.isAllowBreakChests() || (dc.isLocked() && !dc.getPlayer().getUniqueId().equals(p.getUniqueId()))) {
+                if (!DeathChestPro.isAllowBreakChests() || (dc.isLocked() && !dc.getOfflinePlayer().getUniqueId().equals(p.getUniqueId()))) {
                     e.setCancelled(true);
                     p.sendMessage(Message.DEATHCHEST_CANNOT_BREAK.getChatMessage());
                 } else {
@@ -154,7 +154,7 @@ public class DeathChestListener implements Listener {
             DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(b.getLocation());
             if (dc != null) {
                 if (dc.isLocked()) {
-                    if (!dc.getPlayer().getUniqueId().equals(p.getUniqueId()) && !p.hasPermission("deathchestpro.see")) {
+                    if (!dc.getOfflinePlayer().getUniqueId().equals(p.getUniqueId()) && !p.hasPermission("deathchestpro.see")) {
                         e.setCancelled(true);
                         p.sendMessage(Message.DEATHCHEST_CANNOT_OPEN.getChatMessage());
                         return;

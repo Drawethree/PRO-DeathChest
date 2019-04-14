@@ -6,6 +6,7 @@ import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -25,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class DeathChest {
 
     private UUID chestUUID;
-    private Player player;
+    private OfflinePlayer player;
     private Hologram hologram;
     private Location location;
     private BlockState replacedBlock;
@@ -34,6 +35,7 @@ public class DeathChest {
     private ItemStack listItem;
     private boolean announced;
     private boolean locked;
+    private int timeLeft;
 
     public DeathChest(Player p, List<ItemStack> items) {
         this.chestUUID = UUID.randomUUID();
@@ -42,7 +44,20 @@ public class DeathChest {
         this.setupChest(p.getLocation(), items);
         this.setupHologram();
         this.listItem = createListItem();
+        this.timeLeft = DeathChestPro.getRemoveChestAfter();
         this.announced = false;
+    }
+
+    public DeathChest(UUID chestUuid, OfflinePlayer p, Location loc, boolean locked, int timeLeft, List<ItemStack> items) {
+        this.chestUUID = chestUuid;
+        this.player = p;
+        this.locked = locked;
+        this.setupChest(loc,items);
+        this.setupHologram();
+        this.listItem = createListItem();
+        this.timeLeft = timeLeft;
+        this.announce();
+        this.runRemoveTask();
     }
 
     private ItemStack createListItem() {
@@ -87,36 +102,44 @@ public class DeathChest {
     }
 
     private void setupChest(Location loc, List<ItemStack> items) {
+
         if (DeathChestPro.isSpawnChestOnHighestBlock() || loc.getY() <= 0) {
             loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
         }
 
+
         this.replacedBlock = loc.getBlock().getState();
 
+        if(this.replacedBlock.getType() == CompMaterial.CHEST.getMaterial()) {
+            this.replacedBlock.setType(Material.AIR);
+        }
+
         //Build glass cage if lava protection is on
-        if(loc.getBlock().getType() == CompMaterial.LAVA.getMaterial() && DeathChestPro.isLavaProtection()) {
+        if (loc.getBlock().getType() == CompMaterial.LAVA.getMaterial() && DeathChestPro.isLavaProtection()) {
             this.buildProtectionCage(loc);
         }
 
         loc.getBlock().setType(CompMaterial.CHEST.getMaterial());
         this.location = loc.getBlock().getLocation();
+        this.location = loc.getBlock().getLocation();
 
         this.chestInventory = Bukkit.createInventory(null, items.size() > 27 ? 54 : 27, DeathChestPro.getDeathChestInvTitle().replaceAll("%player%", player.getName()));
         for (ItemStack i : items) {
+            if(i == null) continue;
             this.chestInventory.addItem(i);
         }
     }
 
     private void buildProtectionCage(Location loc) {
-        loc.clone().add(1,0,0).getBlock().setType(CompMaterial.GLASS.getMaterial());
-        loc.clone().add(-1,0,0).getBlock().setType(CompMaterial.GLASS.getMaterial());
-        loc.clone().add(0,0,1).getBlock().setType(CompMaterial.GLASS.getMaterial());
-        loc.clone().add(0,0,-1).getBlock().setType(CompMaterial.GLASS.getMaterial());
-        loc.clone().add(0,1,0).getBlock().setType(CompMaterial.GLASS.getMaterial());
-        loc.clone().add(0,-1,0).getBlock().setType(CompMaterial.GLASS.getMaterial());
+        loc.clone().add(1, 0, 0).getBlock().setType(CompMaterial.GLASS.getMaterial());
+        loc.clone().add(-1, 0, 0).getBlock().setType(CompMaterial.GLASS.getMaterial());
+        loc.clone().add(0, 0, 1).getBlock().setType(CompMaterial.GLASS.getMaterial());
+        loc.clone().add(0, 0, -1).getBlock().setType(CompMaterial.GLASS.getMaterial());
+        loc.clone().add(0, 1, 0).getBlock().setType(CompMaterial.GLASS.getMaterial());
+        loc.clone().add(0, -1, 0).getBlock().setType(CompMaterial.GLASS.getMaterial());
     }
 
-    public Player getPlayer() {
+    public OfflinePlayer getOfflinePlayer() {
         return player;
     }
 
@@ -134,8 +157,6 @@ public class DeathChest {
 
     public void runRemoveTask() {
         this.removeTask = new BukkitRunnable() {
-
-            int timeLeft = DeathChestPro.getRemoveChestAfter();
             int nextFireworkIn = DeathChestPro.getFireworkInterval();
 
             @Override
@@ -203,7 +224,7 @@ public class DeathChest {
         this.removeChests();
 
         if (this.player.isOnline()) {
-            this.player.sendMessage(Message.DEATHCHEST_DISAPPEARED.getChatMessage());
+            this.player.getPlayer().sendMessage(Message.DEATHCHEST_DISAPPEARED.getChatMessage());
         }
         DeathChestManager.getInstance().removeDeathChest(this);
     }
@@ -212,7 +233,12 @@ public class DeathChest {
         return announced;
     }
 
-    public void announce(Player p) {
+    public void announce() {
+
+        if (!this.player.isOnline()) {
+            return;
+        }
+
         if (this.location.getBlock().getType() != CompMaterial.CHEST.getMaterial()) {
             this.location.getBlock().setType(CompMaterial.CHEST.getMaterial());
         }
@@ -222,11 +248,11 @@ public class DeathChest {
                 bc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Message.DEATHCHEST_LOCATED_HOVER.getMessage()).create()));
                 bc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/dc teleport " + chestUUID.toString()));
             }
-            player.spigot().sendMessage(msg);
+            player.getPlayer().spigot().sendMessage(msg);
         } else {
-            p.sendMessage(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
+            player.getPlayer().sendMessage(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
         }
-        p.sendMessage(Message.DEATHCHEST_WILL_DISAPPEAR.getChatMessage().replaceAll("%time%", String.valueOf(DeathChestPro.getRemoveChestAfter())));
+        player.getPlayer().sendMessage(Message.DEATHCHEST_WILL_DISAPPEAR.getChatMessage().replaceAll("%time%", String.valueOf(this.timeLeft)));
         this.announced = true;
     }
 
@@ -276,5 +302,18 @@ public class DeathChest {
 
     public Location getLocation() {
         return location;
+    }
+
+    public void save() {
+        DeathChestPro.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".location", this.location.serialize());
+        DeathChestPro.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".player", this.player.getUniqueId().toString());
+        DeathChestPro.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".items", this.chestInventory.getContents());
+        DeathChestPro.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".locked", this.locked);
+        DeathChestPro.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".timeleft", this.timeLeft);
+        DeathChestPro.getFileManager().getConfig("deathchests.yml").save();
+    }
+
+    public Player getPlayer() {
+        return player.getPlayer();
     }
 }

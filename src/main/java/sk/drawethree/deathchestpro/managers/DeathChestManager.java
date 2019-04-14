@@ -51,6 +51,26 @@ public class DeathChestManager {
         return null;
     }
 
+    public void loadDeathChests() {
+        for (String key : DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getConfigurationSection("chests").getKeys(false)) {
+            UUID chestUuid = UUID.fromString(key);
+            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getString("chests." + key + ".player")));
+            boolean locked = DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getBoolean("chests." + key + ".locked");
+            int timeLeft = DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getInt("chests." + key + ".timeleft");
+            Location loc = Location.deserialize(DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getConfigurationSection("chests." + key + ".location").getValues(true));
+            List<ItemStack> items = (ArrayList<ItemStack>) DeathChestPro.getFileManager().getConfig("deathchests.yml").get().get("chests." + key + ".items");
+            createDeathChest(chestUuid, player, locked, loc, timeLeft,items);
+        }
+
+    }
+
+
+    public void saveDeathChests() {
+        for (DeathChest dc : this.deathChestsByUUID.values()) {
+            dc.save();
+        }
+    }
+
     public ArrayList<DeathChest> getPlayerDeathChests(OfflinePlayer p) {
         return deathChests.get(p.getUniqueId());
     }
@@ -75,7 +95,7 @@ public class DeathChestManager {
                 inv.setItem(53, Items.NEXT_ITEM.getItemStack());
                 openTo.playSound(openTo.getLocation(), CompSound.ORB_PICKUP.getSound(), 1, 1);
                 openTo.openInventory(inv);
-                openedInventories.put(openTo,whoseChests);
+                openedInventories.put(openTo, whoseChests);
             }
         }
     }
@@ -84,7 +104,7 @@ public class DeathChestManager {
         if (openedInventories.containsKey(p)) {
             int page = getPageNumber(p.getOpenInventory().getTopInventory());
             p.closeInventory();
-            openDeathchestList(openedInventories.get(p),p, page);
+            openDeathchestList(openedInventories.get(p), p, page);
         }
     }
 
@@ -93,14 +113,15 @@ public class DeathChestManager {
     }
 
     public void removeDeathChest(DeathChest dc) {
-        ArrayList<DeathChest> list = deathChests.get(dc.getPlayer().getUniqueId());
+        ArrayList<DeathChest> list = deathChests.get(dc.getOfflinePlayer().getUniqueId());
         list.remove(dc);
         if (list.isEmpty()) {
-            deathChests.remove(dc.getPlayer().getUniqueId());
+            deathChests.remove(dc.getOfflinePlayer().getUniqueId());
         } else {
-            deathChests.put(dc.getPlayer().getUniqueId(), list);
+            deathChests.put(dc.getOfflinePlayer().getUniqueId(), list);
         }
         deathChestsByUUID.remove(dc.getChestUUID());
+        DeathChestPro.getFileManager().getConfig("deathchests.yml").set("chests." + dc.getChestUUID().toString(), null).save();
         refreshDeathChestInventory(dc.getPlayer());
     }
 
@@ -158,6 +179,19 @@ public class DeathChestManager {
 
         ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
         DeathChest dc = new DeathChest(p, drops);
+        currentChests.add(dc);
+        deathChests.put(p.getUniqueId(), currentChests);
+        deathChestsByUUID.put(dc.getChestUUID(), dc);
+        return true;
+    }
+
+    private boolean createDeathChest(UUID chestUuid, OfflinePlayer p, boolean locked, Location loc, int timeLeft, List<ItemStack> items) {
+        if (deathChests.get(p.getUniqueId()) == null) {
+            deathChests.put(p.getUniqueId(), new ArrayList<>());
+        }
+
+        ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
+        DeathChest dc = new DeathChest(chestUuid, p, loc, locked, timeLeft, items);
         currentChests.add(dc);
         deathChests.put(p.getUniqueId(), currentChests);
         deathChestsByUUID.put(dc.getChestUUID(), dc);

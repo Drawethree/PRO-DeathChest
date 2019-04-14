@@ -1,8 +1,6 @@
 package sk.drawethree.deathchestpro.utils;
 
-import com.bekvon.bukkit.residence.commands.list;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -10,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import sk.drawethree.deathchestpro.DeathChestPro;
-import sk.drawethree.deathchestpro.chest.DeathChest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,9 +72,11 @@ public class ItemUtil {
 
 
     public static List<String> convertLore(List<String> list) {
-        List<String> lore = new ArrayList<String>();
-        for (int i = 0; i < list.size(); i++) {
-            lore.add(ChatColor.translateAlternateColorCodes('&', (String) list.get(i)));
+        List<String> lore = new ArrayList<>();
+        if (list != null) {
+            for (int i = 0; i < list.size(); i++) {
+                lore.add(ChatColor.translateAlternateColorCodes('&', list.get(i)));
+            }
         }
         return lore;
     }
