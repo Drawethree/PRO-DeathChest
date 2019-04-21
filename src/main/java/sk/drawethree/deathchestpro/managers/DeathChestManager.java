@@ -3,7 +3,7 @@ package sk.drawethree.deathchestpro.managers;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,9 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
-import sk.drawethree.deathchestpro.utils.CompSound;
-import sk.drawethree.deathchestpro.utils.Items;
-import sk.drawethree.deathchestpro.utils.Message;
+import sk.drawethree.deathchestpro.utils.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,7 +57,7 @@ public class DeathChestManager {
             int timeLeft = DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getInt("chests." + key + ".timeleft");
             Location loc = Location.deserialize(DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getConfigurationSection("chests." + key + ".location").getValues(true));
             List<ItemStack> items = (ArrayList<ItemStack>) DeathChestPro.getFileManager().getConfig("deathchests.yml").get().get("chests." + key + ".items");
-            createDeathChest(chestUuid, player, locked, loc, timeLeft,items);
+            createDeathChest(chestUuid, player, locked, loc, timeLeft, items);
         }
 
     }
@@ -206,16 +204,25 @@ public class DeathChestManager {
                 return false;
             }
         }
+
         //WorldGuard Check
         if (DeathChestPro.isUseWorldGuard()) {
+            ApplicableRegionSet regionSet;
+
             try {
-                for (ProtectedRegion region : WorldGuardPlugin.inst().getRegionManager(p.getWorld()).getApplicableRegions(p.getLocation())) {
-                    if (DeathChestPro.getDisabledRegions().contains(region.getId())) {
-                        return false;
-                    }
-                }
+                //Try getting 1.8 regions
+                regionSet = WorldGuard_1_8.getRegions(p.getLocation());
             } catch (Throwable t) {
-                DeathChestPro.warn("You are using not supported version of WorldGuard ! Please use any below version 7.0.0.");
+                //Then get 1.13 regions
+                regionSet = WorldGuard_1_13.getRegions(p.getLocation());
+            }
+
+            if (regionSet == null) return true;
+
+            for (ProtectedRegion region : regionSet) {
+                if (DeathChestPro.getDisabledRegions().contains(region.getId())) {
+                    return false;
+                }
                 return true;
             }
         }

@@ -9,6 +9,7 @@ import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.managers.FileManager;
 import sk.drawethree.deathchestpro.utils.Items;
 import sk.drawethree.deathchestpro.utils.Message;
+import sk.drawethree.deathchestpro.utils.Metrics;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public final class DeathChestPro extends JavaPlugin {
     private static boolean useHolograms = false;
     private static boolean useDeathFeathers = false;
     private static boolean useWorldGuard = false;
+    private static boolean useGriefPrevention = false;
 
     private static boolean allowBreakChests = false;
     private static boolean displayPlayerHead = true;
@@ -35,7 +37,8 @@ public final class DeathChestPro extends JavaPlugin {
     private static boolean dropItemsAfterExpire = false;
     private static boolean clickableMessage = false;
     private static boolean lavaProtection = false;
-    private static boolean saveXP = false;
+    private static boolean voidSpawning = false;
+    //private static boolean saveXP = false;
 
     private static SimpleDateFormat deathDateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
     private static List<String> hologramLines = new ArrayList<>();
@@ -66,10 +69,15 @@ public final class DeathChestPro extends JavaPlugin {
         useResidence = getServer().getPluginManager().isPluginEnabled("Residence");
         useHolograms = getServer().getPluginManager().isPluginEnabled("HolographicDisplays");
         useWorldGuard = getServer().getPluginManager().isPluginEnabled("WorldGuard");
+        useGriefPrevention = getServer().getPluginManager().isPluginEnabled("GriefPrevention");
         //this.useDeathFeathers = getServer().getPluginManager().isPluginEnabled("DeathFeathers");
 
         if (useResidence) {
             info("Successfully hooked into Residence !");
+        }
+
+        if(useGriefPrevention) {
+            info("Successfully hooked into GriefPrevention !");
         }
 
         if (useWorldGuard) {
@@ -85,6 +93,8 @@ public final class DeathChestPro extends JavaPlugin {
             warn("Holograms plugin not found !");
             warn("Holograms will not be used !");
         }
+
+        new Metrics(this);
     }
 
     private static void setupVariables() {
@@ -111,7 +121,8 @@ public final class DeathChestPro extends JavaPlugin {
             deathDateFormat = new SimpleDateFormat(fileManager.getConfig("config.yml").get().getString("hologram.death_date_format"));
             deathChestInvTitle = ChatColor.translateAlternateColorCodes('&', fileManager.getConfig("config.yml").get().getString("deathchest_inv_title"));
             lavaProtection = fileManager.getConfig("config.yml").get().getBoolean("lava_protection");
-            saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
+            voidSpawning = fileManager.getConfig("config.yml").get().getBoolean("void_spawning_chest");
+            //saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
         }
     }
 
@@ -237,7 +248,16 @@ public final class DeathChestPro extends JavaPlugin {
         return lavaProtection;
     }
 
-    public static boolean isSaveXP() {
+
+    /*public static boolean isSaveXP() {
         return saveXP;
+    }*/
+
+    public static boolean isUseGriefPrevention() {
+        return useGriefPrevention;
+    }
+
+    public static boolean isVoidSpawning() {
+        return voidSpawning;
     }
 }

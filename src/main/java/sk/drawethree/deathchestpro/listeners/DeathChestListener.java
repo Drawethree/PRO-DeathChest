@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -27,6 +28,7 @@ import sk.drawethree.deathchestpro.utils.CompSound;
 import sk.drawethree.deathchestpro.utils.Items;
 import sk.drawethree.deathchestpro.utils.Message;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -68,6 +70,11 @@ public class DeathChestListener implements Listener {
     public void onPlayerDeath(final PlayerDeathEvent e) {
         final Player p = e.getEntity();
         if (!DeathChestPro.getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
+
+            if(e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID && !DeathChestPro.isVoidSpawning()) {
+                return;
+            }
+
             if (DeathChestManager.getInstance().createDeathChest(p, e.getDrops())) {
                 e.setKeepInventory(true);
                 p.getInventory().setArmorContents(null);
@@ -141,8 +148,9 @@ public class DeathChestListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onTryingOpen(final PlayerInteractEvent e) {
+
         if ((e.getClickedBlock() == null) || (!(e.getClickedBlock().getState() instanceof Chest))) {
             return;
         }
