@@ -3,14 +3,14 @@ package sk.drawethree.deathchestpro.managers;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.codemc.worldguardwrapper.WorldGuardWrapper;
+import org.codemc.worldguardwrapper.region.IWrappedRegion;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
 import sk.drawethree.deathchestpro.utils.*;
@@ -207,19 +207,7 @@ public class DeathChestManager {
 
         //WorldGuard Check
         if (DeathChestPro.isUseWorldGuard()) {
-            ApplicableRegionSet regionSet;
-
-            try {
-                //Try getting 1.8 regions
-                regionSet = WorldGuard_1_8.getRegions(p.getLocation());
-            } catch (Throwable t) {
-                //Then get 1.13 regions
-                regionSet = WorldGuard_1_13.getRegions(p.getLocation());
-            }
-
-            if (regionSet == null) return true;
-
-            for (ProtectedRegion region : regionSet) {
+            for (IWrappedRegion region : WorldGuardWrapper.getInstance().getRegions(p.getLocation())) {
                 if (DeathChestPro.getDisabledRegions().contains(region.getId())) {
                     return false;
                 }

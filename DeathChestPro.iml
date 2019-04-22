@@ -35,7 +35,24 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.sainttx.holograms:holograms-api:2.0.0-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.3.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.github.TechFortress:GriefPrevention:16.7.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="WorldGuard 1.13.x" level="project" />
-    <orderEntry type="library" name="WorldGuard 6.2.2" level="project" />
+    <orderEntry type="module-library">
+      <library name="Maven: HolographicDisplays:HolographicDisplays:1.0">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/HolographicDisplays.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: Residence:Residence:1.0">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/Residence.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="Maven: org.codemc.worldguardwrapper:worldguardwrapper:1.1.4-SNAPSHOT" level="project" />
   </component>
 </module>
