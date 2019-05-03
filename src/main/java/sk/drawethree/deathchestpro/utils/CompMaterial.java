@@ -877,7 +877,7 @@ public enum CompMaterial {
     /**
      * Returns the correct Material representation for your MC version.
      */
-    private final Material material;
+    private Material material;
 
     /**
      * Holds data value for legacy material name.
@@ -893,13 +893,13 @@ public enum CompMaterial {
         try {
             this.material = Material.valueOf(VersionResolver.isAtLeast1_13() ? name() : parseLegacyName(legacyName));
         } catch (final IllegalArgumentException t) {
-            t.printStackTrace();
-            throw new RuntimeException("Malfunction loading compatible material " + this + " (see above)");
+            this.material = null;
         }
     }
 
     // Handles Minecraft below 1.12 and replaces non-existing Materials to STONE.
     private static String parseLegacyName(String name) {
+
         try {
             return Material.valueOf(name).toString();
         } catch (final IllegalArgumentException ex) {

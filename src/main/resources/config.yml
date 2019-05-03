@@ -1,5 +1,6 @@
 config_version: 1
 remove_chest_time: 120
+unlock_chest_after: -1
 allow_break_chests: false
 drop_items_after_expire: false
 lava_protection: true

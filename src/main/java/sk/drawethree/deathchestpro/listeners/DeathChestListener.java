@@ -69,6 +69,7 @@ public class DeathChestListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDeath(final PlayerDeathEvent e) {
         final Player p = e.getEntity();
+
         if (!DeathChestPro.getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
 
             if(e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID && !DeathChestPro.isVoidSpawning()) {
@@ -126,14 +127,14 @@ public class DeathChestListener implements Listener {
 
     @EventHandler
     public void onInvClick(final InventoryClickEvent e) {
-        if (!(e.getWhoClicked() instanceof Player) || e.getInventory() == null || !e.getInventory().getTitle().contains(Message.DEATHCHEST_LIST_INV_TITLE.getMessage())) {
+        if (!(e.getWhoClicked() instanceof Player) || e.getInventory() == null || !e.getView().getTitle().contains(Message.DEATHCHEST_LIST_INV_TITLE.getMessage())) {
             return;
         }
 
         final Player p = (Player) e.getWhoClicked();
 
         if (e.getCurrentItem() != null && e.getCurrentItem().getType() != CompMaterial.AIR.getMaterial()) {
-            int page = (int) e.getInventory().getTitle().charAt(e.getInventory().getTitle().length() - 1);
+            int page = (int) e.getView().getTitle().charAt(e.getView().getTitle().length() - 1);
             final DeathChest clickedChest = DeathChestManager.getInstance().getDeathChest(e.getCurrentItem());
             if (clickedChest != null) {
                 clickedChest.teleportPlayer(p);

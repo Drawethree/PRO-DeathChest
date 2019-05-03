@@ -44,7 +44,12 @@ public final class DeathChestPro extends JavaPlugin {
     private static List<String> hologramLines = new ArrayList<>();
     private static String deathChestInvTitle = "&7%player%'s DeathChest";
     private static int fireworkInterval = 5;
+    private static int unlockChestAfter = 0;
     private static int removeChestAfter = 20;
+
+    public static int getUnlockChestAfter() {
+        return unlockChestAfter;
+    }
 
     @Override
     public void onEnable() {
@@ -122,6 +127,7 @@ public final class DeathChestPro extends JavaPlugin {
             deathChestInvTitle = ChatColor.translateAlternateColorCodes('&', fileManager.getConfig("config.yml").get().getString("deathchest_inv_title"));
             lavaProtection = fileManager.getConfig("config.yml").get().getBoolean("lava_protection");
             voidSpawning = fileManager.getConfig("config.yml").get().getBoolean("void_spawning_chest");
+            unlockChestAfter = fileManager.getConfig("config.yml").get().getInt("unlock_chest_after");
             //saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
         }
     }

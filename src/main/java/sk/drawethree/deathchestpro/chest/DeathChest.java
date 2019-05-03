@@ -158,17 +158,25 @@ public class DeathChest {
     public void runRemoveTask() {
         this.removeTask = new BukkitRunnable() {
             int nextFireworkIn = DeathChestPro.getFireworkInterval();
+            int unlockChestAfter = DeathChestPro.getUnlockChestAfter();
 
             @Override
             public void run() {
+
+                if(unlockChestAfter == 0) {
+                    locked = false;
+                }
+
                 if (timeLeft == 0) {
                     removeDeathChest();
                     cancel();
                 } else {
                     timeLeft--;
+
                     if (hologram != null) {
                         updateHologram(timeLeft);
                     }
+
                     if (DeathChestPro.isDeathchestFireworks() && hologram != null) {
                         nextFireworkIn--;
                         if (nextFireworkIn == 0) {
@@ -176,6 +184,11 @@ public class DeathChest {
                             nextFireworkIn = DeathChestPro.getFireworkInterval();
                         }
                     }
+
+                    if(DeathChestPro.getUnlockChestAfter() >= 0) {
+                        unlockChestAfter--;
+                    }
+
                 }
             }
         }.runTaskTimer(DeathChestPro.getInstance(), 20L, 20L);
@@ -242,6 +255,7 @@ public class DeathChest {
         if (this.location.getBlock().getType() != CompMaterial.CHEST.getMaterial()) {
             this.location.getBlock().setType(CompMaterial.CHEST.getMaterial());
         }
+
         if (DeathChestPro.isClickableMessage()) {
             BaseComponent[] msg = TextComponent.fromLegacyText(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
             for (BaseComponent bc : msg) {

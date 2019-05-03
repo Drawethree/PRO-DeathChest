@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.region.IWrappedRegion;
@@ -100,13 +101,13 @@ public class DeathChestManager {
 
     private void refreshDeathChestInventory(Player p) {
         if (openedInventories.containsKey(p)) {
-            int page = getPageNumber(p.getOpenInventory().getTopInventory());
+            int page = getPageNumber(p.getOpenInventory());
             p.closeInventory();
             openDeathchestList(openedInventories.get(p), p, page);
         }
     }
 
-    public int getPageNumber(Inventory inv) {
+    public int getPageNumber(InventoryView inv) {
         return Integer.parseInt(inv.getTitle().replaceAll(Message.DEATHCHEST_LIST_INV_TITLE.getMessage(), "").replaceAll(" ", ""));
     }
 
