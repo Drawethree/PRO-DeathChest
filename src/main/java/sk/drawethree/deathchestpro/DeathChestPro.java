@@ -25,7 +25,6 @@ public final class DeathChestPro extends JavaPlugin {
     private static List<String> disabledRegions = new ArrayList<>();
 
     private static boolean useResidence = false;
-    private static boolean useHolograms = false;
     private static boolean useDeathFeathers = false;
     private static boolean useWorldGuard = false;
     private static boolean useGriefPrevention = false;
@@ -72,7 +71,6 @@ public final class DeathChestPro extends JavaPlugin {
 
     private void hook() {
         useResidence = getServer().getPluginManager().isPluginEnabled("Residence");
-        useHolograms = getServer().getPluginManager().isPluginEnabled("HolographicDisplays");
         useWorldGuard = getServer().getPluginManager().isPluginEnabled("WorldGuard");
         useGriefPrevention = getServer().getPluginManager().isPluginEnabled("GriefPrevention");
         //this.useDeathFeathers = getServer().getPluginManager().isPluginEnabled("DeathFeathers");
@@ -81,7 +79,7 @@ public final class DeathChestPro extends JavaPlugin {
             info("Successfully hooked into Residence !");
         }
 
-        if(useGriefPrevention) {
+        if (useGriefPrevention) {
             info("Successfully hooked into GriefPrevention !");
         }
 
@@ -92,12 +90,6 @@ public final class DeathChestPro extends JavaPlugin {
         if (useDeathFeathers) {
             info("Successfully hooked into DeathFeathers !");
         }
-        if (useHolograms) {
-            info("Successfully hooked into HolographicDisplays !");
-        } else {
-            warn("Holograms plugin not found !");
-            warn("Holograms will not be used !");
-        }
 
         new Metrics(this);
     }
@@ -106,12 +98,12 @@ public final class DeathChestPro extends JavaPlugin {
 
         int configVersion = fileManager.getConfig("config.yml").get().getInt("config_version");
 
-        if(configVersion > DeathChestPro.CONFIG_VERSION) {
+        if (configVersion > DeathChestPro.CONFIG_VERSION) {
             warn("Config version %d is invalid ! Loading default config values.", configVersion);
             return;
         }
 
-        if(configVersion == 1) {
+        if (configVersion == 1) {
             allowBreakChests = fileManager.getConfig("config.yml").get().getBoolean("allow_break_chests");
             removeChestAfter = fileManager.getConfig("config.yml").get().getInt("remove_chest_time");
             disabledworlds = fileManager.getConfig("config.yml").get().getStringList("disabled_worlds");
@@ -133,11 +125,11 @@ public final class DeathChestPro extends JavaPlugin {
     }
 
     public static void warn(String message, Object... placeholders) {
-        Bukkit.getConsoleSender().sendMessage("§7(§4!§7) §cDeathChestPro " + getInstance().getDescription().getVersion() + " §8>> §c" + String.format(message,placeholders));
+        Bukkit.getConsoleSender().sendMessage("§7(§4!§7) §cDeathChestPro " + getInstance().getDescription().getVersion() + " §8>> §c" + String.format(message, placeholders));
     }
 
     public static void info(String message, Object... placeholders) {
-        Bukkit.getConsoleSender().sendMessage("§7(§aInfo§7) §aDeathChestPro " + getInstance().getDescription().getVersion() + " §8>> §a" + String.format(message,placeholders));
+        Bukkit.getConsoleSender().sendMessage("§7(§aInfo§7) §aDeathChestPro " + getInstance().getDescription().getVersion() + " §8>> §a" + String.format(message, placeholders));
     }
 
     private void approveConfigChanges() {
@@ -188,10 +180,6 @@ public final class DeathChestPro extends JavaPlugin {
 
     public static boolean isAllowBreakChests() {
         return allowBreakChests;
-    }
-
-    public static boolean isUseHolograms() {
-        return useHolograms;
     }
 
     public static boolean isUseWorldGuard() {

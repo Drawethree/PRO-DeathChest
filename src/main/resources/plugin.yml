@@ -1,9 +1,9 @@
 main: sk.drawethree.deathchestpro.DeathChestPro
-version: 2.4.6
+version: 2.4.8
 api-version: 1.13
 name: DeathChestPro
 author: TheRealDrawe
-softdepend: [HolographicDisplays, Residence, DeathFeathers, WorldGuard, GriefPrevention, WorldEdit, FastAsyncWorldEdit]
+softdepend: [Residence, DeathFeathers, WorldGuard, GriefPrevention, WorldEdit, FastAsyncWorldEdit]
 permissions:
   deathchestpro.*:
     description: All DeathChestPro permissions

@@ -1,7 +1,5 @@
 package sk.drawethree.deathchestpro.chest;
 
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,16 +16,14 @@ import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.utils.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class DeathChest {
 
     private UUID chestUUID;
     private OfflinePlayer player;
-    private Hologram hologram;
+    private DeathChestHologram hologram;
     private Location location;
     private BlockState replacedBlock;
     private Inventory chestInventory;
@@ -52,7 +48,7 @@ public class DeathChest {
         this.chestUUID = chestUuid;
         this.player = p;
         this.locked = locked;
-        this.setupChest(loc,items);
+        this.setupChest(loc, items);
         this.setupHologram();
         this.listItem = createListItem();
         this.timeLeft = timeLeft;
@@ -79,26 +75,12 @@ public class DeathChest {
     }
 
     private void setupHologram() {
-        if (DeathChestPro.isUseHolograms()) {
+        this.hologram = new DeathChestHologram(this, this.location.clone());
 
-            Location hologramLoc = LocationUtil.getCenter(this.location.clone().add(0, 2.5, 0));
+        /*if (DeathChestPro.isDisplayPlayerHead()) {
+            hologram.appendItemLine(ItemUtil.getPlayerSkull(player, null, null));
+        }*/
 
-            this.hologram = HologramsAPI.createHologram(DeathChestPro.getInstance(), hologramLoc);
-
-            if (DeathChestPro.isDisplayPlayerHead()) {
-                hologram.appendItemLine(ItemUtil.getPlayerSkull(player, null, null));
-            }
-
-            for (String s : DeathChestPro.getHologramLines()) {
-                hologram.appendTextLine(s
-                        .replaceAll("%locked%", getLockedString())
-                        .replaceAll("%player%", player.getName())
-                        .replaceAll("%death_date%", DeathChestPro.getDeathDateFormat().format(new Date()))
-                        .replaceAll("%timeleft%", new Time(DeathChestPro.getRemoveChestAfter(), TimeUnit.SECONDS).toString()))
-                ;
-            }
-            hologram.teleport(LocationUtil.getCenter(this.location.clone().add(0, 1 + hologram.getHeight(), 0)));
-        }
     }
 
     private void setupChest(Location loc, List<ItemStack> items) {
@@ -107,10 +89,14 @@ public class DeathChest {
             loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
         }
 
+        if (loc.getY() > 255) {
+            loc.setY(255);
+        }
+
 
         this.replacedBlock = loc.getBlock().getState();
 
-        if(this.replacedBlock.getType() == CompMaterial.CHEST.getMaterial()) {
+        if (this.replacedBlock.getType() == CompMaterial.CHEST.getMaterial()) {
             this.replacedBlock.setType(Material.AIR);
         }
 
@@ -125,7 +111,7 @@ public class DeathChest {
 
         this.chestInventory = Bukkit.createInventory(null, items.size() > 27 ? 54 : 27, DeathChestPro.getDeathChestInvTitle().replaceAll("%player%", player.getName()));
         for (ItemStack i : items) {
-            if(i == null) continue;
+            if (i == null) continue;
             this.chestInventory.addItem(i);
         }
     }
@@ -141,10 +127,6 @@ public class DeathChest {
 
     public OfflinePlayer getOfflinePlayer() {
         return player;
-    }
-
-    public Hologram getHologram() {
-        return hologram;
     }
 
     public boolean isLocked() {
@@ -163,7 +145,7 @@ public class DeathChest {
             @Override
             public void run() {
 
-                if(unlockChestAfter == 0) {
+                if (unlockChestAfter == 0) {
                     locked = false;
                 }
 
@@ -173,11 +155,9 @@ public class DeathChest {
                 } else {
                     timeLeft--;
 
-                    if (hologram != null) {
-                        updateHologram(timeLeft);
-                    }
+                    hologram.updateHologram(timeLeft);
 
-                    if (DeathChestPro.isDeathchestFireworks() && hologram != null) {
+                    if (DeathChestPro.isDeathchestFireworks()) {
                         nextFireworkIn--;
                         if (nextFireworkIn == 0) {
                             FireworkUtil.spawnRandomFirework(hologram.getLocation());
@@ -185,7 +165,7 @@ public class DeathChest {
                         }
                     }
 
-                    if(DeathChestPro.getUnlockChestAfter() >= 0) {
+                    if (DeathChestPro.getUnlockChestAfter() >= 0) {
                         unlockChestAfter--;
                     }
 
@@ -193,20 +173,6 @@ public class DeathChest {
             }
         }.runTaskTimer(DeathChestPro.getInstance(), 20L, 20L);
 
-    }
-
-    private void updateHologram(int timeLeft) {
-        for (int i = 0; i < DeathChestPro.getHologramLines().size(); i++) {
-            String line = DeathChestPro.getHologramLines().get(i);
-            if (line.contains("%timeleft%")) {
-                int lineNumber = i;
-                if (DeathChestPro.isDisplayPlayerHead()) {
-                    lineNumber += 1;
-                }
-                hologram.removeLine(lineNumber);
-                hologram.insertTextLine(lineNumber, line.replaceAll("%timeleft%", new Time(timeLeft, TimeUnit.SECONDS).toString()));
-            }
-        }
     }
 
     public boolean isChestEmpty() {
@@ -230,9 +196,7 @@ public class DeathChest {
             removeTask.cancel();
         }
 
-        if (hologram != null) {
-            hologram.delete();
-        }
+        hologram.delete();
 
         this.removeChests();
 
@@ -270,7 +234,7 @@ public class DeathChest {
         this.announced = true;
     }
 
-    private String getLockedString() {
+    public String getLockedString() {
         return locked ? Message.DEATHCHEST_LOCKED.getMessage() : Message.DEATHCHEST_UNLOCKED.getMessage();
     }
 
