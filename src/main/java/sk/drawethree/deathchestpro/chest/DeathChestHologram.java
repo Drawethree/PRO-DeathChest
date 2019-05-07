@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 public class DeathChestHologram {
 
     private static final double LINE_SPACER = 0.25;
+    private static final double ARMOR_STAND_HEIGHT = 2.0;
+
 
     private Location location;
     private ArrayList<ArmorStand> armorStands;
@@ -44,8 +46,6 @@ public class DeathChestHologram {
         ArmorStand as = (ArmorStand) this.location.getWorld().spawnEntity(this.location.clone().subtract(0, this.armorStands.size() * LINE_SPACER, 0), EntityType.ARMOR_STAND);
 
         as.setVisible(false);
-        as.setCollidable(false);
-        as.setInvulnerable(true);
         as.setGravity(false);
         as.setBasePlate(false);
         as.setCustomName(text);
@@ -58,7 +58,7 @@ public class DeathChestHologram {
     private void update() {
         for (int i = 0; i < this.armorStands.size(); i++) {
             ArmorStand as = this.armorStands.get(i);
-            as.teleport(this.location.clone().subtract(0, as.getHeight() + (i * LINE_SPACER), 0));
+            as.teleport(this.location.clone().subtract(0, ARMOR_STAND_HEIGHT + (i * LINE_SPACER), 0));
         }
     }
 

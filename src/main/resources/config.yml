@@ -19,7 +19,6 @@ sounds:
   click: UI_BUTTON_CLICK
   gui_open: ENTITY_EXPERIENCE_ORB_PICKUP
 hologram:
-  display_player_head: true
   death_date_format: "dd.MM.yyyy hh:mm"
   lines:
   - "%locked%"

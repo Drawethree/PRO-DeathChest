@@ -60,7 +60,7 @@ public class DeathChestListener implements Listener {
             if (dc.isChestEmpty()) {
                 dc.removeDeathChest();
             } else {
-                p.playSound(p.getLocation(), CompSound.CHEST_CLOSE.getSound(), 0.5F, 0.5F);
+                p.playSound(p.getLocation(), CompSound.CHEST_CLOSE.getSound(), 0.5F, 1F);
             }
         }
     }
@@ -173,7 +173,7 @@ public class DeathChestListener implements Listener {
                     dc.fastLoot(p);
                     return;
                 }
-                p.playSound(p.getLocation(), CompSound.CHEST_OPEN.getSound(), 0.5F, 0.5F);
+                p.playSound(p.getLocation(), CompSound.CHEST_OPEN.getSound(), 0.5F, 1F);
                 p.openInventory(dc.getChestInventory());
             }
         }

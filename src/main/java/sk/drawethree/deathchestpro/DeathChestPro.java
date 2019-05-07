@@ -30,7 +30,6 @@ public final class DeathChestPro extends JavaPlugin {
     private static boolean useGriefPrevention = false;
 
     private static boolean allowBreakChests = false;
-    private static boolean displayPlayerHead = true;
     private static boolean deathchestFireworks = true;
     private static boolean spawnChestOnHighestBlock = true;
     private static boolean dropItemsAfterExpire = false;
@@ -56,11 +55,11 @@ public final class DeathChestPro extends JavaPlugin {
         instance = this;
         fileManager = new FileManager(this);
 
-        loadAllConfigs();
-        approveConfigChanges();
-        setupVariables();
+        this.loadAllConfigs();
+        this.approveConfigChanges();
+        this.setupVariables();
 
-        hook();
+        this.hook();
 
         DeathChestManager.getInstance().loadDeathChests();
 
@@ -109,7 +108,6 @@ public final class DeathChestPro extends JavaPlugin {
             removeChestAfter = fileManager.getConfig("config.yml").get().getInt("remove_chest_time");
             disabledworlds = fileManager.getConfig("config.yml").get().getStringList("disabled_worlds");
             disabledRegions = fileManager.getConfig("config.yml").get().getStringList("disabled_regions");
-            displayPlayerHead = fileManager.getConfig("config.yml").get().getBoolean("hologram.display_player_head");
             deathchestFireworks = fileManager.getConfig("config.yml").get().getBoolean("deathchest_fireworks.enabled");
             fireworkInterval = fileManager.getConfig("config.yml").get().getInt("deathchest_fireworks.interval");
             hologramLines = color(fileManager.getConfig("config.yml").get().getStringList("hologram.lines"));
@@ -136,7 +134,7 @@ public final class DeathChestPro extends JavaPlugin {
 
     private void approveConfigChanges() {
         fileManager.getConfig("config.yml").get().set("protect_chests", null);
-
+        fileManager.getConfig("config.yml").get().set("hologram.display_player_head", null);
         fileManager.getConfig("config.yml").save();
     }
 
@@ -202,10 +200,6 @@ public final class DeathChestPro extends JavaPlugin {
 
     public static List<String> getDisabledRegions() {
         return disabledRegions;
-    }
-
-    public static boolean isDisplayPlayerHead() {
-        return displayPlayerHead;
     }
 
     public static boolean isDeathchestFireworks() {
