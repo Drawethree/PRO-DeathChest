@@ -28,7 +28,6 @@ import sk.drawethree.deathchestpro.utils.CompSound;
 import sk.drawethree.deathchestpro.utils.Items;
 import sk.drawethree.deathchestpro.utils.Message;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -61,7 +60,7 @@ public class DeathChestListener implements Listener {
             if (dc.isChestEmpty()) {
                 dc.removeDeathChest();
             } else {
-                p.playSound(p.getLocation(), CompSound.CHEST_CLOSE.getSound(), 1F, 1F);
+                p.playSound(p.getLocation(), CompSound.CHEST_CLOSE.getSound(), 0.5F, 0.5F);
             }
         }
     }
@@ -72,7 +71,7 @@ public class DeathChestListener implements Listener {
 
         if (!DeathChestPro.getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
 
-            if(e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID && !DeathChestPro.isVoidSpawning()) {
+            if (e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID && !DeathChestPro.isVoidSpawning()) {
                 return;
             }
 
@@ -174,7 +173,7 @@ public class DeathChestListener implements Listener {
                     dc.fastLoot(p);
                     return;
                 }
-                p.playSound(p.getLocation(), CompSound.CHEST_OPEN.getSound(), 1F, 1F);
+                p.playSound(p.getLocation(), CompSound.CHEST_OPEN.getSound(), 0.5F, 0.5F);
                 p.openInventory(dc.getChestInventory());
             }
         }

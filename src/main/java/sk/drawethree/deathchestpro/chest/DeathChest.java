@@ -256,6 +256,13 @@ public class DeathChest {
                 if (p.getInventory().firstEmpty() == -1) {
                     break;
                 }
+
+                if (DeathChestPro.isAutoEquipArmor() && (CompMaterial.isHelmet(i.getType()) || CompMaterial.isChestPlate(i.getType()) || CompMaterial.isLeggings(i.getType()) || CompMaterial.isBoots(i.getType()))) {
+                    this.autoEquip(p, i);
+                    chestInventory.remove(i);
+                    continue;
+                }
+
                 chestInventory.remove(i);
                 p.getInventory().addItem(i);
             }
@@ -267,6 +274,18 @@ public class DeathChest {
             }
         } else {
             p.sendMessage(Message.NO_PERMISSION.getChatMessage());
+        }
+    }
+
+    private void autoEquip(Player p, ItemStack i) {
+        if (CompMaterial.isHelmet(i.getType())) {
+            p.getInventory().setHelmet(i);
+        } else if (CompMaterial.isChestPlate(i.getType())) {
+            p.getInventory().setChestplate(i);
+        } else if (CompMaterial.isLeggings(i.getType())) {
+            p.getInventory().setLeggings(i);
+        } else if (CompMaterial.isBoots(i.getType())) {
+            p.getInventory().setBoots(i);
         }
     }
 

@@ -37,6 +37,7 @@ public final class DeathChestPro extends JavaPlugin {
     private static boolean clickableMessage = false;
     private static boolean lavaProtection = false;
     private static boolean voidSpawning = false;
+    private static boolean autoEquipArmor = true;
     //private static boolean saveXP = false;
 
     private static SimpleDateFormat deathDateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
@@ -120,6 +121,7 @@ public final class DeathChestPro extends JavaPlugin {
             lavaProtection = fileManager.getConfig("config.yml").get().getBoolean("lava_protection");
             voidSpawning = fileManager.getConfig("config.yml").get().getBoolean("void_spawning_chest");
             unlockChestAfter = fileManager.getConfig("config.yml").get().getInt("unlock_chest_after");
+            autoEquipArmor = fileManager.getConfig("config.yml").get().getBoolean("auto_equip_armor");
             //saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
         }
     }
@@ -242,16 +244,18 @@ public final class DeathChestPro extends JavaPlugin {
         return lavaProtection;
     }
 
-
     /*public static boolean isSaveXP() {
         return saveXP;
     }*/
-
     public static boolean isUseGriefPrevention() {
         return useGriefPrevention;
     }
 
     public static boolean isVoidSpawning() {
         return voidSpawning;
+    }
+
+    public static boolean isAutoEquipArmor() {
+        return autoEquipArmor;
     }
 }

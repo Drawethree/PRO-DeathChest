@@ -1,5 +1,5 @@
 main: sk.drawethree.deathchestpro.DeathChestPro
-version: 2.4.8
+version: 3.0
 api-version: 1.13
 name: DeathChestPro
 author: TheRealDrawe
@@ -40,5 +40,5 @@ permissions:
     default: op
 commands:
   deathchest:
-   aliases: [dc,dcp]
-   description: DeathChestPro Command
+    aliases: [dc,dcp]
+    description: DeathChestPro Command

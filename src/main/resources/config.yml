@@ -5,6 +5,7 @@ allow_break_chests: false
 drop_items_after_expire: false
 lava_protection: true
 void_spawning_chest: false
+auto_equip_armor: true
 deathchest_fireworks:
   enabled: true
   interval: 5
