@@ -1,28 +1,50 @@
+#Config version, DO NOT CHANGE!
 config_version: 1
+#After how many seconds should be chest removed?
 remove_chest_time: 120
+#Should chest be unlocked after certain time?
 unlock_chest_after: -1
+#Can chest be broken?
 allow_break_chests: false
+#Should items drop when chest expires?
 drop_items_after_expire: false
+#Should chest be spawned if player died in lava?
+lava_spawning: true
+#Should glass cage be spawned around chest if played died in lava?
 lava_protection: true
+#Should chest be spawned if player died in void?
 void_spawning_chest: false
+#Should it auto equip armor to player during fastlooting?
 auto_equip_armor: true
-deathchest_fireworks:
-  enabled: true
-  interval: 5
+#Should players click on message to teleport to their chest?
 clickable_message: true
+#Should the chest be spawned on highest possible block, or where player died?
 spawn_chest_on_highest_block: false
+#Deatchest firework settings
+deathchest_fireworks:
+  #Should fireworks spawn?
+  enabled: true
+  #Interval between each firework
+  interval: 5
+#Worlds where deathchest will not spawn
 disabled_worlds:
   - example_world
+#Regions where deathchest will not spawn
 disabled_regions:
   - example_region
+#GUI Sounds
 sounds:
   click: UI_BUTTON_CLICK
   gui_open: ENTITY_EXPERIENCE_ORB_PICKUP
+#Hologram settings
 hologram:
+  #Date format. Visit https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html for more help
   death_date_format: "dd.MM.yyyy hh:mm"
+  #Lines displayed on hologram. Accepts placeholders %locked%, %death_date%, %player%, %timeleft%
   lines:
   - "%locked%"
   - "Died %death_date%"
   - "Owner: %player%"
   - "%timeleft% left"
+#Name of chest's inventory
 deathchest_inv_title: "&7%player%'s DeathChest"

@@ -1,6 +1,6 @@
 main: sk.drawethree.deathchestpro.DeathChestPro
-version: 3.0
-api-version: 1.13
+version: 3.0.1
+api-version: 1.14
 name: DeathChestPro
 author: TheRealDrawe
 softdepend: [Residence, DeathFeathers, WorldGuard, GriefPrevention, WorldEdit, FastAsyncWorldEdit]

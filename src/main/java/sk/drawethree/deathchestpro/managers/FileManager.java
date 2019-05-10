@@ -10,7 +10,7 @@ import java.util.HashMap;
 public class FileManager {
 
     public static DeathChestPro plugin;
-    public static HashMap<String, Config> configs = new HashMap<String, Config>();
+    public static HashMap<String, Config> configs = new HashMap<>();
 
     public FileManager(DeathChestPro plugin) {
         this.plugin = plugin;
@@ -60,7 +60,6 @@ public class FileManager {
         public YamlConfiguration get() {
             if (this.config == null)
                 reload();
-
             return this.config;
         }
 

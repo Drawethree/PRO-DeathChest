@@ -17,6 +17,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
@@ -71,7 +72,7 @@ public class DeathChestListener implements Listener {
 
         if (!DeathChestPro.getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
 
-            if (e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID && !DeathChestPro.isVoidSpawning()) {
+            if ((e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID && !DeathChestPro.isVoidSpawning()) || p.getLocation().getBlock().getType() == CompMaterial.LAVA.getMaterial() && !DeathChestPro.isLavaSpawning()) {
                 return;
             }
 
@@ -182,6 +183,13 @@ public class DeathChestListener implements Listener {
     @EventHandler
     public void onHopperMove(final InventoryMoveItemEvent e) {
         if (e.getDestination().getType() == InventoryType.HOPPER && DeathChestManager.getInstance().isInventoryDeathChestInv(e.getSource())) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void manipulateHologram(PlayerArmorStandManipulateEvent e) {
+        if (!e.getRightClicked().isVisible()) {
             e.setCancelled(true);
         }
     }

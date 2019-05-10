@@ -22,6 +22,7 @@ public class DeathChestHologram {
 
     public DeathChestHologram(DeathChest deathChest, Location loc) {
         this.location = loc;
+        this.location.getChunk().load();
         this.armorStands = new ArrayList<>();
         this.inicialize(deathChest);
     }
@@ -30,11 +31,11 @@ public class DeathChestHologram {
         for (String s : DeathChestPro.getHologramLines()) {
             this.appendTextLine(s
                     .replaceAll("%locked%", chest.getLockedString())
-                    .replaceAll("%player%", chest.getPlayer().getName())
+                    .replaceAll("%player%", chest.getOfflinePlayer().getName())
                     .replaceAll("%death_date%", DeathChestPro.getDeathDateFormat().format(new Date()))
-                    .replaceAll("%timeleft%", new Time(DeathChestPro.getRemoveChestAfter(), TimeUnit.SECONDS).toString()));
+                    .replaceAll("%timeleft%", new Time(chest.getTimeLeft(), TimeUnit.SECONDS).toString()));
         }
-        this.teleport(LocationUtil.getCenter(this.location.add(0, 0.5 + this.getHeight(), 0)));
+        this.teleport(LocationUtil.getCenter(this.location.clone().add(0, 0.5 + this.getHeight(), 0)));
     }
 
     private void removeLine(int lineNumber) {
@@ -45,11 +46,12 @@ public class DeathChestHologram {
     public void appendTextLine(String text) {
         ArmorStand as = (ArmorStand) this.location.getWorld().spawnEntity(this.location.clone().subtract(0, this.armorStands.size() * LINE_SPACER, 0), EntityType.ARMOR_STAND);
 
-        as.setVisible(false);
         as.setGravity(false);
+        as.setCanPickupItems(false);
         as.setBasePlate(false);
         as.setCustomName(text);
         as.setCustomNameVisible(true);
+        as.setVisible(false);
 
         this.armorStands.add(as);
         this.update();

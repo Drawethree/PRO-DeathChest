@@ -66,6 +66,8 @@ public class DeathChestManager {
 
     public void saveDeathChests() {
         for (DeathChest dc : this.deathChestsByUUID.values()) {
+            dc.removeHologram();
+            dc.removeChest();
             dc.save();
         }
     }
@@ -168,6 +170,7 @@ public class DeathChestManager {
     }
 
     public boolean createDeathChest(Player p, List<ItemStack> drops) {
+
         if (!canPlace(p)) {
             return false;
         }
@@ -177,23 +180,30 @@ public class DeathChestManager {
         }
 
         ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
+
         DeathChest dc = new DeathChest(p, drops);
+
         currentChests.add(dc);
         deathChests.put(p.getUniqueId(), currentChests);
         deathChestsByUUID.put(dc.getChestUUID(), dc);
         return true;
+
     }
 
     private boolean createDeathChest(UUID chestUuid, OfflinePlayer p, boolean locked, Location loc, int timeLeft, List<ItemStack> items) {
+
         if (deathChests.get(p.getUniqueId()) == null) {
             deathChests.put(p.getUniqueId(), new ArrayList<>());
         }
 
         ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
+
         DeathChest dc = new DeathChest(chestUuid, p, loc, locked, timeLeft, items);
+
         currentChests.add(dc);
         deathChests.put(p.getUniqueId(), currentChests);
         deathChestsByUUID.put(dc.getChestUUID(), dc);
+
         return true;
     }
 
