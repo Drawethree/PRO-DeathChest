@@ -93,6 +93,10 @@ public class DeathChest {
             loc.setY(255);
         }
 
+        if (loc.getBlock().getType() == CompMaterial.CHEST.getMaterial()) {
+            loc.setY(loc.getY() + 1);
+        }
+
         this.replacedBlock = loc.getBlock().getState();
 
         if (this.replacedBlock.getType() == CompMaterial.CHEST.getMaterial()) {
