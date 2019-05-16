@@ -72,7 +72,7 @@ public class DeathChestListener implements Listener {
 
         if (!DeathChestPro.getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
 
-            if ((e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID && !DeathChestPro.isVoidSpawning()) || p.getLocation().getBlock().getType() == CompMaterial.LAVA.getMaterial() && !DeathChestPro.isLavaSpawning()) {
+            if (((e.getEntity().getLastDamageCause() != null) && (e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID) && (!DeathChestPro.isVoidSpawning())) || (p.getLocation().getBlock().getType() == CompMaterial.LAVA.getMaterial()) && (!DeathChestPro.isLavaSpawning())) {
                 return;
             }
 

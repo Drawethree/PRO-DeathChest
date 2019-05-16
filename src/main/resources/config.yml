@@ -12,8 +12,8 @@ drop_items_after_expire: false
 lava_spawning: true
 #Should glass cage be spawned around chest if played died in lava?
 lava_protection: true
-#Should chest be spawned if player died in void?
-void_spawning_chest: false
+#Should chest be spawned if player died in void (or void damage)?
+void_spawning_chest: true
 #Should it auto equip armor to player during fastlooting?
 auto_equip_armor: true
 #Should players click on message to teleport to their chest?
