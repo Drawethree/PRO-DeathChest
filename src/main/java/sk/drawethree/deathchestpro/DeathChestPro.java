@@ -38,18 +38,15 @@ public final class DeathChestPro extends JavaPlugin {
     private static boolean voidSpawning = false;
     private static boolean autoEquipArmor = true;
     private static boolean lavaSpawning = true;
+    private static boolean debugMode = true;
     //private static boolean saveXP = false;
 
     private static SimpleDateFormat deathDateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
     private static List<String> hologramLines = new ArrayList<>();
     private static String deathChestInvTitle = "&7%player%'s DeathChest";
     private static int fireworkInterval = 5;
-    private static int unlockChestAfter = 0;
+    private static int unlockChestAfter = -1;
     private static int removeChestAfter = 20;
-
-    public static int getUnlockChestAfter() {
-        return unlockChestAfter;
-    }
 
     @Override
     public void onEnable() {
@@ -66,7 +63,7 @@ public final class DeathChestPro extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new DeathChestListener(), this);
         getCommand("deathchest").setExecutor(new DeathChestCommand());
-        info("§aThis server is using §e" + this.getName() + " §arunning on version §e" + this.getDescription().getVersion() + " §aby TheRealDrawe");
+        broadcast(BroadcastType.INFO,"§aThis server is using §e" + this.getName() + " §arunning on version §e" + this.getDescription().getVersion() + " §aby TheRealDrawe");
     }
 
 
@@ -77,19 +74,19 @@ public final class DeathChestPro extends JavaPlugin {
         //this.useDeathFeathers = getServer().getPluginManager().isPluginEnabled("DeathFeathers");
 
         if (useResidence) {
-            info("Successfully hooked into Residence !");
+            broadcast(BroadcastType.INFO,"Successfully hooked into Residence !");
         }
 
         if (useGriefPrevention) {
-            info("Successfully hooked into GriefPrevention !");
+            broadcast(BroadcastType.INFO,"Successfully hooked into GriefPrevention !");
         }
 
         if (useWorldGuard) {
-            info("Successfully hooked into WorldGuard !");
+            broadcast(BroadcastType.INFO,"Successfully hooked into WorldGuard !");
         }
 
         if (useDeathFeathers) {
-            info("Successfully hooked into DeathFeathers !");
+            broadcast(BroadcastType.INFO,"Successfully hooked into DeathFeathers !");
         }
 
         new Metrics(this);
@@ -100,7 +97,7 @@ public final class DeathChestPro extends JavaPlugin {
         int configVersion = fileManager.getConfig("config.yml").get().getInt("config_version");
 
         if (configVersion > DeathChestPro.CONFIG_VERSION) {
-            warn("Config version %d is invalid ! Loading default config values.", configVersion);
+            broadcast(BroadcastType.WARN,"Config version %d is invalid ! Loading default config values.", configVersion);
             return;
         }
 
@@ -122,16 +119,17 @@ public final class DeathChestPro extends JavaPlugin {
             unlockChestAfter = fileManager.getConfig("config.yml").get().getInt("unlock_chest_after");
             autoEquipArmor = fileManager.getConfig("config.yml").get().getBoolean("auto_equip_armor");
             lavaSpawning = fileManager.getConfig("config.yml").get().getBoolean("lava_spawning");
+            debugMode = fileManager.getConfig("config.yml").get().getBoolean("debug_messages");
             //saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
         }
     }
 
-    public static void warn(String message, Object... placeholders) {
-        Bukkit.getConsoleSender().sendMessage("§7(§4!§7) §cDeathChestPro " + getInstance().getDescription().getVersion() + " §8>> §c" + String.format(message, placeholders));
-    }
+    public static void broadcast(BroadcastType type, String message, Object... placeholders) {
+        if(type == BroadcastType.DEBUG && !debugMode) {
+            return;
+        }
+        Bukkit.getConsoleSender().sendMessage(type + " §cDeathChestPro " + getInstance().getDescription().getVersion() + " §8>> §c" + String.format(message, placeholders));
 
-    public static void info(String message, Object... placeholders) {
-        Bukkit.getConsoleSender().sendMessage("§7(§aInfo§7) §aDeathChestPro " + getInstance().getDescription().getVersion() + " §8>> §a" + String.format(message, placeholders));
     }
 
     private void approveConfigChanges() {
@@ -240,22 +238,43 @@ public final class DeathChestPro extends JavaPlugin {
         return lavaProtection;
     }
 
+
     /*public static boolean isSaveXP() {
         return saveXP;
     }*/
-
     public static boolean isUseGriefPrevention() {
         return useGriefPrevention;
     }
+
     public static boolean isVoidSpawning() {
         return voidSpawning;
     }
-
     public static boolean isAutoEquipArmor() {
         return autoEquipArmor;
     }
 
     public static boolean isLavaSpawning() {
         return lavaSpawning;
+    }
+
+    public static int getUnlockChestAfter() {
+        return unlockChestAfter;
+    }
+
+    public enum BroadcastType {
+        WARN("§7(§4!§7)"),
+        DEBUG("§7(§eDEBUG§7)"),
+        INFO("§7(§aInfo§7)");
+
+        private final String prefix;
+
+        BroadcastType(String prefix) {
+            this.prefix = prefix;
+        }
+
+        @Override
+        public String toString() {
+            return this.prefix;
+        }
     }
 }

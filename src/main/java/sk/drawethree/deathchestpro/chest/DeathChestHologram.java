@@ -80,6 +80,13 @@ public class DeathChestHologram {
 
     public void delete() {
         for (ArmorStand as : this.armorStands) {
+
+            if(!as.getLocation().getChunk().isLoaded()) {
+                as.getLocation().getChunk().load();
+            }
+
+            as.setCustomName("");
+            as.setCustomNameVisible(false);
             as.remove();
         }
     }

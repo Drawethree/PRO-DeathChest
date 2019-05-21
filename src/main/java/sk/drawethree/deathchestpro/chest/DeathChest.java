@@ -110,7 +110,6 @@ public class DeathChest {
 
         loc.getBlock().setType(CompMaterial.CHEST.getMaterial());
         this.location = loc.getBlock().getLocation();
-        this.location = loc.getBlock().getLocation();
 
         this.chestInventory = Bukkit.createInventory(null, items.size() > 27 ? 54 : 27, DeathChestPro.getDeathChestInvTitle().replaceAll("%player%", player.getName()));
         for (ItemStack i : items) {
@@ -168,10 +167,9 @@ public class DeathChest {
                         }
                     }
 
-                    if (DeathChestPro.getUnlockChestAfter() >= 0) {
+                    if (unlockChestAfter > 0) {
                         unlockChestAfter--;
                     }
-
                 }
             }
         }.runTaskTimer(DeathChestPro.getInstance(), 20L, 20L);

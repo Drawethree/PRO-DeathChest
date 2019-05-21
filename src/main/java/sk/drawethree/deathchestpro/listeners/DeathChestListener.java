@@ -69,14 +69,15 @@ public class DeathChestListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDeath(final PlayerDeathEvent e) {
         final Player p = e.getEntity();
-
+        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " died.");
         if (!DeathChestPro.getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
-
+            DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player has permission to have chest, has some items in inventory and is not in restriced world");
             if (((e.getEntity().getLastDamageCause() != null) && (e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID) && (!DeathChestPro.isVoidSpawning())) || (p.getLocation().getBlock().getType() == CompMaterial.LAVA.getMaterial()) && (!DeathChestPro.isLavaSpawning())) {
                 return;
             }
 
             if (DeathChestManager.getInstance().createDeathChest(p, e.getDrops())) {
+                DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest created");
                 e.setKeepInventory(true);
                 p.getInventory().setArmorContents(null);
                 p.getInventory().clear();
@@ -162,6 +163,7 @@ public class DeathChestListener implements Listener {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(b.getLocation());
             if (dc != null) {
+
                 if (dc.isLocked()) {
                     if (!dc.getOfflinePlayer().getUniqueId().equals(p.getUniqueId()) && !p.hasPermission("deathchestpro.see")) {
                         e.setCancelled(true);
@@ -169,6 +171,7 @@ public class DeathChestListener implements Listener {
                         return;
                     }
                 }
+
                 e.setCancelled(true);
                 if (p.isSneaking()) {
                     dc.fastLoot(p);

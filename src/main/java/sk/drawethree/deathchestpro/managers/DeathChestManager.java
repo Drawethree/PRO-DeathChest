@@ -14,12 +14,11 @@ import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.region.IWrappedRegion;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
-import sk.drawethree.deathchestpro.utils.*;
+import sk.drawethree.deathchestpro.utils.CompSound;
+import sk.drawethree.deathchestpro.utils.Items;
+import sk.drawethree.deathchestpro.utils.Message;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class DeathChestManager {
 
@@ -51,6 +50,7 @@ public class DeathChestManager {
     }
 
     public void loadDeathChests() {
+        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loading deatchests from file...");
         for (String key : DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getConfigurationSection("chests").getKeys(false)) {
             UUID chestUuid = UUID.fromString(key);
             OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getString("chests." + key + ".player")));
@@ -60,16 +60,19 @@ public class DeathChestManager {
             List<ItemStack> items = (ArrayList<ItemStack>) DeathChestPro.getFileManager().getConfig("deathchests.yml").get().get("chests." + key + ".items");
             createDeathChest(chestUuid, player, locked, loc, timeLeft, items);
         }
+        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded!");
 
     }
 
 
     public void saveDeathChests() {
+        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Saving deathchests...");
         for (DeathChest dc : this.deathChestsByUUID.values()) {
             dc.removeHologram();
             dc.removeChest();
             dc.save();
         }
+        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Saved!");
     }
 
     public ArrayList<DeathChest> getPlayerDeathChests(OfflinePlayer p) {
@@ -209,22 +212,40 @@ public class DeathChestManager {
 
     private boolean canPlace(Player p) {
         //Residence Check
+        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Checking Residence...");
         if (DeathChestPro.isUseResidence()) {
             final ClaimedResidence res = Residence.getInstance().getResidenceManager().getByLoc(p);
             if (res != null && !res.getPermissions().playerHas(p, Flags.build, true)) {
+                DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player does not have permission to build in residence=" + res.getName());
                 return false;
             }
         }
+        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Residence OK");
 
         //WorldGuard Check
+        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Checking WorldGuard...");
         if (DeathChestPro.isUseWorldGuard()) {
-            for (IWrappedRegion region : WorldGuardWrapper.getInstance().getRegions(p.getLocation())) {
-                if (DeathChestPro.getDisabledRegions().contains(region.getId())) {
-                    return false;
+            Set<IWrappedRegion> regions = null;
+
+            try {
+                regions = WorldGuardWrapper.getInstance().getRegions(p.getLocation());
+            } catch (NoClassDefFoundError e) {
+                DeathChestPro.broadcast(DeathChestPro.BroadcastType.WARN, "Looks like you are using bad WorldEdit version!");
+            }
+
+            if (regions != null) {
+                for (IWrappedRegion region : regions) {
+                    if (DeathChestPro.getDisabledRegions().contains(region.getId())) {
+                        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player is in restriced region=" + region.getId());
+                        return false;
+                    }
                 }
-                return true;
             }
         }
+
+        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "WorldGuard OK");
+        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Can place!");
+
         return true;
     }
 

@@ -1,5 +1,7 @@
 #Config version, DO NOT CHANGE!
 config_version: 1
+#Enable debug messages in console?
+debug_messages: false
 #After how many seconds should be chest removed?
 remove_chest_time: 120
 #Should chest be unlocked after certain time?
