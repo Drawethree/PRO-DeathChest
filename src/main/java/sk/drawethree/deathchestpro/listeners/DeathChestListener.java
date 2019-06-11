@@ -131,7 +131,7 @@ public class DeathChestListener implements Listener {
         if (!(e.getWhoClicked() instanceof Player) || e.getInventory() == null || !e.getView().getTitle().contains(Message.DEATHCHEST_LIST_INV_TITLE.getMessage())) {
             return;
         }
-
+        e.setCancelled(true);
         final Player p = (Player) e.getWhoClicked();
 
         if (e.getCurrentItem() != null && e.getCurrentItem().getType() != CompMaterial.AIR.getMaterial()) {
@@ -139,13 +139,10 @@ public class DeathChestListener implements Listener {
             final DeathChest clickedChest = DeathChestManager.getInstance().getDeathChest(e.getCurrentItem());
             if (clickedChest != null) {
                 clickedChest.teleportPlayer(p);
-                e.setCancelled(true);
             } else if (e.getCurrentItem().isSimilar(Items.NEXT_ITEM.getItemStack())) {
                 DeathChestManager.getInstance().openDeathchestList(DeathChestManager.getInstance().getOpenedInventory(p), p, page + 1);
-                e.setCancelled(true);
             } else if (e.getCurrentItem().isSimilar(Items.PREV_ITEM.getItemStack())) {
                 DeathChestManager.getInstance().openDeathchestList(DeathChestManager.getInstance().getOpenedInventory(p), p, page - 1);
-                e.setCancelled(true);
             }
         }
     }
@@ -173,10 +170,12 @@ public class DeathChestListener implements Listener {
                 }
 
                 e.setCancelled(true);
+
                 if (p.isSneaking()) {
                     dc.fastLoot(p);
                     return;
                 }
+
                 p.playSound(p.getLocation(), CompSound.CHEST_OPEN.getSound(), 0.5F, 1F);
                 p.openInventory(dc.getChestInventory());
             }

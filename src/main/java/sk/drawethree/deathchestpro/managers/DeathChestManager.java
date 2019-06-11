@@ -50,8 +50,10 @@ public class DeathChestManager {
     }
 
     public void loadDeathChests() {
-        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loading deatchests from file...");
+        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loading deathchests from file...");
+
         for (String key : DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getConfigurationSection("chests").getKeys(false)) {
+
             UUID chestUuid = UUID.fromString(key);
             OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getString("chests." + key + ".player")));
             boolean locked = DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getBoolean("chests." + key + ".locked");
@@ -59,6 +61,7 @@ public class DeathChestManager {
             Location loc = Location.deserialize(DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getConfigurationSection("chests." + key + ".location").getValues(true));
             List<ItemStack> items = (ArrayList<ItemStack>) DeathChestPro.getFileManager().getConfig("deathchests.yml").get().get("chests." + key + ".items");
             createDeathChest(chestUuid, player, locked, loc, timeLeft, items);
+
         }
         DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded!");
 
@@ -67,11 +70,13 @@ public class DeathChestManager {
 
     public void saveDeathChests() {
         DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Saving deathchests...");
+
         for (DeathChest dc : this.deathChestsByUUID.values()) {
             dc.removeHologram();
             dc.removeChest();
             dc.save();
         }
+
         DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Saved!");
     }
 

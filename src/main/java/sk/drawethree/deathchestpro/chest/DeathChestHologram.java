@@ -16,24 +16,25 @@ public class DeathChestHologram {
     private static final double LINE_SPACER = 0.25;
     private static final double ARMOR_STAND_HEIGHT = 2.0;
 
-
+    private DeathChest deathChest;
     private Location location;
     private ArrayList<ArmorStand> armorStands;
 
     public DeathChestHologram(DeathChest deathChest, Location loc) {
+        this.deathChest = deathChest;
         this.location = loc;
         this.location.getChunk().load();
         this.armorStands = new ArrayList<>();
-        this.inicialize(deathChest);
+        this.inicialize();
     }
 
-    private void inicialize(DeathChest chest) {
+    private void inicialize() {
         for (String s : DeathChestPro.getHologramLines()) {
             this.appendTextLine(s
-                    .replaceAll("%locked%", chest.getLockedString())
-                    .replaceAll("%player%", chest.getOfflinePlayer().getName())
+                    .replaceAll("%locked%", deathChest.getLockedString())
+                    .replaceAll("%player%", deathChest.getOfflinePlayer().getName())
                     .replaceAll("%death_date%", DeathChestPro.getDeathDateFormat().format(new Date()))
-                    .replaceAll("%timeleft%", new Time(chest.getTimeLeft(), TimeUnit.SECONDS).toString()));
+                    .replaceAll("%timeleft%", deathChest.getTimeLeft() == -1 ? "∞" : new Time(deathChest.getTimeLeft(), TimeUnit.SECONDS).toString()));
         }
         this.teleport(LocationUtil.getCenter(this.location.clone().add(0, 0.5 + this.getHeight(), 0)));
     }
@@ -81,7 +82,7 @@ public class DeathChestHologram {
     public void delete() {
         for (ArmorStand as : this.armorStands) {
 
-            if(!as.getLocation().getChunk().isLoaded()) {
+            if (!as.getLocation().getChunk().isLoaded()) {
                 as.getLocation().getChunk().load();
             }
 
@@ -106,6 +107,8 @@ public class DeathChestHologram {
                 }*/
 
                 this.setLine(lineNumber, line.replaceAll("%timeleft%", new Time(timeLeft, TimeUnit.SECONDS).toString()));
+            } else if (line.contains("%locked%")) {
+                this.setLine(i, line.replaceAll("%locked%", deathChest.getLockedString()));
             }
         }
     }

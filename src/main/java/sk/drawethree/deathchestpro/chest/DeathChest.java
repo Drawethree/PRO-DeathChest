@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -16,6 +17,7 @@ import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.utils.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -140,6 +142,11 @@ public class DeathChest {
     }
 
     public void runRemoveTask() {
+
+        if (this.timeLeft == -1) {
+            return;
+        }
+
         this.removeTask = new BukkitRunnable() {
             int nextFireworkIn = DeathChestPro.getFireworkInterval();
             int unlockChestAfter = DeathChestPro.getUnlockChestAfter();
@@ -181,6 +188,11 @@ public class DeathChest {
     }
 
     private void removeChests() {
+
+        for (HumanEntity entity : new ArrayList<>(chestInventory.getViewers())) {
+            entity.closeInventory();
+        }
+
         if (DeathChestPro.isDropItemsAfterExpire()) {
             for (ItemStack item : chestInventory.getContents()) {
                 if (item != null) {
@@ -233,7 +245,7 @@ public class DeathChest {
         } else {
             player.getPlayer().sendMessage(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
         }
-        player.getPlayer().sendMessage(Message.DEATHCHEST_WILL_DISAPPEAR.getChatMessage().replaceAll("%time%", String.valueOf(this.timeLeft)));
+        player.getPlayer().sendMessage(Message.DEATHCHEST_WILL_DISAPPEAR.getChatMessage().replaceAll("%time%", timeLeft == -1 ? "∞" : String.valueOf(this.timeLeft)));
         this.announced = true;
     }
 
@@ -326,7 +338,7 @@ public class DeathChest {
     }
 
     public void removeChest() {
-        this.replacedBlock.update();
+        this.location.getBlock().setType(CompMaterial.AIR.getMaterial());
     }
 
     public int getTimeLeft() {
