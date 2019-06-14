@@ -1,5 +1,5 @@
 main: sk.drawethree.deathchestpro.DeathChestPro
-version: 3.0.6
+version: 3.0.7
 api-version: 1.13
 name: DeathChestPro
 author: TheRealDrawe
@@ -16,7 +16,7 @@ permissions:
       deathchestpro.teleport: true
   deathchestpro.chest:
     description: Allows to spawn a chest after player's death
-    default: op
+    default: true
   deathchestpro.lock:
     description: Allows to automatically lock a deathchest after death
     default: op
@@ -38,6 +38,9 @@ permissions:
   deathchestpro.fastloot:
     description: Allows to fast loot your chest
     default: op
+  deathchestpro.expire.default:
+    description: Default expire time
+    default: true
 commands:
   deathchest:
     aliases: [dc,dcp]

@@ -59,7 +59,7 @@ public class DeathChestListener implements Listener {
         final DeathChest dc = DeathChestManager.getInstance().getDeathChestByInventory(inv);
         if (dc != null) {
             if (dc.isChestEmpty()) {
-                dc.removeDeathChest();
+                dc.removeDeathChest(false);
             } else {
                 p.playSound(p.getLocation(), CompSound.CHEST_CLOSE.getSound(), 0.5F, 1F);
             }
@@ -120,7 +120,7 @@ public class DeathChestListener implements Listener {
                     p.sendMessage(Message.DEATHCHEST_CANNOT_BREAK.getChatMessage());
                 } else {
                     e.setCancelled(true);
-                    dc.removeDeathChest();
+                    dc.removeDeathChest(true);
                 }
             }
         }
@@ -160,7 +160,6 @@ public class DeathChestListener implements Listener {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(b.getLocation());
             if (dc != null) {
-
                 if (dc.isLocked()) {
                     if (!dc.getOfflinePlayer().getUniqueId().equals(p.getUniqueId()) && !p.hasPermission("deathchestpro.see")) {
                         e.setCancelled(true);
@@ -170,7 +169,6 @@ public class DeathChestListener implements Listener {
                 }
 
                 e.setCancelled(true);
-
                 if (p.isSneaking()) {
                     dc.fastLoot(p);
                     return;

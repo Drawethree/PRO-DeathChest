@@ -2,8 +2,17 @@
 config_version: 1
 #Enable debug messages in console?
 debug_messages: false
-#After how many seconds should be chest removed?
-remove_chest_time: 120
+#Expire groups and permissions for each group. Please sort groups from highest permission to lowest. Last group should be default.
+expire_groups:
+  admin:
+    permission: deathchestpro.expire.admin
+    time: -1
+  vip:
+    permission: deathchestpro.expire.vip
+    time: 180
+  default:
+    permission: deathchestpro.expire.defualt
+    time: 60
 #Should chest be unlocked after certain time?
 unlock_chest_after: -1
 #Can chest be broken?

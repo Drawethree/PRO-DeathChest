@@ -2,6 +2,7 @@ package sk.drawethree.deathchestpro;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import sk.drawethree.deathchestpro.commands.DeathChestCommand;
 import sk.drawethree.deathchestpro.listeners.DeathChestListener;
@@ -13,14 +14,18 @@ import sk.drawethree.deathchestpro.utils.Metrics;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 public final class DeathChestPro extends JavaPlugin {
 
     private static final int CONFIG_VERSION = 1;
+    private static final int DEFAULT_EXPIRE_TIME = 60;
 
     private static DeathChestPro instance;
     private static FileManager fileManager;
+    private static LinkedHashMap<String, Integer> expireGroups = new LinkedHashMap<>();
     private static List<String> disabledworlds = new ArrayList<>();
     private static List<String> disabledRegions = new ArrayList<>();
 
@@ -46,7 +51,7 @@ public final class DeathChestPro extends JavaPlugin {
     private static String deathChestInvTitle = "&7%player%'s DeathChest";
     private static int fireworkInterval = 5;
     private static int unlockChestAfter = -1;
-    private static int removeChestAfter = 20;
+    //private static int removeChestAfter = 20;
 
     @Override
     public void onEnable() {
@@ -63,7 +68,7 @@ public final class DeathChestPro extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new DeathChestListener(), this);
         getCommand("deathchest").setExecutor(new DeathChestCommand());
-        broadcast(BroadcastType.INFO,"§aThis server is using §e" + this.getName() + " §arunning on version §e" + this.getDescription().getVersion() + " §aby TheRealDrawe");
+        broadcast(BroadcastType.INFO, "§aThis server is using §e" + this.getName() + " §arunning on version §e" + this.getDescription().getVersion() + " §aby TheRealDrawe");
     }
 
 
@@ -74,19 +79,19 @@ public final class DeathChestPro extends JavaPlugin {
         //this.useDeathFeathers = getServer().getPluginManager().isPluginEnabled("DeathFeathers");
 
         if (useResidence) {
-            broadcast(BroadcastType.INFO,"Successfully hooked into Residence !");
+            broadcast(BroadcastType.INFO, "Successfully hooked into Residence !");
         }
 
         if (useGriefPrevention) {
-            broadcast(BroadcastType.INFO,"Successfully hooked into GriefPrevention !");
+            broadcast(BroadcastType.INFO, "Successfully hooked into GriefPrevention !");
         }
 
         if (useWorldGuard) {
-            broadcast(BroadcastType.INFO,"Successfully hooked into WorldGuard !");
+            broadcast(BroadcastType.INFO, "Successfully hooked into WorldGuard !");
         }
 
         if (useDeathFeathers) {
-            broadcast(BroadcastType.INFO,"Successfully hooked into DeathFeathers !");
+            broadcast(BroadcastType.INFO, "Successfully hooked into DeathFeathers !");
         }
 
         new Metrics(this);
@@ -97,13 +102,13 @@ public final class DeathChestPro extends JavaPlugin {
         int configVersion = fileManager.getConfig("config.yml").get().getInt("config_version");
 
         if (configVersion > DeathChestPro.CONFIG_VERSION) {
-            broadcast(BroadcastType.WARN,"Config version %d is invalid ! Loading default config values.", configVersion);
+            broadcast(BroadcastType.WARN, "Config version %d is invalid ! Loading default config values.", configVersion);
             return;
         }
 
         if (configVersion == 1) {
             allowBreakChests = fileManager.getConfig("config.yml").get().getBoolean("allow_break_chests");
-            removeChestAfter = fileManager.getConfig("config.yml").get().getInt("remove_chest_time");
+            //removeChestAfter = fileManager.getConfig("config.yml").get().getInt("remove_chest_time");
             disabledworlds = fileManager.getConfig("config.yml").get().getStringList("disabled_worlds");
             disabledRegions = fileManager.getConfig("config.yml").get().getStringList("disabled_regions");
             deathchestFireworks = fileManager.getConfig("config.yml").get().getBoolean("deathchest_fireworks.enabled");
@@ -121,11 +126,25 @@ public final class DeathChestPro extends JavaPlugin {
             lavaSpawning = fileManager.getConfig("config.yml").get().getBoolean("lava_spawning");
             debugMode = fileManager.getConfig("config.yml").get().getBoolean("debug_messages");
             //saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
+            loadExpireGroups();
+        }
+    }
+
+    private static void loadExpireGroups() {
+        expireGroups = new LinkedHashMap<>();
+        for (String key : fileManager.getConfig("config.yml").get().getConfigurationSection("expire_groups").getKeys(false)) {
+
+            String permission = fileManager.getConfig("config.yml").get().getString("expire_groups." + key + ".permission");
+            int time = fileManager.getConfig("config.yml").get().getInt("expire_groups." + key + ".time");
+
+            broadcast(BroadcastType.DEBUG, String.format("Loaded group " + key + " with permission " + permission + " and expire time " + time + " seconds."));
+
+            expireGroups.put(permission, time);
         }
     }
 
     public static void broadcast(BroadcastType type, String message, Object... placeholders) {
-        if(type == BroadcastType.DEBUG && !debugMode) {
+        if (type == BroadcastType.DEBUG && !debugMode) {
             return;
         }
         Bukkit.getConsoleSender().sendMessage(type + " §cDeathChestPro " + getInstance().getDescription().getVersion() + " §8>> §c" + String.format(message, placeholders));
@@ -133,6 +152,7 @@ public final class DeathChestPro extends JavaPlugin {
     }
 
     private void approveConfigChanges() {
+        fileManager.getConfig("config.yml").get().set("remove_chest_time", null);
         fileManager.getConfig("config.yml").get().set("protect_chests", null);
         fileManager.getConfig("config.yml").get().set("hologram.display_player_head", null);
         fileManager.getConfig("config.yml").save();
@@ -190,9 +210,9 @@ public final class DeathChestPro extends JavaPlugin {
         return useResidence;
     }
 
-    public static int getRemoveChestAfter() {
+    /*public static int getRemoveChestAfter() {
         return removeChestAfter;
-    }
+    }*/
 
     public static FileManager getFileManager() {
         return fileManager;
@@ -249,6 +269,7 @@ public final class DeathChestPro extends JavaPlugin {
     public static boolean isVoidSpawning() {
         return voidSpawning;
     }
+
     public static boolean isAutoEquipArmor() {
         return autoEquipArmor;
     }
@@ -276,5 +297,14 @@ public final class DeathChestPro extends JavaPlugin {
         public String toString() {
             return this.prefix;
         }
+    }
+
+    public static int getExpireTimeForPlayer(Player player) {
+        for(String perm : expireGroups.keySet()) {
+            if(player.hasPermission(perm)) {
+                return expireGroups.get(perm);
+            }
+        }
+        return DeathChestPro.DEFAULT_EXPIRE_TIME;
     }
 }

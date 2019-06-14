@@ -39,7 +39,7 @@ public class DeathChest {
         this.chestUUID = UUID.randomUUID();
         this.player = p;
         this.locked = p.hasPermission("deathchestpro.lock");
-        this.timeLeft = DeathChestPro.getRemoveChestAfter();
+        this.timeLeft = DeathChestPro.getExpireTimeForPlayer(p);
         this.setupChest(p.getLocation(), items);
         this.setupHologram();
         this.listItem = createListItem();
@@ -159,7 +159,7 @@ public class DeathChest {
                 }
 
                 if (timeLeft == 0) {
-                    removeDeathChest();
+                    removeDeathChest(true);
                     cancel();
                 } else {
                     timeLeft--;
@@ -187,10 +187,12 @@ public class DeathChest {
         return DeathChestManager.isInventoryEmpty(this.chestInventory);
     }
 
-    private void removeChests() {
+    private void removeChests(boolean closeInventories) {
 
-        for (HumanEntity entity : new ArrayList<>(chestInventory.getViewers())) {
-            entity.closeInventory();
+        if(closeInventories) {
+            for (HumanEntity entity : new ArrayList<>(chestInventory.getViewers())) {
+                entity.closeInventory();
+            }
         }
 
         if (DeathChestPro.isDropItemsAfterExpire()) {
@@ -199,12 +201,14 @@ public class DeathChest {
                     location.getWorld().dropItemNaturally(location, item);
                 }
             }
+            chestInventory.clear();
             location.getWorld().playSound(location, CompSound.ITEM_PICKUP.getSound(), 1F, 1F);
         }
+
         replacedBlock.update(true);
     }
 
-    public void removeDeathChest() {
+    public void removeDeathChest(boolean closeInventories) {
 
         if (removeTask != null) {
             removeTask.cancel();
@@ -212,7 +216,7 @@ public class DeathChest {
 
         this.hologram.delete();
 
-        this.removeChests();
+        this.removeChests(closeInventories);
 
         if (this.player.isOnline()) {
             this.player.getPlayer().sendMessage(Message.DEATHCHEST_DISAPPEARED.getChatMessage());
@@ -286,7 +290,7 @@ public class DeathChest {
             p.playSound(p.getLocation(), CompSound.ITEM_PICKUP.getSound(), 1F, 1F);
 
             if (isChestEmpty()) {
-                removeDeathChest();
+                removeDeathChest(true);
             } else {
                 p.sendMessage(Message.DEATHCHEST_FASTLOOT_COMPLETE.getChatMessage().replaceAll("%amount%", String.valueOf(DeathChestManager.getAmountOfItems(chestInventory))));
             }
