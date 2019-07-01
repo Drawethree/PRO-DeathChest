@@ -11,10 +11,8 @@ expire_groups:
     permission: deathchestpro.expire.vip
     time: 180
   default:
-    permission: deathchestpro.expire.defualt
+    permission: deathchestpro.expire.default
     time: 60
-#Should chest be unlocked after certain time?
-unlock_chest_after: -1
 #Can chest be broken?
 allow_break_chests: false
 #Should items drop when chest expires?

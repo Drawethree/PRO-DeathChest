@@ -29,11 +29,6 @@ public final class DeathChestPro extends JavaPlugin {
     private static List<String> disabledworlds = new ArrayList<>();
     private static List<String> disabledRegions = new ArrayList<>();
 
-    private static boolean useResidence = false;
-    private static boolean useDeathFeathers = false;
-    private static boolean useWorldGuard = false;
-    private static boolean useGriefPrevention = false;
-
     private static boolean allowBreakChests = false;
     private static boolean deathchestFireworks = true;
     private static boolean spawnChestOnHighestBlock = true;
@@ -73,25 +68,8 @@ public final class DeathChestPro extends JavaPlugin {
 
 
     private void hook() {
-        useResidence = getServer().getPluginManager().isPluginEnabled("Residence");
-        useWorldGuard = getServer().getPluginManager().isPluginEnabled("WorldGuard");
-        useGriefPrevention = getServer().getPluginManager().isPluginEnabled("GriefPrevention");
-        //this.useDeathFeathers = getServer().getPluginManager().isPluginEnabled("DeathFeathers");
-
-        if (useResidence) {
-            broadcast(BroadcastType.INFO, "Successfully hooked into Residence !");
-        }
-
-        if (useGriefPrevention) {
-            broadcast(BroadcastType.INFO, "Successfully hooked into GriefPrevention !");
-        }
-
-        if (useWorldGuard) {
-            broadcast(BroadcastType.INFO, "Successfully hooked into WorldGuard !");
-        }
-
-        if (useDeathFeathers) {
-            broadcast(BroadcastType.INFO, "Successfully hooked into DeathFeathers !");
+        for(DeathChestProHook hook : DeathChestProHook.values()) {
+            hook.hook();
         }
 
         new Metrics(this);
@@ -202,18 +180,6 @@ public final class DeathChestPro extends JavaPlugin {
         return allowBreakChests;
     }
 
-    public static boolean isUseWorldGuard() {
-        return useWorldGuard;
-    }
-
-    public static boolean isUseResidence() {
-        return useResidence;
-    }
-
-    /*public static int getRemoveChestAfter() {
-        return removeChestAfter;
-    }*/
-
     public static FileManager getFileManager() {
         return fileManager;
     }
@@ -262,9 +228,6 @@ public final class DeathChestPro extends JavaPlugin {
     /*public static boolean isSaveXP() {
         return saveXP;
     }*/
-    public static boolean isUseGriefPrevention() {
-        return useGriefPrevention;
-    }
 
     public static boolean isVoidSpawning() {
         return voidSpawning;

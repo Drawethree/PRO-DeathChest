@@ -1,9 +1,12 @@
 package sk.drawethree.deathchestpro.chest;
 
+import me.clip.placeholderapi.PlaceholderAPI;
+import me.clip.placeholderapi.commands.PlaceholderAPICommands;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import sk.drawethree.deathchestpro.DeathChestPro;
+import sk.drawethree.deathchestpro.DeathChestProHook;
 import sk.drawethree.deathchestpro.utils.LocationUtil;
 import sk.drawethree.deathchestpro.utils.Time;
 
@@ -30,11 +33,17 @@ public class DeathChestHologram {
 
     private void inicialize() {
         for (String s : DeathChestPro.getHologramLines()) {
-            this.appendTextLine(s
-                    .replaceAll("%locked%", deathChest.getLockedString())
+            s.replaceAll("%locked%", deathChest.getLockedString())
                     .replaceAll("%player%", deathChest.getOfflinePlayer().getName())
                     .replaceAll("%death_date%", DeathChestPro.getDeathDateFormat().format(new Date()))
-                    .replaceAll("%timeleft%", deathChest.getTimeLeft() == -1 ? "∞" : new Time(deathChest.getTimeLeft(), TimeUnit.SECONDS).toString()));
+                    .replaceAll("%timeleft%", deathChest.getTimeLeft() == -1 ? "∞" : new Time(deathChest.getTimeLeft(), TimeUnit.SECONDS).toString());
+
+            if (DeathChestProHook.PLACEHOLDER_API.isEnabled()) {
+                s = PlaceholderAPI.setPlaceholders(deathChest.getOfflinePlayer(), s);
+            }
+
+            this.appendTextLine(s);
+
         }
         this.teleport(LocationUtil.getCenter(this.location.clone().add(0, 0.5 + this.getHeight(), 0)));
     }
