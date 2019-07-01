@@ -1,9 +1,9 @@
 main: sk.drawethree.deathchestpro.DeathChestPro
-version: 3.0.8-BETA
+version: 3.0.9-BETA
 api-version: 1.13
 name: DeathChestPro
 author: TheRealDrawe
-softdepend: [Residence, DeathFeathers, WorldGuard, GriefPrevention, WorldEdit, FastAsyncWorldEdit, PlaceholderAPI]
+softdepend: [Residence, DeathFeathers, WorldGuard, GriefPrevention, WorldEdit, FastAsyncWorldEdit]
 permissions:
   deathchestpro.*:
     description: All DeathChestPro permissions
@@ -16,7 +16,7 @@ permissions:
       deathchestpro.teleport: true
   deathchestpro.chest:
     description: Allows to spawn a chest after player's death
-    default: true
+    default: op
   deathchestpro.lock:
     description: Allows to automatically lock a deathchest after death
     default: op

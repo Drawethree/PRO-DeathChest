@@ -33,7 +33,7 @@ public class DeathChestHologram {
 
     private void inicialize() {
         for (String s : DeathChestPro.getHologramLines()) {
-            s.replaceAll("%locked%", deathChest.getLockedString())
+            s = s.replaceAll("%locked%", deathChest.getLockedString())
                     .replaceAll("%player%", deathChest.getOfflinePlayer().getName())
                     .replaceAll("%death_date%", DeathChestPro.getDeathDateFormat().format(new Date()))
                     .replaceAll("%timeleft%", deathChest.getTimeLeft() == -1 ? "∞" : new Time(deathChest.getTimeLeft(), TimeUnit.SECONDS).toString());
@@ -115,7 +115,7 @@ public class DeathChestHologram {
                     lineNumber += 1;
                 }*/
 
-                this.setLine(lineNumber, line.replaceAll("%timeleft%", new Time(timeLeft, TimeUnit.SECONDS).toString()));
+                this.setLine(lineNumber, line.replaceAll("%timeleft%", timeLeft == -1 ? "∞" : new Time(timeLeft, TimeUnit.SECONDS).toString()));
             } else if (line.contains("%locked%")) {
                 this.setLine(i, line.replaceAll("%locked%", deathChest.getLockedString()));
             }

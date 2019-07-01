@@ -104,6 +104,7 @@ public class DeathChestListener implements Listener {
                 if (!dc.isAnnounced()) {
                     dc.announce();
                     dc.runRemoveTask();
+                    dc.runUnlockTask();
                 }
             }
         }

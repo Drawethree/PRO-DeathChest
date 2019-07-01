@@ -56,6 +56,7 @@ public class DeathChest {
         this.listItem = createListItem();
         this.announce();
         this.runRemoveTask();
+        this.runUnlockTask();
     }
 
     private ItemStack createListItem() {
@@ -141,6 +142,23 @@ public class DeathChest {
         return listItem;
     }
 
+
+    public void runUnlockTask() {
+
+        if(DeathChestPro.getUnlockChestAfter() <= 0) {
+            return;
+        }
+
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                locked = false;
+                hologram.updateHologram(timeLeft);
+            }
+        }.runTaskLater(DeathChestPro.getInstance(), DeathChestPro.getUnlockChestAfter()*20L);
+    }
+
     public void runRemoveTask() {
 
         if (this.timeLeft == -1) {
@@ -149,14 +167,9 @@ public class DeathChest {
 
         this.removeTask = new BukkitRunnable() {
             int nextFireworkIn = DeathChestPro.getFireworkInterval();
-            int unlockChestAfter = DeathChestPro.getUnlockChestAfter();
 
             @Override
             public void run() {
-
-                if (unlockChestAfter == 0) {
-                    locked = false;
-                }
 
                 if (timeLeft == 0) {
                     removeDeathChest(true);
@@ -172,10 +185,6 @@ public class DeathChest {
                             FireworkUtil.spawnRandomFirework(hologram.getLocation());
                             nextFireworkIn = DeathChestPro.getFireworkInterval();
                         }
-                    }
-
-                    if (unlockChestAfter > 0) {
-                        unlockChestAfter--;
                     }
                 }
             }

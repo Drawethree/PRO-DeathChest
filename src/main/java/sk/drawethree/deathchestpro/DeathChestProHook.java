@@ -23,9 +23,6 @@ public enum DeathChestProHook {
         }
 
     }
-    public String getPluginName() {
-        return pluginName;
-    }
 
     public boolean isEnabled() {
         return enabled;
