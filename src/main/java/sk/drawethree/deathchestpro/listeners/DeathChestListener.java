@@ -170,6 +170,7 @@ public class DeathChestListener implements Listener {
                 }
 
                 e.setCancelled(true);
+
                 if (p.isSneaking()) {
                     dc.fastLoot(p);
                     return;
