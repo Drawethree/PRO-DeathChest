@@ -15,6 +15,8 @@ expire_groups:
     time: 60
 #Can chest be broken?
 allow_break_chests: false
+#Can killer loot player's chest?
+allow_killer_looting: false
 #Should items drop when chest expires?
 drop_items_after_expire: false
 #Should chest be spawned if player died in lava?
@@ -52,6 +54,7 @@ hologram:
   #Lines displayed on hologram. Accepts placeholders %locked%, %death_date%, %player%, %timeleft%
   lines:
   - "%locked%"
+  - "%item_count% Items"
   - "Died %death_date%"
   - "Owner: %player%"
   - "%timeleft% left"

@@ -4,6 +4,7 @@ import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -66,10 +67,16 @@ public class DeathChestManager {
             }
 
             OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getString("chests." + key + ".player")));
+            OfflinePlayer killer = null;
+            try {
+                killer = Bukkit.getOfflinePlayer(UUID.fromString(DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getString("chests." + key + ".killer")));
+            } catch (Exception e) {
+
+            }
             boolean locked = DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getBoolean("chests." + key + ".locked");
             int timeLeft = DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getInt("chests." + key + ".timeleft");
             List<ItemStack> items = (ArrayList<ItemStack>) DeathChestPro.getFileManager().getConfig("deathchests.yml").get().get("chests." + key + ".items");
-            createDeathChest(chestUuid, player, locked, loc, timeLeft, items);
+            createDeathChest(chestUuid, player, killer, locked, loc, timeLeft, items);
 
         }
         DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded!");
@@ -186,7 +193,7 @@ public class DeathChestManager {
         return amount;
     }
 
-    public boolean createDeathChest(Player p, List<ItemStack> drops) {
+    public boolean createDeathChest(Player p, Player killer, List<ItemStack> drops) {
 
         if (!canPlace(p)) {
             return false;
@@ -198,7 +205,7 @@ public class DeathChestManager {
 
         ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
 
-        DeathChest dc = new DeathChest(p, drops);
+        DeathChest dc = new DeathChest(p, killer, drops);
 
         currentChests.add(dc);
         deathChests.put(p.getUniqueId(), currentChests);
@@ -207,7 +214,7 @@ public class DeathChestManager {
 
     }
 
-    private boolean createDeathChest(UUID chestUuid, OfflinePlayer p, boolean locked, Location loc, int timeLeft, List<ItemStack> items) {
+    private boolean createDeathChest(UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, boolean locked, Location loc, int timeLeft, List<ItemStack> items) {
 
         if (deathChests.get(p.getUniqueId()) == null) {
             deathChests.put(p.getUniqueId(), new ArrayList<>());
@@ -215,7 +222,7 @@ public class DeathChestManager {
 
         ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
 
-        DeathChest dc = new DeathChest(chestUuid, p, loc, locked, timeLeft, items);
+        DeathChest dc = new DeathChest(chestUuid, p, killer, loc, locked, timeLeft, items);
 
         currentChests.add(dc);
         deathChests.put(p.getUniqueId(), currentChests);
@@ -264,7 +271,7 @@ public class DeathChestManager {
     }
 
     public DeathChest getDeathChest(String id) {
-        return deathChestsByUUID.get(UUID.fromString(id));
+        return this.deathChestsByUUID.get(UUID.fromString(id));
     }
 
     public void removeFromOpenedInventories(Player p) {
@@ -273,5 +280,21 @@ public class DeathChestManager {
 
     public OfflinePlayer getOpenedInventory(Player p) {
         return openedInventories.get(p);
+    }
+
+    public List<DeathChest> getDeathChestsInChunk(Chunk chunk) {
+        List<DeathChest> returnList = new ArrayList<>();
+
+        for (DeathChest dc : this.deathChestsByUUID.values()) {
+            if (dc.getLocation().getChunk().equals(chunk)) {
+                returnList.add(dc);
+            }
+        }
+
+        return returnList;
+    }
+
+    public Collection<DeathChest> getDeathChests() {
+        return this.deathChestsByUUID.values();
     }
 }

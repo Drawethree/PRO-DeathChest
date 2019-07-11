@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.TreeMap;
 
 public final class DeathChestPro extends JavaPlugin {
 
@@ -46,8 +45,9 @@ public final class DeathChestPro extends JavaPlugin {
     private static String deathChestInvTitle = "&7%player%'s DeathChest";
     private static int fireworkInterval = 5;
     private static int unlockChestAfter = -1;
-    //private static int removeChestAfter = 20;
+    private static boolean allowKillerLooting = false;
 
+    //private static int removeChestAfter = 20;
     @Override
     public void onEnable() {
         instance = this;
@@ -62,6 +62,8 @@ public final class DeathChestPro extends JavaPlugin {
         DeathChestManager.getInstance().loadDeathChests();
 
         getServer().getPluginManager().registerEvents(new DeathChestListener(), this);
+        //getServer().getPluginManager().registerEvents(new DeathChestHologramListener(), this);
+
         getCommand("deathchest").setExecutor(new DeathChestCommand());
         broadcast(BroadcastType.INFO, "§aThis server is using §e" + this.getName() + " §arunning on version §e" + this.getDescription().getVersion() + " §aby TheRealDrawe");
     }
@@ -103,6 +105,7 @@ public final class DeathChestPro extends JavaPlugin {
             autoEquipArmor = fileManager.getConfig("config.yml").get().getBoolean("auto_equip_armor");
             lavaSpawning = fileManager.getConfig("config.yml").get().getBoolean("lava_spawning");
             debugMode = fileManager.getConfig("config.yml").get().getBoolean("debug_messages");
+            allowKillerLooting = fileManager.getConfig("config.yml").get().getBoolean("allow_killer_looting");
             //saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
             loadExpireGroups();
         }
@@ -225,10 +228,10 @@ public final class DeathChestPro extends JavaPlugin {
     }
 
 
+
     /*public static boolean isSaveXP() {
         return saveXP;
     }*/
-
     public static boolean isVoidSpawning() {
         return voidSpawning;
     }
@@ -245,6 +248,19 @@ public final class DeathChestPro extends JavaPlugin {
         return unlockChestAfter;
     }
 
+    public static boolean isAllowKillerLooting() {
+        return allowKillerLooting;
+    }
+
+    public static int getExpireTimeForPlayer(Player player) {
+        for(String perm : expireGroups.keySet()) {
+            if(player.hasPermission(perm)) {
+                return expireGroups.get(perm);
+            }
+        }
+        return DeathChestPro.DEFAULT_EXPIRE_TIME;
+    }
+
     public enum BroadcastType {
         WARN("§7(§4!§7)"),
         DEBUG("§7(§eDEBUG§7)"),
@@ -255,19 +271,10 @@ public final class DeathChestPro extends JavaPlugin {
         BroadcastType(String prefix) {
             this.prefix = prefix;
         }
-
         @Override
         public String toString() {
             return this.prefix;
         }
-    }
 
-    public static int getExpireTimeForPlayer(Player player) {
-        for(String perm : expireGroups.keySet()) {
-            if(player.hasPermission(perm)) {
-                return expireGroups.get(perm);
-            }
-        }
-        return DeathChestPro.DEFAULT_EXPIRE_TIME;
     }
 }

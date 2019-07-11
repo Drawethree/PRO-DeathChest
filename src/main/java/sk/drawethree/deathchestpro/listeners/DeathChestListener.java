@@ -34,6 +34,7 @@ import java.util.Iterator;
 
 public class DeathChestListener implements Listener {
 
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onExplode(final EntityExplodeEvent e) {
         final Iterator it = e.blockList().iterator();
@@ -61,6 +62,7 @@ public class DeathChestListener implements Listener {
             if (dc.isChestEmpty()) {
                 dc.removeDeathChest(false);
             } else {
+                dc.updateHologram();
                 p.playSound(p.getLocation(), CompSound.CHEST_CLOSE.getSound(), 0.5F, 1F);
             }
         }
@@ -76,7 +78,7 @@ public class DeathChestListener implements Listener {
                 return;
             }
 
-            if (DeathChestManager.getInstance().createDeathChest(p, e.getDrops())) {
+            if (DeathChestManager.getInstance().createDeathChest(p, p.getKiller(), e.getDrops())) {
                 DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest created");
                 e.setKeepInventory(true);
                 p.getInventory().setArmorContents(null);
@@ -162,7 +164,7 @@ public class DeathChestListener implements Listener {
             DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(b.getLocation());
             if (dc != null) {
                 if (dc.isLocked()) {
-                    if (!dc.getOfflinePlayer().getUniqueId().equals(p.getUniqueId()) && !p.hasPermission("deathchestpro.see")) {
+                    if ((dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId()) && !DeathChestPro.isAllowKillerLooting()) || (!dc.getOfflinePlayer().getUniqueId().equals(p.getUniqueId()) && !p.hasPermission("deathchestpro.see"))) {
                         e.setCancelled(true);
                         p.sendMessage(Message.DEATHCHEST_CANNOT_OPEN.getChatMessage());
                         return;
