@@ -30,7 +30,7 @@ public class DeathChestHologram {
     }
 
     public void spawn() {
-        if(this.armorStands != null) {
+        if (this.armorStands != null) {
             DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Cannot spawn hologram because its already spawned.");
             return;
         }
@@ -96,7 +96,7 @@ public class DeathChestHologram {
 
     public void despawn() {
 
-        if(this.armorStands == null) {
+        if (this.armorStands == null) {
             DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Cannot despawn hologram because its not spawned.");
             return;
         }
@@ -113,7 +113,7 @@ public class DeathChestHologram {
     }
 
     private void setLine(int lineNumber, String text) {
-        this.armorStands.get(lineNumber).setCustomName(text);
+        if (this.armorStands != null) this.armorStands.get(lineNumber).setCustomName(text);
     }
 
     public void updateHologram(int timeLeft) {

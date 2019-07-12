@@ -38,6 +38,7 @@ public final class DeathChestPro extends JavaPlugin {
     private static boolean autoEquipArmor = true;
     private static boolean lavaSpawning = true;
     private static boolean debugMode = true;
+    private static boolean hologramEnabled = true;
     //private static boolean saveXP = false;
 
     private static SimpleDateFormat deathDateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
@@ -48,6 +49,7 @@ public final class DeathChestPro extends JavaPlugin {
     private static boolean allowKillerLooting = false;
 
     //private static int removeChestAfter = 20;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -67,7 +69,6 @@ public final class DeathChestPro extends JavaPlugin {
         getCommand("deathchest").setExecutor(new DeathChestCommand());
         broadcast(BroadcastType.INFO, "§aThis server is using §e" + this.getName() + " §arunning on version §e" + this.getDescription().getVersion() + " §aby TheRealDrawe");
     }
-
 
     private void hook() {
         for(DeathChestProHook hook : DeathChestProHook.values()) {
@@ -105,6 +106,7 @@ public final class DeathChestPro extends JavaPlugin {
             autoEquipArmor = fileManager.getConfig("config.yml").get().getBoolean("auto_equip_armor");
             lavaSpawning = fileManager.getConfig("config.yml").get().getBoolean("lava_spawning");
             debugMode = fileManager.getConfig("config.yml").get().getBoolean("debug_messages");
+            hologramEnabled = fileManager.getConfig("config.yml").get().getBoolean("hologram.enabled");
             allowKillerLooting = fileManager.getConfig("config.yml").get().getBoolean("allow_killer_looting");
             //saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
             loadExpireGroups();
@@ -232,10 +234,10 @@ public final class DeathChestPro extends JavaPlugin {
     /*public static boolean isSaveXP() {
         return saveXP;
     }*/
+
     public static boolean isVoidSpawning() {
         return voidSpawning;
     }
-
     public static boolean isAutoEquipArmor() {
         return autoEquipArmor;
     }
@@ -250,6 +252,10 @@ public final class DeathChestPro extends JavaPlugin {
 
     public static boolean isAllowKillerLooting() {
         return allowKillerLooting;
+    }
+
+    public static boolean isHologramEnabled() {
+        return hologramEnabled;
     }
 
     public static int getExpireTimeForPlayer(Player player) {
@@ -271,6 +277,7 @@ public final class DeathChestPro extends JavaPlugin {
         BroadcastType(String prefix) {
             this.prefix = prefix;
         }
+
         @Override
         public String toString() {
             return this.prefix;

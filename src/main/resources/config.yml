@@ -49,6 +49,8 @@ sounds:
   gui_open: ENTITY_EXPERIENCE_ORB_PICKUP
 #Hologram settings
 hologram:
+  #Should hologram be enabled?
+  enabled: true
   #Date format. Visit https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html for more help
   death_date_format: "dd.MM.yyyy hh:mm"
   #Lines displayed on hologram. Accepts placeholders %locked%, %death_date%, %player%, %timeleft%
