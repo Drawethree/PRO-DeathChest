@@ -42,9 +42,11 @@ public class DeathChest {
         this.killer = killer;
         this.locked = p.hasPermission("deathchestpro.lock");
         this.timeLeft = DeathChestPro.getExpireTimeForPlayer(p);
+
         this.setupChest(p.getLocation(), items);
         this.setupHologram();
-        this.listItem = createListItem();
+
+        this.listItem = this.createListItem();
         this.announced = false;
     }
 
@@ -54,9 +56,12 @@ public class DeathChest {
         this.killer = killer;
         this.locked = locked;
         this.timeLeft = timeLeft;
+
         this.setupChest(loc, items);
         this.setupHologram();
-        this.listItem = createListItem();
+
+        this.listItem = this.createListItem();
+
         this.announce();
         this.runRemoveTask();
         this.runUnlockTask();
@@ -123,6 +128,7 @@ public class DeathChest {
         this.location = loc.getBlock().getLocation();
 
         this.chestInventory = Bukkit.createInventory(null, items.size() > 27 ? 54 : 27, DeathChestPro.getDeathChestInvTitle().replaceAll("%player%", player.getName()));
+
         for (ItemStack i : items) {
             if (i == null) continue;
             this.chestInventory.addItem(i);
@@ -138,7 +144,7 @@ public class DeathChest {
         loc.clone().add(0, -1, 0).getBlock().setType(CompMaterial.GLASS.getMaterial());
     }
 
-    public OfflinePlayer getOfflinePlayer() {
+    public OfflinePlayer getOwner() {
         return player;
     }
 
@@ -161,17 +167,23 @@ public class DeathChest {
 
             @Override
             public void run() {
+
+                //Check if chest exists
                 if (DeathChestManager.getInstance().getDeathChest(chestUUID.toString()) == null) {
                     return;
                 }
+
                 locked = false;
-                if (hologram != null) hologram.updateHologram(timeLeft);
+                if (hologram != null)
+                    hologram.updateHologram(timeLeft);
+
             }
         }.runTaskLater(DeathChestPro.getInstance(), DeathChestPro.getUnlockChestAfter() * 20L);
     }
 
     public void runRemoveTask() {
 
+        //We do not want to run remove task when its never ending deathchest
         if (this.timeLeft == -1) {
             return;
         }
@@ -187,9 +199,9 @@ public class DeathChest {
                     cancel();
                 } else {
                     timeLeft--;
-
-                    if (hologram != null) hologram.updateHologram(timeLeft);
-
+                    if (hologram != null) {
+                        hologram.updateHologram(timeLeft);
+                    }
                     if (DeathChestPro.isDeathchestFireworks()) {
                         nextFireworkIn--;
                         if (nextFireworkIn == 0) {
@@ -234,7 +246,8 @@ public class DeathChest {
             removeTask.cancel();
         }
 
-        if (hologram != null) this.hologram.despawn();
+        if (hologram != null)
+            this.hologram.despawn();
 
         this.removeChests(closeInventories);
 
@@ -255,7 +268,7 @@ public class DeathChest {
             this.location.getBlock().setType(CompMaterial.CHEST.getMaterial());
         }
 
-        if (!this.getOfflinePlayer().isOnline()) {
+        if (!this.getOwner().isOnline()) {
             return;
         }
 
@@ -346,7 +359,7 @@ public class DeathChest {
 
     public void save() {
         DeathChestPro.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".location", this.location.serialize());
-        DeathChestPro.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".player", this.getOfflinePlayer().getUniqueId().toString());
+        DeathChestPro.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".player", this.getOwner().getUniqueId().toString());
         if (this.killer != null)
             DeathChestPro.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".killer", this.getKiller().getUniqueId().toString());
         DeathChestPro.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".items", this.chestInventory.getContents());
@@ -360,7 +373,8 @@ public class DeathChest {
     }
 
     public void removeHologram() {
-        if (this.hologram != null) this.hologram.despawn();
+        if (this.hologram != null)
+            this.hologram.despawn();
     }
 
     public void removeChest() {
@@ -382,7 +396,8 @@ public class DeathChest {
     }
 
     public void updateHologram() {
-        if (this.hologram != null) this.hologram.updateHologram(this.timeLeft);
+        if (this.hologram != null)
+            this.hologram.updateHologram(this.timeLeft);
     }
 
     public OfflinePlayer getKiller() {
@@ -394,10 +409,12 @@ public class DeathChest {
     }
 
     public void spawnHologram() {
-        if (this.hologram != null) this.hologram.spawn();
+        if (this.hologram != null)
+            this.hologram.spawn();
     }
 
     public void despawnHologram() {
-        if (this.hologram != null) this.hologram.despawn();
+        if (this.hologram != null)
+            this.hologram.despawn();
     }
 }

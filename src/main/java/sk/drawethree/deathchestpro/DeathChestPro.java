@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import sk.drawethree.deathchestpro.commands.DeathChestCommand;
+import sk.drawethree.deathchestpro.listeners.DeathChestHologramListener;
 import sk.drawethree.deathchestpro.listeners.DeathChestListener;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.managers.FileManager;
@@ -39,6 +40,7 @@ public final class DeathChestPro extends JavaPlugin {
     private static boolean lavaSpawning = true;
     private static boolean debugMode = true;
     private static boolean hologramEnabled = true;
+    private static boolean startTimerAtDeath = false;
     //private static boolean saveXP = false;
 
     private static SimpleDateFormat deathDateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
@@ -48,8 +50,8 @@ public final class DeathChestPro extends JavaPlugin {
     private static int unlockChestAfter = -1;
     private static boolean allowKillerLooting = false;
 
-    //private static int removeChestAfter = 20;
 
+    //private static int removeChestAfter = 20;
     @Override
     public void onEnable() {
         instance = this;
@@ -61,10 +63,11 @@ public final class DeathChestPro extends JavaPlugin {
 
         this.hook();
 
+        DeathChestManager.getInstance().removeExistingHolograms();
         DeathChestManager.getInstance().loadDeathChests();
 
         getServer().getPluginManager().registerEvents(new DeathChestListener(), this);
-        //getServer().getPluginManager().registerEvents(new DeathChestHologramListener(), this);
+        getServer().getPluginManager().registerEvents(new DeathChestHologramListener(), this);
 
         getCommand("deathchest").setExecutor(new DeathChestCommand());
         broadcast(BroadcastType.INFO, "§aThis server is using §e" + this.getName() + " §arunning on version §e" + this.getDescription().getVersion() + " §aby TheRealDrawe");
@@ -108,6 +111,7 @@ public final class DeathChestPro extends JavaPlugin {
             debugMode = fileManager.getConfig("config.yml").get().getBoolean("debug_messages");
             hologramEnabled = fileManager.getConfig("config.yml").get().getBoolean("hologram.enabled");
             allowKillerLooting = fileManager.getConfig("config.yml").get().getBoolean("allow_killer_looting");
+            startTimerAtDeath = fileManager.getConfig("config.yml").get().getBoolean("start_timer_at_death");
             //saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
             loadExpireGroups();
         }
@@ -231,17 +235,17 @@ public final class DeathChestPro extends JavaPlugin {
 
 
 
+
     /*public static boolean isSaveXP() {
         return saveXP;
     }*/
-
     public static boolean isVoidSpawning() {
         return voidSpawning;
     }
+
     public static boolean isAutoEquipArmor() {
         return autoEquipArmor;
     }
-
     public static boolean isLavaSpawning() {
         return lavaSpawning;
     }
@@ -256,6 +260,10 @@ public final class DeathChestPro extends JavaPlugin {
 
     public static boolean isHologramEnabled() {
         return hologramEnabled;
+    }
+
+    public static boolean isStartTimerAtDeath() {
+        return startTimerAtDeath;
     }
 
     public static int getExpireTimeForPlayer(Player player) {

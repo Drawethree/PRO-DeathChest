@@ -1,5 +1,5 @@
 main: sk.drawethree.deathchestpro.DeathChestPro
-version: 3.1.2
+version: 3.1.5
 api-version: 1.13
 name: DeathChestPro
 author: TheRealDrawe
@@ -41,6 +41,9 @@ permissions:
   deathchestpro.expire.default:
     description: Default expire time
     default: true
+  deathchestpro.clearhologram:
+    description: Clear hologram permission
+    default: op
 commands:
   deathchest:
     aliases: [dc,dcp]

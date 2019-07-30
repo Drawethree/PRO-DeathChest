@@ -31,6 +31,8 @@ auto_equip_armor: true
 clickable_message: true
 #Should the chest be spawned on highest possible block, or where player died?
 spawn_chest_on_highest_block: false
+#Should the chest countdown start right after player died or after he respawns?
+start_timer_at_death: false
 #Deatchest firework settings
 deathchest_fireworks:
   #Should fireworks spawn?

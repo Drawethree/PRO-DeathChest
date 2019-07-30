@@ -3,7 +3,9 @@ package sk.drawethree.deathchestpro.chest;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.metadata.FixedMetadataValue;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.DeathChestProHook;
 import sk.drawethree.deathchestpro.utils.LocationUtil;
@@ -14,6 +16,9 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class DeathChestHologram {
+
+    public static final String ENTITY_METADATA = "dcp";
+    private static ArrayList<ArmorStand> allLines = new ArrayList<>();
 
     private static final double LINE_SPACER = 0.25;
     private static final double ARMOR_STAND_HEIGHT = 2.0;
@@ -29,6 +34,10 @@ public class DeathChestHologram {
         this.spawn();
     }
 
+    public static boolean existHologram(Entity e) {
+        return allLines.contains(e);
+    }
+
     public void spawn() {
         if (this.armorStands != null) {
             DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Cannot spawn hologram because its already spawned.");
@@ -40,13 +49,13 @@ public class DeathChestHologram {
 
         for (String s : DeathChestPro.getHologramLines()) {
             s = s.replaceAll("%locked%", deathChest.getLockedString())
-                    .replaceAll("%player%", deathChest.getOfflinePlayer().getName())
+                    .replaceAll("%player%", deathChest.getOwner().getName())
                     .replaceAll("%item_count%", String.valueOf(deathChest.getItemCount()))
                     .replaceAll("%death_date%", DeathChestPro.getDeathDateFormat().format(new Date()))
                     .replaceAll("%timeleft%", deathChest.getTimeLeft() == -1 ? "∞" : new Time(deathChest.getTimeLeft(), TimeUnit.SECONDS).toString());
 
             if (DeathChestProHook.PLACEHOLDER_API.isEnabled()) {
-                s = PlaceholderAPI.setPlaceholders(deathChest.getOfflinePlayer(), s);
+                s = PlaceholderAPI.setPlaceholders(deathChest.getOwner(), s);
             }
 
             this.appendTextLine(s);
@@ -69,7 +78,11 @@ public class DeathChestHologram {
         as.setCustomNameVisible(true);
         as.setVisible(false);
 
+        as.setMetadata(DeathChestHologram.ENTITY_METADATA, new FixedMetadataValue(DeathChestPro.getInstance(), DeathChestHologram.ENTITY_METADATA));
+
         this.armorStands.add(as);
+        allLines.add(as);
+
         this.update();
     }
 
@@ -107,8 +120,10 @@ public class DeathChestHologram {
             as.setCustomName("");
             as.setCustomNameVisible(false);
             as.remove();
+            allLines.remove(as);
             as = null;
         }
+
         this.armorStands = null;
     }
 

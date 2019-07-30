@@ -18,6 +18,8 @@ public class DeathChestCommand implements CommandExecutor {
         availableSubCommands.put("list", new ListSubCommand());
         availableSubCommands.put("reload", new ReloadSubCommand());
         availableSubCommands.put("teleport", new TeleportSubCommand());
+        availableSubCommands.put("clearhologram", new ClearHologramSubCommand());
+        //availableSubCommands.put("test", new TestSubCommand());
     }
 
     @Override

@@ -4,9 +4,11 @@ import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -16,6 +18,7 @@ import org.codemc.worldguardwrapper.region.IWrappedRegion;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.DeathChestProHook;
 import sk.drawethree.deathchestpro.chest.DeathChest;
+import sk.drawethree.deathchestpro.chest.DeathChestHologram;
 import sk.drawethree.deathchestpro.utils.CompSound;
 import sk.drawethree.deathchestpro.utils.Items;
 import sk.drawethree.deathchestpro.utils.Message;
@@ -25,6 +28,7 @@ import java.util.*;
 public class DeathChestManager {
 
     private static DeathChestManager ourInstance = new DeathChestManager();
+
     private HashMap<UUID, ArrayList<DeathChest>> deathChests;
     private HashMap<UUID, DeathChest> deathChestsByUUID;
     private HashMap<Player, OfflinePlayer> openedInventories;
@@ -68,16 +72,17 @@ public class DeathChestManager {
 
             OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getString("chests." + key + ".player")));
             OfflinePlayer killer = null;
+
             try {
                 killer = Bukkit.getOfflinePlayer(UUID.fromString(DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getString("chests." + key + ".killer")));
             } catch (Exception e) {
-
+                //Without killer.
             }
+
             boolean locked = DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getBoolean("chests." + key + ".locked");
             int timeLeft = DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getInt("chests." + key + ".timeleft");
             List<ItemStack> items = (ArrayList<ItemStack>) DeathChestPro.getFileManager().getConfig("deathchests.yml").get().get("chests." + key + ".items");
             createDeathChest(chestUuid, player, killer, locked, loc, timeLeft, items);
-
         }
         DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded!");
 
@@ -138,12 +143,12 @@ public class DeathChestManager {
     }
 
     public void removeDeathChest(DeathChest dc) {
-        ArrayList<DeathChest> list = deathChests.get(dc.getOfflinePlayer().getUniqueId());
+        ArrayList<DeathChest> list = deathChests.get(dc.getOwner().getUniqueId());
         list.remove(dc);
         if (list.isEmpty()) {
-            deathChests.remove(dc.getOfflinePlayer().getUniqueId());
+            deathChests.remove(dc.getOwner().getUniqueId());
         } else {
-            deathChests.put(dc.getOfflinePlayer().getUniqueId(), list);
+            deathChests.put(dc.getOwner().getUniqueId(), list);
         }
         deathChestsByUUID.remove(dc.getChestUUID());
         DeathChestPro.getFileManager().getConfig("deathchests.yml").set("chests." + dc.getChestUUID().toString(), null).save();
@@ -210,6 +215,13 @@ public class DeathChestManager {
         currentChests.add(dc);
         deathChests.put(p.getUniqueId(), currentChests);
         deathChestsByUUID.put(dc.getChestUUID(), dc);
+
+        if (DeathChestPro.isStartTimerAtDeath()) {
+            dc.announce();
+            dc.runUnlockTask();
+            dc.runRemoveTask();
+        }
+
         return true;
 
     }
@@ -223,8 +235,8 @@ public class DeathChestManager {
         ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
 
         DeathChest dc = new DeathChest(chestUuid, p, killer, loc, locked, timeLeft, items);
-
         currentChests.add(dc);
+
         deathChests.put(p.getUniqueId(), currentChests);
         deathChestsByUUID.put(dc.getChestUUID(), dc);
 
@@ -282,19 +294,17 @@ public class DeathChestManager {
         return openedInventories.get(p);
     }
 
-    public List<DeathChest> getDeathChestsInChunk(Chunk chunk) {
-        List<DeathChest> returnList = new ArrayList<>();
-
-        for (DeathChest dc : this.deathChestsByUUID.values()) {
-            if (dc.getLocation().getChunk().equals(chunk)) {
-                returnList.add(dc);
+    public void removeExistingHolograms() {
+        for (World w : Bukkit.getWorlds()) {
+            for (Entity e : w.getEntities()) {
+                if (!(e instanceof ArmorStand)) {
+                    continue;
+                }
+                if (e.hasMetadata(DeathChestHologram.ENTITY_METADATA)) {
+                    DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Removing hologram entity.");
+                    e.remove();
+                }
             }
         }
-
-        return returnList;
-    }
-
-    public Collection<DeathChest> getDeathChests() {
-        return this.deathChestsByUUID.values();
     }
 }
