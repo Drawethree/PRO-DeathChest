@@ -7,7 +7,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.metadata.FixedMetadataValue;
 import sk.drawethree.deathchestpro.DeathChestPro;
-import sk.drawethree.deathchestpro.DeathChestProHook;
+import sk.drawethree.deathchestpro.misc.DCHook;
 import sk.drawethree.deathchestpro.utils.LocationUtil;
 import sk.drawethree.deathchestpro.utils.Time;
 
@@ -54,7 +54,7 @@ public class DeathChestHologram {
                     .replaceAll("%death_date%", DeathChestPro.getDeathDateFormat().format(new Date()))
                     .replaceAll("%timeleft%", deathChest.getTimeLeft() == -1 ? "∞" : new Time(deathChest.getTimeLeft(), TimeUnit.SECONDS).toString());
 
-            if (DeathChestProHook.PLACEHOLDER_API.isEnabled()) {
+            if (DCHook.getHook("PlaceholderAPI")) {
                 s = PlaceholderAPI.setPlaceholders(deathChest.getOwner(), s);
             }
 

@@ -142,9 +142,10 @@ public class DeathChestListener implements Listener {
 
     @EventHandler
     public void onInvClick(final InventoryClickEvent e) {
-        if (!(e.getWhoClicked() instanceof Player) || e.getInventory() == null || !e.getView().getTitle().contains(Message.DEATHCHEST_LIST_INV_TITLE.getMessage())) {
+        if (!(e.getWhoClicked() instanceof Player) || e.getInventory() == null || e.getView() == null || !e.getView().getTitle().contains(Message.DEATHCHEST_LIST_INV_TITLE.getMessage())) {
             return;
         }
+
         e.setCancelled(true);
         final Player p = (Player) e.getWhoClicked();
 

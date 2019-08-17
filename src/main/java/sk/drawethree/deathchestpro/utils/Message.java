@@ -23,7 +23,8 @@ public enum Message {
     SECONDS("time.seconds"),
     DEATHCHEST_TELEPORTED("deathchest_teleported"),
     DEATHCHEST_FASTLOOT_COMPLETE("deathchest_fastloot_complete"),
-    DEATHCHEST_LOCATED_HOVER("deathchest_located_hover");
+    DEATHCHEST_LOCATED_HOVER("deathchest_located_hover"),
+    DEATHCHEST_TELEPORT_NO_MONEY("deathchest_teleport_no_money");
 
     private String path;
     private String message;

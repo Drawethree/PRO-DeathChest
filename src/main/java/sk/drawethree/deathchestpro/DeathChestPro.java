@@ -9,6 +9,7 @@ import sk.drawethree.deathchestpro.listeners.DeathChestHologramListener;
 import sk.drawethree.deathchestpro.listeners.DeathChestListener;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.managers.FileManager;
+import sk.drawethree.deathchestpro.misc.DCHook;
 import sk.drawethree.deathchestpro.utils.Items;
 import sk.drawethree.deathchestpro.utils.Message;
 import sk.drawethree.deathchestpro.utils.Metrics;
@@ -49,9 +50,9 @@ public final class DeathChestPro extends JavaPlugin {
     private static int fireworkInterval = 5;
     private static int unlockChestAfter = -1;
     private static boolean allowKillerLooting = false;
+    private static double teleportCost = 0;
 
 
-    //private static int removeChestAfter = 20;
     @Override
     public void onEnable() {
         instance = this;
@@ -74,10 +75,7 @@ public final class DeathChestPro extends JavaPlugin {
     }
 
     private void hook() {
-        for(DeathChestProHook hook : DeathChestProHook.values()) {
-            hook.hook();
-        }
-
+        DCHook.attemptHooks();
         new Metrics(this);
     }
 
@@ -92,7 +90,6 @@ public final class DeathChestPro extends JavaPlugin {
 
         if (configVersion == 1) {
             allowBreakChests = fileManager.getConfig("config.yml").get().getBoolean("allow_break_chests");
-            //removeChestAfter = fileManager.getConfig("config.yml").get().getInt("remove_chest_time");
             disabledworlds = fileManager.getConfig("config.yml").get().getStringList("disabled_worlds");
             disabledRegions = fileManager.getConfig("config.yml").get().getStringList("disabled_regions");
             deathchestFireworks = fileManager.getConfig("config.yml").get().getBoolean("deathchest_fireworks.enabled");
@@ -112,6 +109,7 @@ public final class DeathChestPro extends JavaPlugin {
             hologramEnabled = fileManager.getConfig("config.yml").get().getBoolean("hologram.enabled");
             allowKillerLooting = fileManager.getConfig("config.yml").get().getBoolean("allow_killer_looting");
             startTimerAtDeath = fileManager.getConfig("config.yml").get().getBoolean("start_timer_at_death");
+            teleportCost = fileManager.getConfig("config.yml").get().getDouble("teleport_cost");
             //saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
             loadExpireGroups();
         }
@@ -236,6 +234,7 @@ public final class DeathChestPro extends JavaPlugin {
 
 
 
+
     /*public static boolean isSaveXP() {
         return saveXP;
     }*/
@@ -246,10 +245,10 @@ public final class DeathChestPro extends JavaPlugin {
     public static boolean isAutoEquipArmor() {
         return autoEquipArmor;
     }
+
     public static boolean isLavaSpawning() {
         return lavaSpawning;
     }
-
     public static int getUnlockChestAfter() {
         return unlockChestAfter;
     }
@@ -264,6 +263,10 @@ public final class DeathChestPro extends JavaPlugin {
 
     public static boolean isStartTimerAtDeath() {
         return startTimerAtDeath;
+    }
+
+    public static double getTeleportCost() {
+        return teleportCost;
     }
 
     public static int getExpireTimeForPlayer(Player player) {

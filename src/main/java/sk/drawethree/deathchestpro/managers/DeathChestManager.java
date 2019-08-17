@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.region.IWrappedRegion;
 import sk.drawethree.deathchestpro.DeathChestPro;
-import sk.drawethree.deathchestpro.DeathChestProHook;
+import sk.drawethree.deathchestpro.misc.DCHook;
 import sk.drawethree.deathchestpro.chest.DeathChest;
 import sk.drawethree.deathchestpro.chest.DeathChestHologram;
 import sk.drawethree.deathchestpro.utils.CompSound;
@@ -246,7 +246,7 @@ public class DeathChestManager {
     private boolean canPlace(Player p) {
         //Residence Check
         DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Checking Residence...");
-        if (DeathChestProHook.RESIDENCE.isEnabled()) {
+        if (DCHook.getHook("Residence")) {
             final ClaimedResidence res = Residence.getInstance().getResidenceManager().getByLoc(p);
             if (res != null && !res.getPermissions().playerHas(p, Flags.build, true)) {
                 DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player does not have permission to build in residence=" + res.getName());
@@ -257,7 +257,7 @@ public class DeathChestManager {
 
         //WorldGuard Check
         DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Checking WorldGuard...");
-        if (DeathChestProHook.WORLDGUARD.isEnabled()) {
+        if (DCHook.getHook("WorldGuard")) {
             Set<IWrappedRegion> regions = null;
 
             try {

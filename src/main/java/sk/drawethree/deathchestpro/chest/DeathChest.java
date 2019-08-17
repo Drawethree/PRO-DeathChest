@@ -15,6 +15,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
+import sk.drawethree.deathchestpro.misc.DCHook;
+import sk.drawethree.deathchestpro.misc.DCVaultHook;
 import sk.drawethree.deathchestpro.utils.*;
 
 import java.util.ArrayList;
@@ -292,6 +294,17 @@ public class DeathChest {
 
     public boolean teleportPlayer(Player p) {
         if (p.hasPermission("deathchestpro.teleport")) {
+            DCVaultHook vaultHook = (DCVaultHook) DCHook.getHookByName("Vault");
+
+            if(vaultHook.getEconomy() != null) {
+                if(!vaultHook.getEconomy().has(p,DeathChestPro.getTeleportCost())) {
+                    p.sendMessage(Message.DEATHCHEST_TELEPORT_NO_MONEY.getChatMessage());
+                    return false;
+                }
+
+                vaultHook.getEconomy().withdrawPlayer(p,DeathChestPro.getTeleportCost());
+            }
+
             p.teleport(this.location.clone().add(0, 1, 0));
             p.sendMessage(Message.DEATHCHEST_TELEPORTED.getChatMessage());
             return true;
