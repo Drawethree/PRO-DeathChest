@@ -13,11 +13,9 @@
 * [Home](https://github.com/Drawethree/PRO-DeathChest/wiki)
 * [Setup](https://github.com/Drawethree/PRO-DeathChest/wiki/Setup)
 * [Commands & Permissions](https://github.com/Drawethree/PRO-DeathChest/wiki/Commands-&-Permissions)
-* [Placeholders](https://github.com/Drawethree/PRO-DeathChest/wiki/Placeholders)
-* [Downloadable Content](https://github.com/Drawethree/PRO-DeathChest/wiki/Downloadable-Content)
 ### Default Files
 * [_config.yml_](https://github.com/Drawethree/PRO-DeathChest/wiki/config.yml)
-* [_translates.yml_](https://github.com/Drawethree/PRO-DeathChest/wiki/translates.yml)
+* [_messages.yml_](https://github.com/Drawethree/PRO-DeathChest/wiki/messages.yml)
 * [_items.yml_](https://github.com/Drawethree/PRO-DeathChest/wiki/items.yml)
 ### Support
 * [FAQ](https://github.com/Drawethree/PRO-DeathChest/wiki/Frequently-Asked-Questions)
