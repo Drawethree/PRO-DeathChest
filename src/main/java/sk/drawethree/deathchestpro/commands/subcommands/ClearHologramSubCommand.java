@@ -29,7 +29,7 @@ public class ClearHologramSubCommand extends DeathChestSubCommand {
 
         for (Entity e : p.getNearbyEntities(3, 3, 3)) {
             //We do not want to remove existing holograms, just old ones.
-            if (DeathChestHologram.existHologram(e)) {
+            if (DeathChestHologram.existLine(e)) {
                 continue;
             }
             if (e instanceof ArmorStand && e.hasMetadata(DeathChestHologram.ENTITY_METADATA)) {

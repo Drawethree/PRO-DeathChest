@@ -1,5 +1,6 @@
 package sk.drawethree.deathchestpro.misc;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import sk.drawethree.deathchestpro.DeathChestPro;
 
@@ -32,7 +33,9 @@ public abstract class DCHook {
     }
 
 
+    @Getter
     private String pluginName;
+    @Getter
     private boolean enabled;
 
     public DCHook(String pluginName) {
@@ -48,12 +51,4 @@ public abstract class DCHook {
     }
 
     protected abstract void runHookAction();
-
-    public String getPluginName() {
-        return pluginName;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
 }

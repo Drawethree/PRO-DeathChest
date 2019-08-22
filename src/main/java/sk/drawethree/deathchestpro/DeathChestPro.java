@@ -42,6 +42,7 @@ public final class DeathChestPro extends JavaPlugin {
     private static boolean debugMode = true;
     private static boolean hologramEnabled = true;
     private static boolean startTimerAtDeath = false;
+
     //private static boolean saveXP = false;
 
     private static SimpleDateFormat deathDateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
@@ -232,9 +233,6 @@ public final class DeathChestPro extends JavaPlugin {
     }
 
 
-
-
-
     /*public static boolean isSaveXP() {
         return saveXP;
     }*/
@@ -249,6 +247,7 @@ public final class DeathChestPro extends JavaPlugin {
     public static boolean isLavaSpawning() {
         return lavaSpawning;
     }
+
     public static int getUnlockChestAfter() {
         return unlockChestAfter;
     }
@@ -270,8 +269,8 @@ public final class DeathChestPro extends JavaPlugin {
     }
 
     public static int getExpireTimeForPlayer(Player player) {
-        for(String perm : expireGroups.keySet()) {
-            if(player.hasPermission(perm)) {
+        for (String perm : expireGroups.keySet()) {
+            if (player.hasPermission(perm)) {
                 return expireGroups.get(perm);
             }
         }

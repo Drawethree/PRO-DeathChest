@@ -25,7 +25,7 @@ public class DeathChestHologramListener implements Listener {
                 if (!(e instanceof ArmorStand)) {
                     continue;
                 }
-                if (e.hasMetadata(DeathChestHologram.ENTITY_METADATA) && !DeathChestHologram.existHologram(e)) {
+                if (e.hasMetadata(DeathChestHologram.ENTITY_METADATA) && !DeathChestHologram.existLine(e)) {
                     DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Removing hologram entity.");
                     e.remove();
                 }
@@ -35,7 +35,7 @@ public class DeathChestHologramListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onCreatureSpawn(CreatureSpawnEvent event) {
-        if (event.isCancelled() && DeathChestHologram.existHologram(event.getEntity())) {
+        if (event.isCancelled() && DeathChestHologram.existLine(event.getEntity())) {
             event.setCancelled(false);
         }
     }

@@ -1,6 +1,7 @@
 package sk.drawethree.deathchestpro.chest;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -13,15 +14,21 @@ import sk.drawethree.deathchestpro.utils.Time;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class DeathChestHologram {
 
     public static final String ENTITY_METADATA = "dcp";
-    private static ArrayList<ArmorStand> allLines = new ArrayList<>();
 
     private static final double LINE_SPACER = 0.25;
     private static final double ARMOR_STAND_HEIGHT = 2.0;
+
+    private static ArrayList<UUID> allLines = new ArrayList<>();
+
+    public static boolean existLine(Entity e) {
+        return allLines.contains(e.getUniqueId());
+    }
 
     private DeathChest deathChest;
     private Location location;
@@ -32,10 +39,6 @@ public class DeathChestHologram {
         this.location = loc;
         this.location.getChunk().load();
         this.spawn();
-    }
-
-    public static boolean existHologram(Entity e) {
-        return allLines.contains(e);
     }
 
     public void spawn() {
@@ -81,7 +84,7 @@ public class DeathChestHologram {
         as.setMetadata(DeathChestHologram.ENTITY_METADATA, new FixedMetadataValue(DeathChestPro.getInstance(), DeathChestHologram.ENTITY_METADATA));
 
         this.armorStands.add(as);
-        allLines.add(as);
+        allLines.add(as.getUniqueId());
 
         this.update();
     }
@@ -117,10 +120,12 @@ public class DeathChestHologram {
         DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Despawning hologram.");
 
         for (ArmorStand as : this.armorStands) {
+            DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Removing hologram line.");
+            as.getLocation().getChunk().load();
             as.setCustomName("");
             as.setCustomNameVisible(false);
-            as.remove();
             allLines.remove(as);
+            Bukkit.getEntity(as.getUniqueId()).remove();
             as = null;
         }
 
