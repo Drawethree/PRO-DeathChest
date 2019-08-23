@@ -296,13 +296,13 @@ public class DeathChest {
         if (p.hasPermission("deathchestpro.teleport")) {
             DCVaultHook vaultHook = (DCVaultHook) DCHook.getHookByName("Vault");
 
-            if(vaultHook.getEconomy() != null) {
-                if(!vaultHook.getEconomy().has(p,DeathChestPro.getTeleportCost())) {
+            if (vaultHook.getEconomy() != null) {
+                if (!vaultHook.getEconomy().has(p, DeathChestPro.getTeleportCost())) {
                     p.sendMessage(Message.DEATHCHEST_TELEPORT_NO_MONEY.getChatMessage());
                     return false;
                 }
 
-                vaultHook.getEconomy().withdrawPlayer(p,DeathChestPro.getTeleportCost());
+                vaultHook.getEconomy().withdrawPlayer(p, DeathChestPro.getTeleportCost());
             }
 
             p.teleport(this.location.clone().add(0, 1, 0));
@@ -324,7 +324,9 @@ public class DeathChest {
                 }
 
                 if (DeathChestPro.isAutoEquipArmor() && (CompMaterial.isHelmet(i.getType()) || CompMaterial.isChestPlate(i.getType()) || CompMaterial.isLeggings(i.getType()) || CompMaterial.isBoots(i.getType()))) {
-                    this.autoEquip(p, i);
+                    if (!this.autoEquip(p, i)) {
+                        p.getInventory().addItem(i);
+                    }
                     chestInventory.remove(i);
                     continue;
                 }
@@ -346,16 +348,21 @@ public class DeathChest {
         }
     }
 
-    private void autoEquip(Player p, ItemStack i) {
-        if (CompMaterial.isHelmet(i.getType())) {
+    private boolean autoEquip(Player p, ItemStack i) {
+        if (CompMaterial.isHelmet(i.getType()) && p.getInventory().getHelmet() == null) {
             p.getInventory().setHelmet(i);
-        } else if (CompMaterial.isChestPlate(i.getType())) {
+            return true;
+        } else if (CompMaterial.isChestPlate(i.getType()) && p.getInventory().getChestplate() == null) {
             p.getInventory().setChestplate(i);
-        } else if (CompMaterial.isLeggings(i.getType())) {
+            return true;
+        } else if (CompMaterial.isLeggings(i.getType()) && p.getInventory().getLeggings() == null) {
             p.getInventory().setLeggings(i);
-        } else if (CompMaterial.isBoots(i.getType())) {
+            return true;
+        } else if (CompMaterial.isBoots(i.getType()) && p.getInventory().getBoots() == null) {
             p.getInventory().setBoots(i);
+            return true;
         }
+        return false;
     }
 
     public UUID getChestUUID() {
