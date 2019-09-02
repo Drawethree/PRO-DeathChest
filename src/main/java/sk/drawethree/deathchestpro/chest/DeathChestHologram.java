@@ -1,7 +1,6 @@
 package sk.drawethree.deathchestpro.chest;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -119,13 +118,15 @@ public class DeathChestHologram {
 
         DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Despawning hologram.");
 
-        for (ArmorStand as : this.armorStands) {
+        for (ArmorStand as : new ArrayList<>(this.armorStands)) {
             DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Removing hologram line.");
             as.getLocation().getChunk().load();
             as.setCustomName("");
             as.setCustomNameVisible(false);
-            allLines.remove(as);
-            Bukkit.getEntity(as.getUniqueId()).remove();
+            allLines.remove(as.getUniqueId());
+            armorStands.remove(as);
+            as.setHealth(0);
+            as.remove();
             as = null;
         }
 
