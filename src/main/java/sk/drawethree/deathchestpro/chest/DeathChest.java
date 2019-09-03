@@ -204,6 +204,12 @@ public class DeathChest {
                     if (hologram != null) {
                         hologram.updateHologram(timeLeft);
                     }
+
+                    if (location.getBlock().getType() != Material.CHEST) {
+                        location.getBlock().setType(Material.CHEST);
+                        location.getBlock().getState().update(true);
+                    }
+
                     if (DeathChestPro.isDeathchestFireworks()) {
                         nextFireworkIn--;
                         if (nextFireworkIn == 0) {
