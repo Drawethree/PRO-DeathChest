@@ -205,7 +205,7 @@ public class DeathChest {
                         hologram.updateHologram(timeLeft);
                     }
 
-                    if (location.getBlock().getType() != Material.CHEST) {
+                    if (location.getBlock().getType() != Material.CHEST && !DeathChestPro.isAllowBreakChests()) {
                         location.getBlock().setType(Material.CHEST);
                         location.getBlock().getState().update(true);
                     }
