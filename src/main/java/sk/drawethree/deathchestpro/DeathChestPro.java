@@ -68,8 +68,8 @@ public final class DeathChestPro extends JavaPlugin {
         DeathChestManager.getInstance().removeExistingHolograms();
         DeathChestManager.getInstance().loadDeathChests();
 
-        getServer().getPluginManager().registerEvents(new DeathChestListener(), this);
-        getServer().getPluginManager().registerEvents(new DeathChestHologramListener(), this);
+        this.getServer().getPluginManager().registerEvents(new DeathChestListener(), this);
+        this.getServer().getPluginManager().registerEvents(new DeathChestHologramListener(), this);
 
         getCommand("deathchest").setExecutor(new DeathChestCommand());
         broadcast(BroadcastType.INFO, "§aThis server is using §e" + this.getName() + " §arunning on version §e" + this.getDescription().getVersion() + " §aby TheRealDrawe");
