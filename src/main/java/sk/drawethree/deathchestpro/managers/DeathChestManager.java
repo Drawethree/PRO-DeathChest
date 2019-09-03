@@ -3,6 +3,7 @@ package sk.drawethree.deathchestpro.managers;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -30,6 +31,7 @@ public class DeathChestManager {
     private static DeathChestManager ourInstance = new DeathChestManager();
 
     private HashMap<UUID, ArrayList<DeathChest>> deathChests;
+    @Getter
     private HashMap<UUID, DeathChest> deathChestsByUUID;
     private HashMap<Player, OfflinePlayer> openedInventories;
 

@@ -175,8 +175,11 @@ public class DeathChestListener implements Listener {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(b.getLocation());
             if (dc != null) {
+
                 if (dc.isLocked()) {
-                    if ((dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId()) && !DeathChestPro.isAllowKillerLooting()) || (!dc.getOwner().getUniqueId().equals(p.getUniqueId()) && !p.hasPermission("deathchestpro.see"))) {
+                    if((DeathChestPro.isAllowKillerLooting() && dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId())) || dc.getOwner().getUniqueId().equals(p.getUniqueId()) || p.hasPermission("deathchestpro.see") || dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId()) && dc.getOwner().getUniqueId().equals(p.getUniqueId())) {
+                        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player can open the chest.");
+                    } else {
                         e.setCancelled(true);
                         p.sendMessage(Message.DEATHCHEST_CANNOT_OPEN.getChatMessage());
                         return;

@@ -120,9 +120,6 @@ public class DeathChestHologram {
 
         for (ArmorStand as : new ArrayList<>(this.armorStands)) {
             DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Removing hologram line.");
-            as.getLocation().getChunk().load();
-            as.setCustomName("");
-            as.setCustomNameVisible(false);
             allLines.remove(as.getUniqueId());
             armorStands.remove(as);
             as.setHealth(0);
