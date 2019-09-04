@@ -290,7 +290,11 @@ public class DeathChest {
         } else {
             player.getPlayer().sendMessage(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
         }
-        player.getPlayer().sendMessage(Message.DEATHCHEST_WILL_DISAPPEAR.getChatMessage().replaceAll("%time%", timeLeft == -1 ? "∞" : String.valueOf(this.timeLeft)));
+
+        if (timeLeft != -1) {
+            player.getPlayer().sendMessage(Message.DEATHCHEST_WILL_DISAPPEAR.getChatMessage().replaceAll("%time%", timeLeft == -1 ? "∞" : String.valueOf(this.timeLeft)));
+        }
+
         this.announced = true;
     }
 
