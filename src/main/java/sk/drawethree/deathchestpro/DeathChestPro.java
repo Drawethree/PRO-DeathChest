@@ -21,6 +21,7 @@ import java.util.List;
 
 public final class DeathChestPro extends JavaPlugin {
 
+
     private static final int CONFIG_VERSION = 1;
     private static final int DEFAULT_EXPIRE_TIME = 60;
 
