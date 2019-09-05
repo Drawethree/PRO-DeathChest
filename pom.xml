@@ -11,9 +11,13 @@
 
     <name>DeathChestPro</name>
 
-    <description>Spawn a deatchest after player death</description>
+    <description>Spawns a deatchest after player death</description>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <worldguardwrapper.version>1.1.6-SNAPSHOT</worldguardwrapper.version>
+
     </properties>
 
     <build>
@@ -112,7 +116,7 @@
         <dependency>
             <groupId>org.codemc.worldguardwrapper</groupId>
             <artifactId>worldguardwrapper</artifactId>
-            <version>1.1.6-SNAPSHOT</version>
+            <version>${worldguardwrapper.version}</version>
         </dependency>
     </dependencies>
 </project>
