@@ -41,9 +41,6 @@ permissions:
   deathchestpro.expire.default:
     description: Default expire time
     default: true
-  deathchestpro.clearhologram:
-    description: Clear hologram permission
-    default: op
 commands:
   deathchest:
     aliases: [dc,dcp]
