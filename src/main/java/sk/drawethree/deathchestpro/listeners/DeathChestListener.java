@@ -74,7 +74,7 @@ public class DeathChestListener implements Listener {
         DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " died.");
         if (!DeathChestPro.getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
 
-            DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player has permission to have chest, has some items in inventory and is not in restriced world");
+            DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player has permission to have chest, has some items in inventory and is not in restricted world");
 
             if (((e.getEntity().getLastDamageCause() != null) && (e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID) && (!DeathChestPro.isVoidSpawning())) || (p.getLocation().getBlock().getType() == CompMaterial.LAVA.getMaterial()) && (!DeathChestPro.isLavaSpawning())) {
                 return;
@@ -177,7 +177,7 @@ public class DeathChestListener implements Listener {
             if (dc != null) {
 
                 if (dc.isLocked()) {
-                    if((DeathChestPro.isAllowKillerLooting() && dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId())) || dc.getOwner().getUniqueId().equals(p.getUniqueId()) || p.hasPermission("deathchestpro.see") || dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId()) && dc.getOwner().getUniqueId().equals(p.getUniqueId())) {
+                    if ((DeathChestPro.isAllowKillerLooting() && dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId())) || dc.getOwner().getUniqueId().equals(p.getUniqueId()) || p.hasPermission("deathchestpro.see") || dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId()) && dc.getOwner().getUniqueId().equals(p.getUniqueId())) {
                         DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player can open the chest.");
                     } else {
                         e.setCancelled(true);
