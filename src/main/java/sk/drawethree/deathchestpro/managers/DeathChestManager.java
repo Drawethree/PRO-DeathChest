@@ -17,9 +17,9 @@ import org.bukkit.inventory.ItemStack;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.region.IWrappedRegion;
 import sk.drawethree.deathchestpro.DeathChestPro;
-import sk.drawethree.deathchestpro.misc.DCHook;
 import sk.drawethree.deathchestpro.chest.DeathChest;
 import sk.drawethree.deathchestpro.chest.DeathChestHologram;
+import sk.drawethree.deathchestpro.misc.DCHook;
 import sk.drawethree.deathchestpro.utils.CompSound;
 import sk.drawethree.deathchestpro.utils.Items;
 import sk.drawethree.deathchestpro.utils.Message;
@@ -68,7 +68,7 @@ public class DeathChestManager {
             try {
                 loc = Location.deserialize(DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getConfigurationSection("chests." + key + ".location").getValues(true));
             } catch (Exception e) {
-                DeathChestPro.broadcast(DeathChestPro.BroadcastType.WARN, "DeathChest with UUID " + chestUuid.toString() + " is in unknown location! Perhaps the world is not loaded?");
+                DeathChestPro.broadcast(DeathChestPro.BroadcastType.WARN, "DeathChest with UUID " + chestUuid.toString() + " is in unknown location! Perhaps its world is not loaded?");
                 continue;
             }
 
@@ -85,6 +85,7 @@ public class DeathChestManager {
             int timeLeft = DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getInt("chests." + key + ".timeleft");
             List<ItemStack> items = (ArrayList<ItemStack>) DeathChestPro.getFileManager().getConfig("deathchests.yml").get().get("chests." + key + ".items");
             createDeathChest(chestUuid, player, killer, locked, loc, timeLeft, items);
+            DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded DeathChest at location " + loc.toString() + "!");
         }
         DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded!");
 
@@ -95,8 +96,8 @@ public class DeathChestManager {
         DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Saving deathchests...");
 
         for (DeathChest dc : this.deathChestsByUUID.values()) {
-            dc.removeHologram();
             dc.removeChest();
+            dc.removeHologram();
             dc.save();
         }
 
@@ -169,11 +170,9 @@ public class DeathChestManager {
     }
 
     public DeathChest getDeathChestByLocation(Location loc) {
-        for (ArrayList<DeathChest> list : deathChests.values()) {
-            for (DeathChest dc : list) {
-                if (dc.getLocation().equals(loc)) {
-                    return dc;
-                }
+        for (DeathChest dc : deathChestsByUUID.values()) {
+            if (dc.getLocation().equals(loc)) {
+                return dc;
             }
         }
         return null;
