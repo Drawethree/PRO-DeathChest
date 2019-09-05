@@ -2,54 +2,64 @@ package sk.drawethree.deathchestpro.listeners;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
-import sk.drawethree.deathchestpro.chest.DeathChestHologram;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
 
 
 public class DeathChestHologramListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChunkLoad(ChunkLoadEvent event) {
-        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG,"ChunkLoadEvent");
+
+        if (!DeathChestPro.isHologramEnabled()) {
+            return;
+        }
+
         Chunk chunk = event.getChunk();
+
         if (chunk == null || !chunk.isLoaded()) {
             return;
         }
 
         for (DeathChest dc : DeathChestManager.getInstance().getDeathChestsByUUID().values()) {
-            Location loc = dc.getHologram().getLocation();
-            if (loc.getBlockZ() >> 4 == chunk.getZ() && loc.getBlockX() >> 4 == chunk.getX()) {
+
+            if (!chunk.getWorld().equals(dc.getLocation().getWorld())) {
+                continue;
+            }
+
+            Location loc = dc.getLocation();
+
+            if (loc.getWorld().getChunkAt(loc).equals(event.getChunk())) {
                 dc.getHologram().spawn();
             }
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChunkUnload(ChunkUnloadEvent event) {
-        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG,"ChunkUnloadEvent");
 
-        for (DeathChest dc : DeathChestManager.getInstance().getDeathChestsByUUID().values() ) {
-            Location loc = dc.getHologram().getLocation();
-            if (loc.getBlockZ() >> 4 == event.getChunk().getZ() && loc.getBlockX() >> 4 == event.getChunk().getX()) {
+        if (!DeathChestPro.isHologramEnabled()) {
+            return;
+        }
+
+        for (DeathChest dc : DeathChestManager.getInstance().getDeathChestsByUUID().values()) {
+
+            if (!event.getChunk().getWorld().equals(dc.getLocation().getWorld())) {
+                continue;
+            }
+
+
+            Location loc = dc.getLocation();
+
+            if (loc.getWorld().getChunkAt(loc).equals(event.getChunk())) {
                 dc.getHologram().despawn();
             }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onCreatureSpawn(CreatureSpawnEvent event) {
-        if (event.isCancelled() && DeathChestHologram.existLine(event.getEntity())) {
-            event.setCancelled(false);
         }
     }
 }
