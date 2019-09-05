@@ -13,6 +13,9 @@
         <os family="windows"/>
     </condition>
 
+    <condition property="serverPath" value="/Users/kluka/Desktop/Spigot Latest">
+        <os family="mac"/>
+    </condition>
 
     <!-- Ninja: Read your pom.xml file to find the Foundation version we will be using -->
     <xmlproperty file="pom.xml" prefix="pom" keeproot="false"/>
