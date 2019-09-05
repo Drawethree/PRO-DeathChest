@@ -44,7 +44,7 @@ public abstract class DCHook {
 
     public void hook() {
         if (Bukkit.getPluginManager().isPluginEnabled(this.pluginName)) {
-            DeathChestPro.broadcast(DeathChestPro.BroadcastType.INFO, "§aSuccessfully hooked into §e" + this.pluginName + " §a!");
+            DeathChestPro.getInstance().broadcast(DeathChestPro.BroadcastType.INFO, "§aSuccessfully hooked into §e" + this.pluginName + " §a!");
             this.enabled = true;
             this.runHookAction();
         }

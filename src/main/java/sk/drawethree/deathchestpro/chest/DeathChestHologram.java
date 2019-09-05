@@ -34,19 +34,19 @@ public class DeathChestHologram {
 
     public void spawn() {
         if (this.spawned) {
-            DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Cannot spawn hologram because its already spawned.");
+            this.deathChest.getPlugin().broadcast(DeathChestPro.BroadcastType.DEBUG, "Cannot spawn hologram because its already spawned.");
             return;
         }
 
-        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Spawning hologram.");
+        this.deathChest.getPlugin().broadcast(DeathChestPro.BroadcastType.DEBUG, "Spawning hologram.");
         this.armorStands = new ArrayList<>();
         this.location = this.deathChest.getLocation().clone();
 
-        for (String s : DeathChestPro.getHologramLines()) {
+        for (String s : this.deathChest.getPlugin().getSettings().getHologramLines()) {
             s = s.replaceAll("%locked%", deathChest.getLockedString())
                     .replaceAll("%player%", deathChest.getOwner().getName())
                     .replaceAll("%item_count%", String.valueOf(deathChest.getItemCount()))
-                    .replaceAll("%death_date%", DeathChestPro.getDeathDateFormat().format(new Date()))
+                    .replaceAll("%death_date%", this.deathChest.getPlugin().getSettings().getDeathDateFormat().format(new Date()))
                     .replaceAll("%timeleft%", deathChest.getTimeLeft() == -1 ? "∞" : new Time(deathChest.getTimeLeft(), TimeUnit.SECONDS).toString());
 
             if (DCHook.getHook("PlaceholderAPI")) {
@@ -107,14 +107,14 @@ public class DeathChestHologram {
     public void despawn() {
 
         if (!this.spawned) {
-            DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Cannot despawn hologram because its not spawned.");
+            this.deathChest.getPlugin().broadcast(DeathChestPro.BroadcastType.DEBUG, "Cannot despawn hologram because its not spawned.");
             return;
         }
 
-        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Despawning hologram.");
+        this.deathChest.getPlugin().broadcast(DeathChestPro.BroadcastType.DEBUG, "Despawning hologram.");
 
         for (ArmorStand as : new ArrayList<>(this.armorStands)) {
-            DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Removing hologram line.");
+            this.deathChest.getPlugin().broadcast(DeathChestPro.BroadcastType.DEBUG, "Removing hologram line.");
             armorStands.remove(as);
             as.remove();
             as = null;
@@ -128,8 +128,8 @@ public class DeathChestHologram {
     }
 
     public void updateHologram(int timeLeft) {
-        for (int i = 0; i < DeathChestPro.getHologramLines().size(); i++) {
-            String line = DeathChestPro.getHologramLines().get(i);
+        for (int i = 0; i < this.deathChest.getPlugin().getSettings().getHologramLines().size(); i++) {
+            String line = this.deathChest.getPlugin().getSettings().getHologramLines().get(i);
             if (line.contains("%timeleft%")) {
                 int lineNumber = i;
 

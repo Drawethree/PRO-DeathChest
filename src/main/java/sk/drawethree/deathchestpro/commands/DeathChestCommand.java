@@ -3,6 +3,7 @@ package sk.drawethree.deathchestpro.commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.commands.subcommands.DeathChestSubCommand;
 import sk.drawethree.deathchestpro.commands.subcommands.ListSubCommand;
 import sk.drawethree.deathchestpro.commands.subcommands.ReloadSubCommand;
@@ -16,6 +17,8 @@ public class DeathChestCommand implements CommandExecutor {
 
 
     private static final TreeMap<String, DeathChestSubCommand> availableSubCommands = new TreeMap<>();
+    private DeathChestPro plugin;
+
 
     static {
         availableSubCommands.put("list", new ListSubCommand());
@@ -24,13 +27,17 @@ public class DeathChestCommand implements CommandExecutor {
         //availableSubCommands.put("test", new TestSubCommand());
     }
 
+    public DeathChestCommand(DeathChestPro plugin) {
+        this.plugin =  plugin;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) {
         if (cmd.getName().equalsIgnoreCase("deathchest")) {
             if (args.length > 0) {
                 DeathChestSubCommand subCommand = getSubCommand(args[0]);
                 if (subCommand != null) {
-                    subCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length));
+                    subCommand.execute(this.plugin, sender, Arrays.copyOfRange(args, 1, args.length));
                 } else {
                     return invalidUsage(sender);
                 }

@@ -31,7 +31,7 @@ public enum Message {
 
     Message(String path) {
         this.path = path;
-        this.message = ChatColor.translateAlternateColorCodes('&', DeathChestPro.getFileManager().getConfig("messages.yml").get().getString(path));
+        this.message = ChatColor.translateAlternateColorCodes('&', DeathChestPro.getInstance().getFileManager().getConfig("messages.yml").get().getString(path));
     }
 
     public String getMessage() {
@@ -48,7 +48,7 @@ public enum Message {
 
     public static void reload() {
         for (Message m : values()) {
-            m.setMessage(ChatColor.translateAlternateColorCodes('&', DeathChestPro.getFileManager().getConfig("messages.yml").get().getString(m.getPath())));
+            m.setMessage(ChatColor.translateAlternateColorCodes('&', DeathChestPro.getInstance().getFileManager().getConfig("messages.yml").get().getString(m.getPath())));
         }
     }
 

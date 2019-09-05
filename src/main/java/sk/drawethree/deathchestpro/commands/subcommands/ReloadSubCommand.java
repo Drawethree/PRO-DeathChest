@@ -11,9 +11,9 @@ public class ReloadSubCommand extends DeathChestSubCommand {
     }
 
     @Override
-    public boolean execute(CommandSender sender, String[] args) {
+    public boolean execute(DeathChestPro plugin, CommandSender sender, String[] args) {
         if (sender.hasPermission("deathchestpro.reload")) {
-            DeathChestPro.reloadPlugin();
+            plugin.reloadPlugin();
             sender.sendMessage(Message.PREFIX.getMessage() + "Plugin reloaded !");
             return true;
         } else {

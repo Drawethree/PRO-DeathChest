@@ -1,6 +1,7 @@
 package sk.drawethree.deathchestpro.commands.subcommands;
 
 import org.bukkit.command.CommandSender;
+import sk.drawethree.deathchestpro.DeathChestPro;
 
 public abstract class DeathChestSubCommand {
 
@@ -12,7 +13,7 @@ public abstract class DeathChestSubCommand {
         this.description = description;
     }
 
-    public abstract boolean execute(CommandSender sender, String[] args);
+    public abstract boolean execute(DeathChestPro plugin, CommandSender sender, String[] args);
 
     public String getSubCommandName() {
         return subCommandName;

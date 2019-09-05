@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.utils.Message;
 
@@ -14,7 +15,7 @@ public class ListSubCommand extends DeathChestSubCommand {
     }
 
     @Override
-    public boolean execute(CommandSender sender, String[] args) {
+    public boolean execute(DeathChestPro plugin, CommandSender sender, String[] args) {
         if (sender instanceof Player) {
 
             Player p = (Player) sender;
@@ -35,7 +36,7 @@ public class ListSubCommand extends DeathChestSubCommand {
             }
 
             if (hasPerm) {
-                DeathChestManager.getInstance().openDeathchestList(whoChests, p, 1);
+                plugin.getDeathChestManager().openDeathchestList(whoChests, p, 1);
                 return true;
             } else {
                 p.sendMessage(Message.NO_PERMISSION.getChatMessage());

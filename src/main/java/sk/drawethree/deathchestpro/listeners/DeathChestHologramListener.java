@@ -14,10 +14,17 @@ import sk.drawethree.deathchestpro.managers.DeathChestManager;
 
 public class DeathChestHologramListener implements Listener {
 
+    private DeathChestPro plugin;
+
+    public DeathChestHologramListener(DeathChestPro plugin) {
+
+        this.plugin = plugin;
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChunkLoad(ChunkLoadEvent event) {
 
-        if (!DeathChestPro.isHologramEnabled()) {
+        if (!this.plugin.getSettings().isHologramEnabled()) {
             return;
         }
 
@@ -27,7 +34,7 @@ public class DeathChestHologramListener implements Listener {
             return;
         }
 
-        for (DeathChest dc : DeathChestManager.getInstance().getDeathChestsByUUID().values()) {
+        for (DeathChest dc : this.plugin.getDeathChestManager().getDeathChestsByUUID().values()) {
 
             if (!chunk.getWorld().equals(dc.getLocation().getWorld())) {
                 continue;
@@ -44,11 +51,11 @@ public class DeathChestHologramListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChunkUnload(ChunkUnloadEvent event) {
 
-        if (!DeathChestPro.isHologramEnabled()) {
+        if (!this.plugin.getSettings().isHologramEnabled()) {
             return;
         }
 
-        for (DeathChest dc : DeathChestManager.getInstance().getDeathChestsByUUID().values()) {
+        for (DeathChest dc : this.plugin.getDeathChestManager().getDeathChestsByUUID().values()) {
 
             if (!event.getChunk().getWorld().equals(dc.getLocation().getWorld())) {
                 continue;

@@ -34,6 +34,12 @@ import java.util.Iterator;
 
 public class DeathChestListener implements Listener {
 
+    private DeathChestPro plugin;
+
+    public DeathChestListener(DeathChestPro plugin) {
+        this.plugin = plugin;
+    }
+
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onExplode(final EntityExplodeEvent e) {
@@ -42,7 +48,7 @@ public class DeathChestListener implements Listener {
             final Block b = (Block) it.next();
             if (b.getState() instanceof Chest) {
                 final Chest c = (Chest) b.getState();
-                if (DeathChestManager.getInstance().getDeathChestByLocation(c.getLocation()) != null) {
+                if (this.plugin.getDeathChestManager().getDeathChestByLocation(c.getLocation()) != null) {
                     it.remove();
                 }
             }
@@ -55,9 +61,9 @@ public class DeathChestListener implements Listener {
         final Inventory inv = e.getInventory();
         final Player p = (Player) e.getPlayer();
 
-        DeathChestManager.getInstance().removeFromOpenedInventories(p);
+        this.plugin.getDeathChestManager().removeFromOpenedInventories(p);
 
-        final DeathChest dc = DeathChestManager.getInstance().getDeathChestByInventory(inv);
+        final DeathChest dc = this.plugin.getDeathChestManager().getDeathChestByInventory(inv);
         if (dc != null) {
             if (dc.isChestEmpty()) {
                 dc.removeDeathChest(false);
@@ -71,17 +77,17 @@ public class DeathChestListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDeath(final PlayerDeathEvent e) {
         final Player p = e.getEntity();
-        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " died.");
-        if (!DeathChestPro.getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
+        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " died.");
+        if (!this.plugin.getSettings().getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
 
-            DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player has permission to have chest, has some items in inventory and is not in restricted world");
+            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player has permission to have chest, has some items in inventory and is not in restricted world");
 
-            if (((e.getEntity().getLastDamageCause() != null) && (e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID) && (!DeathChestPro.isVoidSpawning())) || (p.getLocation().getBlock().getType() == CompMaterial.LAVA.getMaterial()) && (!DeathChestPro.isLavaSpawning())) {
+            if (((e.getEntity().getLastDamageCause() != null) && (e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID) && (!this.plugin.getSettings().isVoidSpawning())) || (p.getLocation().getBlock().getType() == CompMaterial.LAVA.getMaterial()) && (!this.plugin.getSettings().isLavaSpawning())) {
                 return;
             }
 
-            if (DeathChestManager.getInstance().createDeathChest(p, p.getKiller(), new ArrayList<>(e.getDrops()))) {
-                DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest created");
+            if (this.plugin.getDeathChestManager().createDeathChest(p, p.getKiller(), new ArrayList<>(e.getDrops()))) {
+                this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest created");
 
                 e.getDrops().clear();
                 e.setKeepInventory(true);
@@ -106,12 +112,12 @@ public class DeathChestListener implements Listener {
     @EventHandler
     public void onRespawn(final PlayerRespawnEvent e) {
 
-        if (DeathChestPro.isStartTimerAtDeath()) {
+        if (this.plugin.getSettings().isStartTimerAtDeath()) {
             return;
         }
 
         final Player p = e.getPlayer();
-        final ArrayList<DeathChest> chests = DeathChestManager.getInstance().getPlayerDeathChests(p);
+        final ArrayList<DeathChest> chests = this.plugin.getDeathChestManager().getPlayerDeathChests(p);
         if (chests != null) {
             for (DeathChest dc : chests) {
                 if (!dc.isAnnounced()) {
@@ -127,9 +133,9 @@ public class DeathChestListener implements Listener {
     public void onDeathChestBreak(final BlockBreakEvent e) {
         if (e.getBlock().getState() instanceof Chest) {
             final Player p = e.getPlayer();
-            final DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(e.getBlock().getLocation());
+            final DeathChest dc = this.plugin.getDeathChestManager().getDeathChestByLocation(e.getBlock().getLocation());
             if (dc != null) {
-                if (!DeathChestPro.isAllowBreakChests() || (dc.isLocked() && !dc.getOwner().getUniqueId().equals(p.getUniqueId()))) {
+                if (!this.plugin.getSettings().isAllowBreakChests() || (dc.isLocked() && !dc.getOwner().getUniqueId().equals(p.getUniqueId()))) {
                     e.setCancelled(true);
                     p.sendMessage(Message.DEATHCHEST_CANNOT_BREAK.getChatMessage());
                 } else {
@@ -151,13 +157,13 @@ public class DeathChestListener implements Listener {
 
         if (e.getCurrentItem() != null && e.getCurrentItem().getType() != CompMaterial.AIR.getMaterial()) {
             int page = (int) e.getView().getTitle().charAt(e.getView().getTitle().length() - 1);
-            final DeathChest clickedChest = DeathChestManager.getInstance().getDeathChest(e.getCurrentItem());
+            final DeathChest clickedChest = this.plugin.getDeathChestManager().getDeathChest(e.getCurrentItem());
             if (clickedChest != null) {
                 clickedChest.teleportPlayer(p);
             } else if (e.getCurrentItem().isSimilar(Items.NEXT_ITEM.getItemStack())) {
-                DeathChestManager.getInstance().openDeathchestList(DeathChestManager.getInstance().getOpenedInventory(p), p, page + 1);
+                this.plugin.getDeathChestManager().openDeathchestList(this.plugin.getDeathChestManager().getOpenedInventory(p), p, page + 1);
             } else if (e.getCurrentItem().isSimilar(Items.PREV_ITEM.getItemStack())) {
-                DeathChestManager.getInstance().openDeathchestList(DeathChestManager.getInstance().getOpenedInventory(p), p, page - 1);
+                this.plugin.getDeathChestManager().openDeathchestList(this.plugin.getDeathChestManager().getOpenedInventory(p), p, page - 1);
             }
         }
     }
@@ -173,12 +179,12 @@ public class DeathChestListener implements Listener {
         final Block b = e.getClickedBlock();
 
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            DeathChest dc = DeathChestManager.getInstance().getDeathChestByLocation(b.getLocation());
+            DeathChest dc = this.plugin.getDeathChestManager().getDeathChestByLocation(b.getLocation());
             if (dc != null) {
 
                 if (dc.isLocked()) {
-                    if ((DeathChestPro.isAllowKillerLooting() && dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId())) || dc.getOwner().getUniqueId().equals(p.getUniqueId()) || p.hasPermission("deathchestpro.see") || dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId()) && dc.getOwner().getUniqueId().equals(p.getUniqueId())) {
-                        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player can open the chest.");
+                    if ((this.plugin.getSettings().isAllowKillerLooting() && dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId())) || dc.getOwner().getUniqueId().equals(p.getUniqueId()) || p.hasPermission("deathchestpro.see") || dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId()) && dc.getOwner().getUniqueId().equals(p.getUniqueId())) {
+                        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player can open the chest.");
                     } else {
                         e.setCancelled(true);
                         p.sendMessage(Message.DEATHCHEST_CANNOT_OPEN.getChatMessage());
@@ -201,7 +207,7 @@ public class DeathChestListener implements Listener {
 
     @EventHandler
     public void onHopperMove(final InventoryMoveItemEvent e) {
-        if (e.getDestination().getType() == InventoryType.HOPPER && DeathChestManager.getInstance().isInventoryDeathChestInv(e.getSource())) {
+        if (e.getDestination().getType() == InventoryType.HOPPER && this.plugin.getDeathChestManager().isInventoryDeathChestInv(e.getSource())) {
             e.setCancelled(true);
         }
     }

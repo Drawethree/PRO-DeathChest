@@ -40,11 +40,11 @@ public class ItemUtil {
     }
 
     public static ItemStack loadItemFromConfig(String configName, String path) {
-        CompMaterial m = CompMaterial.fromString(DeathChestPro.getFileManager().getConfig(configName).get().getString(path + ".material"));
-        int amount = DeathChestPro.getFileManager().getConfig(configName).get().getInt(path + ".amount");
-        String displayName = DeathChestPro.getFileManager().getConfig(configName).get().getString(path + ".displayname");
-        List<String> lore = convertLore(DeathChestPro.getFileManager().getConfig(configName).get().getStringList(path + ".lore"));
-        List<String> enchants = DeathChestPro.getFileManager().getConfig(configName).get().getStringList(path + ".enchants");
+        CompMaterial m = CompMaterial.fromString(DeathChestPro.getInstance().getFileManager().getConfig(configName).get().getString(path + ".material"));
+        int amount = DeathChestPro.getInstance().getFileManager().getConfig(configName).get().getInt(path + ".amount");
+        String displayName = DeathChestPro.getInstance().getFileManager().getConfig(configName).get().getString(path + ".displayname");
+        List<String> lore = convertLore(DeathChestPro.getInstance().getFileManager().getConfig(configName).get().getStringList(path + ".lore"));
+        List<String> enchants = DeathChestPro.getInstance().getFileManager().getConfig(configName).get().getStringList(path + ".enchants");
         return create(m, amount, displayName, lore, enchants);
     }
 

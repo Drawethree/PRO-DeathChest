@@ -28,22 +28,17 @@ import java.util.*;
 
 public class DeathChestManager {
 
-    private static DeathChestManager ourInstance = new DeathChestManager();
-
+    private DeathChestPro plugin;
     private HashMap<UUID, ArrayList<DeathChest>> deathChests;
     @Getter
     private HashMap<UUID, DeathChest> deathChestsByUUID;
     private HashMap<Player, OfflinePlayer> openedInventories;
-
-    private DeathChestManager() {
+    
+    public DeathChestManager(DeathChestPro plugin) {
+        this.plugin = plugin;
         deathChests = new HashMap<>();
         deathChestsByUUID = new HashMap<>();
         openedInventories = new HashMap<>();
-    }
-
-
-    public static DeathChestManager getInstance() {
-        return ourInstance;
     }
 
     public DeathChest getDeathChest(ItemStack item) {
@@ -58,42 +53,42 @@ public class DeathChestManager {
     }
 
     public void loadDeathChests() {
-        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loading deathchests from file...");
+        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loading deathchests from file...");
 
-        for (String key : DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getConfigurationSection("chests").getKeys(false)) {
+        for (String key : this.plugin.getFileManager().getConfig("deathchests.yml").get().getConfigurationSection("chests").getKeys(false)) {
 
             UUID chestUuid = UUID.fromString(key);
             Location loc;
 
             try {
-                loc = Location.deserialize(DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getConfigurationSection("chests." + key + ".location").getValues(true));
+                loc = Location.deserialize(this.plugin.getFileManager().getConfig("deathchests.yml").get().getConfigurationSection("chests." + key + ".location").getValues(true));
             } catch (Exception e) {
-                DeathChestPro.broadcast(DeathChestPro.BroadcastType.WARN, "DeathChest with UUID " + chestUuid.toString() + " is in unknown location! Perhaps its world is not loaded?");
+                this.plugin.broadcast(DeathChestPro.BroadcastType.WARN, "DeathChest with UUID " + chestUuid.toString() + " is in unknown location! Perhaps its world is not loaded?");
                 continue;
             }
 
-            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getString("chests." + key + ".player")));
+            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(this.plugin.getFileManager().getConfig("deathchests.yml").get().getString("chests." + key + ".player")));
             OfflinePlayer killer = null;
 
             try {
-                killer = Bukkit.getOfflinePlayer(UUID.fromString(DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getString("chests." + key + ".killer")));
+                killer = Bukkit.getOfflinePlayer(UUID.fromString(this.plugin.getFileManager().getConfig("deathchests.yml").get().getString("chests." + key + ".killer")));
             } catch (Exception e) {
                 //Without killer.
             }
 
-            boolean locked = DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getBoolean("chests." + key + ".locked");
-            int timeLeft = DeathChestPro.getFileManager().getConfig("deathchests.yml").get().getInt("chests." + key + ".timeleft");
-            List<ItemStack> items = (ArrayList<ItemStack>) DeathChestPro.getFileManager().getConfig("deathchests.yml").get().get("chests." + key + ".items");
+            boolean locked = this.plugin.getFileManager().getConfig("deathchests.yml").get().getBoolean("chests." + key + ".locked");
+            int timeLeft = this.plugin.getFileManager().getConfig("deathchests.yml").get().getInt("chests." + key + ".timeleft");
+            List<ItemStack> items = (ArrayList<ItemStack>) this.plugin.getFileManager().getConfig("deathchests.yml").get().get("chests." + key + ".items");
             createDeathChest(chestUuid, player, killer, locked, loc, timeLeft, items);
-            DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded DeathChest at location " + loc.toString() + "!");
+            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded DeathChest at location " + loc.toString() + "!");
         }
-        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded!");
+        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded!");
 
     }
 
 
     public void saveDeathChests() {
-        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Saving deathchests...");
+        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Saving deathchests...");
 
         for (DeathChest dc : this.deathChestsByUUID.values()) {
             dc.removeChest();
@@ -101,7 +96,7 @@ public class DeathChestManager {
             dc.save();
         }
 
-        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Saved!");
+        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Saved!");
     }
 
     public ArrayList<DeathChest> getPlayerDeathChests(OfflinePlayer p) {
@@ -154,7 +149,7 @@ public class DeathChestManager {
             deathChests.put(dc.getOwner().getUniqueId(), list);
         }
         deathChestsByUUID.remove(dc.getChestUUID());
-        DeathChestPro.getFileManager().getConfig("deathchests.yml").set("chests." + dc.getChestUUID().toString(), null).save();
+        this.plugin.getFileManager().getConfig("deathchests.yml").set("chests." + dc.getChestUUID().toString(), null).save();
         refreshDeathChestInventory(dc.getPlayer());
     }
 
@@ -211,13 +206,13 @@ public class DeathChestManager {
 
         ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
 
-        DeathChest dc = new DeathChest(p, killer, drops);
+        DeathChest dc = new DeathChest(this.plugin, p, killer, drops);
 
         currentChests.add(dc);
         deathChests.put(p.getUniqueId(), currentChests);
         deathChestsByUUID.put(dc.getChestUUID(), dc);
 
-        if (DeathChestPro.isStartTimerAtDeath()) {
+        if (this.plugin.getSettings().isStartTimerAtDeath()) {
             dc.announce();
             dc.runUnlockTask();
             dc.runRemoveTask();
@@ -246,39 +241,39 @@ public class DeathChestManager {
 
     private boolean canPlace(Player p) {
         //Residence Check
-        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Checking Residence...");
+        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Checking Residence...");
         if (DCHook.getHook("Residence")) {
             final ClaimedResidence res = Residence.getInstance().getResidenceManager().getByLoc(p);
             if (res != null && !res.getPermissions().playerHas(p, Flags.build, true)) {
-                DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player does not have permission to build in residence=" + res.getName());
+                this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player does not have permission to build in residence=" + res.getName());
                 return false;
             }
         }
-        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Residence OK");
+        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Residence OK");
 
         //WorldGuard Check
-        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Checking WorldGuard...");
+        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Checking WorldGuard...");
         if (DCHook.getHook("WorldGuard")) {
             Set<IWrappedRegion> regions = null;
 
             try {
                 regions = WorldGuardWrapper.getInstance().getRegions(p.getLocation());
             } catch (NoClassDefFoundError e) {
-                DeathChestPro.broadcast(DeathChestPro.BroadcastType.WARN, "Looks like you are using bad WorldEdit version!");
+                this.plugin.broadcast(DeathChestPro.BroadcastType.WARN, "Looks like you are using bad WorldEdit version!");
             }
 
             if (regions != null) {
                 for (IWrappedRegion region : regions) {
-                    if (DeathChestPro.getDisabledRegions().contains(region.getId())) {
-                        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player is in restriced region=" + region.getId());
+                    if (this.plugin.getSettings().getDisabledRegions().contains(region.getId())) {
+                        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player is in restriced region=" + region.getId());
                         return false;
                     }
                 }
             }
         }
 
-        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "WorldGuard OK");
-        DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Can place!");
+        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "WorldGuard OK");
+        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Can place!");
 
         return true;
     }
@@ -302,7 +297,7 @@ public class DeathChestManager {
                     continue;
                 }
                 if (e.hasMetadata(DeathChestHologram.ENTITY_METADATA)) {
-                    DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Removing hologram entity.");
+                    this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Removing hologram entity.");
                     e.remove();
                 }
             }
