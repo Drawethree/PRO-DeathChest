@@ -3,7 +3,6 @@ package sk.drawethree.deathchestpro.chest;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.metadata.FixedMetadataValue;
 import sk.drawethree.deathchestpro.DeathChestPro;
@@ -13,41 +12,35 @@ import sk.drawethree.deathchestpro.utils.Time;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class DeathChestHologram {
 
     public static final String ENTITY_METADATA = "dcp";
-
     private static final double LINE_SPACER = 0.25;
     private static final double ARMOR_STAND_HEIGHT = 2.0;
 
-    private static ArrayList<UUID> allLines = new ArrayList<>();
-
-    public static boolean existLine(Entity e) {
-        return allLines.contains(e.getUniqueId());
-    }
 
     private DeathChest deathChest;
     private Location location;
+    private boolean spawned;
     private ArrayList<ArmorStand> armorStands;
 
-    public DeathChestHologram(DeathChest deathChest, Location loc) {
+    public DeathChestHologram(DeathChest deathChest) {
         this.deathChest = deathChest;
-        this.location = loc;
-        this.location.getChunk().load();
+        this.location = deathChest.getLocation().clone();
         this.spawn();
     }
 
     public void spawn() {
-        if (this.armorStands != null) {
+        if (this.spawned) {
             DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Cannot spawn hologram because its already spawned.");
             return;
         }
 
         DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Spawning hologram.");
         this.armorStands = new ArrayList<>();
+        this.location = this.deathChest.getLocation().clone();
 
         for (String s : DeathChestPro.getHologramLines()) {
             s = s.replaceAll("%locked%", deathChest.getLockedString())
@@ -62,7 +55,10 @@ public class DeathChestHologram {
 
             this.appendTextLine(s);
         }
+
         this.teleport(LocationUtil.getCenter(this.location.clone().add(0, 0.5 + this.getHeight(), 0)));
+
+        this.spawned = true;
     }
 
     private void removeLine(int lineNumber) {
@@ -83,7 +79,6 @@ public class DeathChestHologram {
         as.setMetadata(DeathChestHologram.ENTITY_METADATA, new FixedMetadataValue(DeathChestPro.getInstance(), DeathChestHologram.ENTITY_METADATA));
 
         this.armorStands.add(as);
-        allLines.add(as.getUniqueId());
 
         this.update();
     }
@@ -111,7 +106,7 @@ public class DeathChestHologram {
 
     public void despawn() {
 
-        if (this.armorStands == null) {
+        if (!this.spawned) {
             DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Cannot despawn hologram because its not spawned.");
             return;
         }
@@ -120,14 +115,12 @@ public class DeathChestHologram {
 
         for (ArmorStand as : new ArrayList<>(this.armorStands)) {
             DeathChestPro.broadcast(DeathChestPro.BroadcastType.DEBUG, "Removing hologram line.");
-            allLines.remove(as.getUniqueId());
             armorStands.remove(as);
-            as.setHealth(0);
             as.remove();
             as = null;
         }
 
-        this.armorStands = null;
+        this.spawned = false;
     }
 
     private void setLine(int lineNumber, String text) {
