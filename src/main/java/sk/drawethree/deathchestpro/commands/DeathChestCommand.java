@@ -3,7 +3,10 @@ package sk.drawethree.deathchestpro.commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import sk.drawethree.deathchestpro.commands.subcommands.*;
+import sk.drawethree.deathchestpro.commands.subcommands.DeathChestSubCommand;
+import sk.drawethree.deathchestpro.commands.subcommands.ListSubCommand;
+import sk.drawethree.deathchestpro.commands.subcommands.ReloadSubCommand;
+import sk.drawethree.deathchestpro.commands.subcommands.TeleportSubCommand;
 import sk.drawethree.deathchestpro.utils.Message;
 
 import java.util.Arrays;
@@ -12,13 +15,12 @@ import java.util.TreeMap;
 public class DeathChestCommand implements CommandExecutor {
 
 
-    private static final TreeMap<String , DeathChestSubCommand> availableSubCommands = new TreeMap<>();
+    private static final TreeMap<String, DeathChestSubCommand> availableSubCommands = new TreeMap<>();
 
     static {
         availableSubCommands.put("list", new ListSubCommand());
         availableSubCommands.put("reload", new ReloadSubCommand());
         availableSubCommands.put("teleport", new TeleportSubCommand());
-        availableSubCommands.put("clearhologram", new ClearHologramSubCommand());
         //availableSubCommands.put("test", new TestSubCommand());
     }
 
