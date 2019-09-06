@@ -1,5 +1,6 @@
 package sk.drawethree.deathchestpro.chest;
 
+import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -20,9 +21,9 @@ public class DeathChestHologram {
     private static final double LINE_SPACER = 0.25;
     private static final double ARMOR_STAND_HEIGHT = 2.0;
 
-
     private DeathChest deathChest;
     private Location location;
+    @Getter
     private boolean spawned;
     private ArrayList<ArmorStand> armorStands;
 
@@ -33,6 +34,7 @@ public class DeathChestHologram {
     }
 
     public void spawn() {
+
         if (this.spawned) {
             this.deathChest.getPlugin().broadcast(DeathChestPro.BroadcastType.DEBUG, "Cannot spawn hologram because its already spawned.");
             return;
