@@ -54,7 +54,8 @@ public class DeathChest {
         this.announced = false;
     }
 
-    public DeathChest(UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, Location loc, boolean locked, int timeLeft, List<ItemStack> items) {
+    public DeathChest(DeathChestPro plugin, UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, Location loc, boolean locked, int timeLeft, List<ItemStack> items) {
+        this.plugin = plugin;
         this.chestUUID = chestUuid;
         this.player = p;
         this.killer = killer;
