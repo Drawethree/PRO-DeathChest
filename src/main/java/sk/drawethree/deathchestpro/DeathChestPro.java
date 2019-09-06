@@ -42,6 +42,7 @@ public final class DeathChestPro extends JavaPlugin {
 
         this.deathChestManager = new DeathChestManager(this);
         this.deathChestManager.removeExistingHolograms();
+
         this.deathChestManager.loadDeathChests();
 
         this.getServer().getPluginManager().registerEvents(new DeathChestListener(this), this);
