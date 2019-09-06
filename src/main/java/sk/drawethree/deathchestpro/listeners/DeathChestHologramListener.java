@@ -36,6 +36,10 @@ public class DeathChestHologramListener implements Listener {
 
         for (DeathChest dc : this.plugin.getDeathChestManager().getDeathChestsByUUID().values()) {
 
+            if(dc.getHologram().isSpawned()) {
+                continue;
+            }
+
             if (!chunk.getWorld().equals(dc.getLocation().getWorld())) {
                 continue;
             }
@@ -56,6 +60,10 @@ public class DeathChestHologramListener implements Listener {
         }
 
         for (DeathChest dc : this.plugin.getDeathChestManager().getDeathChestsByUUID().values()) {
+
+            if(!dc.getHologram().isSpawned()) {
+                continue;
+            }
 
             if (!event.getChunk().getWorld().equals(dc.getLocation().getWorld())) {
                 continue;
