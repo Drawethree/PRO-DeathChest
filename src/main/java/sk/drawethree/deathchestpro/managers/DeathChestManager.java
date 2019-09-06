@@ -230,7 +230,7 @@ public class DeathChestManager {
 
         ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
 
-        DeathChest dc = new DeathChest(chestUuid, p, killer, loc, locked, timeLeft, items);
+        DeathChest dc = new DeathChest(this.plugin, chestUuid, p, killer, loc, locked, timeLeft, items);
         currentChests.add(dc);
 
         deathChests.put(p.getUniqueId(), currentChests);
