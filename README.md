@@ -6,11 +6,12 @@
 ![Discord](https://img.shields.io/discord/505846258867372033?label=Discord&logo=Discord)
 
 
-**PRO DeathChest** is a plugin which manages players items after their death. This plugin simply **spawns** a **chest** with player's items so players can easily pickup their items and don't have to worry that someone will **steal them**, or they **will be lost**.
+**PRO DeathChest** is a plugin which manages players items after their death. This plugin simply **spawns** a **chest** with player's items so players can easily pickup their items and don't have to worry that someone will **steal them**, or they **will be lost**.**PRO DeathChest** is suitable for **any** kind of **server**!
 
 # Pages
 ### General
 * [Home](https://github.com/Drawethree/PRO-DeathChest/wiki)
+* [Features](https://github.com/Drawethree/PRO-DeathChest/wiki/Features)
 * [Setup](https://github.com/Drawethree/PRO-DeathChest/wiki/Setup)
 * [Commands & Permissions](https://github.com/Drawethree/PRO-DeathChest/wiki/Commands-&-Permissions)
 ### Default Files
