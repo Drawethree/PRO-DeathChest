@@ -20,6 +20,7 @@ import sk.drawethree.deathchestpro.misc.DCVaultHook;
 import sk.drawethree.deathchestpro.utils.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -445,17 +446,8 @@ public class DeathChest {
         return this.hologram;
     }
 
-    public void spawnHologram() {
-        if (this.hologram != null)
-            this.hologram.spawn();
-    }
-
-    public void despawnHologram() {
-        if (this.hologram != null)
-            this.hologram.despawn();
-    }
-
     public DeathChestPro getPlugin() {
         return this.plugin;
     }
+
 }
