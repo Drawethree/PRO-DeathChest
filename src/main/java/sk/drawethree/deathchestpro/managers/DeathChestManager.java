@@ -78,8 +78,14 @@ public class DeathChestManager {
 
             boolean locked = this.plugin.getFileManager().getConfig("deathchests.yml").get().getBoolean("chests." + key + ".locked");
             int timeLeft = this.plugin.getFileManager().getConfig("deathchests.yml").get().getInt("chests." + key + ".timeleft");
+            long diedAt = this.plugin.getFileManager().getConfig("deathchests.yml").get().getLong("chests." + key + ".died");
+
+            if(diedAt == 0) {
+                diedAt = new Date().getTime();
+            }
+
             List<ItemStack> items = (ArrayList<ItemStack>) this.plugin.getFileManager().getConfig("deathchests.yml").get().get("chests." + key + ".items");
-            createDeathChest(chestUuid, player, killer, locked, loc, timeLeft, items);
+            createDeathChest(chestUuid, player, killer, locked, loc, timeLeft, diedAt, items);
             this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded DeathChest at location " + loc.toString() + "!");
         }
         this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded!");
@@ -222,7 +228,7 @@ public class DeathChestManager {
 
     }
 
-    private boolean createDeathChest(UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, boolean locked, Location loc, int timeLeft, List<ItemStack> items) {
+    private boolean createDeathChest(UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, boolean locked, Location loc, int timeLeft, long diedAt, List<ItemStack> items) {
 
         if (deathChests.get(p.getUniqueId()) == null) {
             deathChests.put(p.getUniqueId(), new ArrayList<>());
@@ -230,7 +236,7 @@ public class DeathChestManager {
 
         ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
 
-        DeathChest dc = new DeathChest(this.plugin, chestUuid, p, killer, loc, locked, timeLeft, items);
+        DeathChest dc = new DeathChest(this.plugin, chestUuid, p, killer, loc, locked, timeLeft, diedAt, items);
         currentChests.add(dc);
 
         deathChests.put(p.getUniqueId(), currentChests);
