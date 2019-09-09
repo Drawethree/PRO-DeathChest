@@ -45,15 +45,9 @@ public class DeathChestHologram {
         this.location = this.deathChest.getLocation().clone();
 
         for (String s : this.deathChest.getPlugin().getSettings().getHologramLines()) {
-            s = s.replaceAll("%locked%", deathChest.getLockedString())
-                    .replaceAll("%player%", deathChest.getOwner().getName())
-                    .replaceAll("%item_count%", String.valueOf(deathChest.getItemCount()))
-                    .replaceAll("%death_date%", this.deathChest.getPlugin().getSettings().getDeathDateFormat().format(new Date()))
-                    .replaceAll("%timeleft%", deathChest.getTimeLeft() == -1 ? "∞" : new Time(deathChest.getTimeLeft(), TimeUnit.SECONDS).toString());
 
-            if (DCHook.getHook("PlaceholderAPI")) {
-                s = PlaceholderAPI.setPlaceholders(deathChest.getOwner(), s);
-            }
+            s = this.replaceHologramPlaceholders(s);
+            s = this.replacePlaceholderAPI(s);
 
             this.appendTextLine(s);
         }
@@ -61,6 +55,22 @@ public class DeathChestHologram {
         this.teleport(LocationUtil.getCenter(this.location.clone().add(0, 0.5 + this.getHeight(), 0)));
 
         this.spawned = true;
+    }
+
+    private String replacePlaceholderAPI(String s) {
+        if (DCHook.getHook("PlaceholderAPI")) {
+            s = PlaceholderAPI.setPlaceholders(deathChest.getOwner(), s);
+        }
+        return s;
+    }
+
+    private String replaceHologramPlaceholders(String s) {
+        s = s.replaceAll("%locked%", deathChest.getLockedString())
+                .replaceAll("%player%", deathChest.getOwner().getName())
+                .replaceAll("%item_count%", String.valueOf(deathChest.getItemCount()))
+                .replaceAll("%death_date%", this.deathChest.getPlugin().getSettings().getDeathDateFormat().format(this.deathChest.getDeathDate()))
+                .replaceAll("%timeleft%", deathChest.getTimeLeft() == -1 ? "∞" : new Time(deathChest.getTimeLeft(), TimeUnit.SECONDS).toString());
+        return s;
     }
 
     private void removeLine(int lineNumber) {
@@ -147,11 +157,8 @@ public class DeathChestHologram {
     public void updateHologram() {
         for (int i = 0; i < this.deathChest.getPlugin().getSettings().getHologramLines().size(); i++) {
             String line = this.deathChest.getPlugin().getSettings().getHologramLines().get(i);
-            line = line.replaceAll("%locked%", deathChest.getLockedString())
-                    .replaceAll("%player%", deathChest.getOwner().getName())
-                    .replaceAll("%item_count%", String.valueOf(deathChest.getItemCount()))
-                    .replaceAll("%death_date%", this.deathChest.getPlugin().getSettings().getDeathDateFormat().format(this.deathChest.getDeathDate()))
-                    .replaceAll("%timeleft%", deathChest.getTimeLeft() == -1 ? "∞" : new Time(deathChest.getTimeLeft(), TimeUnit.SECONDS).toString());
+            line = this.replaceHologramPlaceholders(line);
+            line = this.replacePlaceholderAPI(line);
             this.setLine(i, line);
         }
     }
