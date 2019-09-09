@@ -14,6 +14,7 @@
 * [Features](https://github.com/Drawethree/PRO-DeathChest/wiki/Features)
 * [Setup](https://github.com/Drawethree/PRO-DeathChest/wiki/Setup)
 * [Commands & Permissions](https://github.com/Drawethree/PRO-DeathChest/wiki/Commands-&-Permissions)
+* [Terms Of Service](https://github.com/Drawethree/PRO-DeathChest/wiki/Terms-Of-Service)
 ### Default Files
 * [_config.yml_](https://github.com/Drawethree/PRO-DeathChest/wiki/config.yml)
 * [_messages.yml_](https://github.com/Drawethree/PRO-DeathChest/wiki/messages.yml)
