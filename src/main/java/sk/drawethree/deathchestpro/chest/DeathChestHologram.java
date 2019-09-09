@@ -144,27 +144,14 @@ public class DeathChestHologram {
         }
     }
 
-    public void updateHologram(int timeLeft) {
+    public void updateHologram() {
         for (int i = 0; i < this.deathChest.getPlugin().getSettings().getHologramLines().size(); i++) {
             String line = this.deathChest.getPlugin().getSettings().getHologramLines().get(i);
-            if (line.contains("%timeleft%")) {
-                //int lineNumber = i;
-
-                /*if (DeathChestPro.isDisplayPlayerHead()) {
-                    lineNumber += 1;
-                }*/
-
-                line = line.replaceAll("%timeleft%", timeLeft == -1 ? "∞" : new Time(timeLeft, TimeUnit.SECONDS).toString());
-            }
-            if (line.contains("%locked%")) {
-                line = line.replaceAll("%locked%", deathChest.getLockedString());
-            }
-            if (line.contains("%item_count%")) {
-                line = line.replaceAll("%item_count%", String.valueOf(deathChest.getItemCount()));
-            }
-            if (line.contains("%player%")) {
-                line = line.replaceAll("%player%", this.deathChest.getOwner().getName());
-            }
+            line = line.replaceAll("%locked%", deathChest.getLockedString())
+                    .replaceAll("%player%", deathChest.getOwner().getName())
+                    .replaceAll("%item_count%", String.valueOf(deathChest.getItemCount()))
+                    .replaceAll("%death_date%", this.deathChest.getPlugin().getSettings().getDeathDateFormat().format(this.deathChest.getDeathDate()))
+                    .replaceAll("%timeleft%", deathChest.getTimeLeft() == -1 ? "∞" : new Time(deathChest.getTimeLeft(), TimeUnit.SECONDS).toString());
             this.setLine(i, line);
         }
     }
