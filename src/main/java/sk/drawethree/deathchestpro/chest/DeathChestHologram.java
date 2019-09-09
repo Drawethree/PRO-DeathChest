@@ -125,25 +125,47 @@ public class DeathChestHologram {
         this.spawned = false;
     }
 
+    private boolean existsLine(int line) {
+        try {
+            this.armorStands.get(line);
+            return this.armorStands.get(line) != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     private void setLine(int lineNumber, String text) {
-        if (this.armorStands != null) this.armorStands.get(lineNumber).setCustomName(text);
+        if (this.armorStands != null) {
+            if (!this.existsLine(lineNumber)) {
+                this.appendTextLine(text);
+                return;
+            }
+            this.armorStands.get(lineNumber).setCustomName(text);
+        }
     }
 
     public void updateHologram(int timeLeft) {
         for (int i = 0; i < this.deathChest.getPlugin().getSettings().getHologramLines().size(); i++) {
             String line = this.deathChest.getPlugin().getSettings().getHologramLines().get(i);
             if (line.contains("%timeleft%")) {
-                int lineNumber = i;
+                //int lineNumber = i;
 
                 /*if (DeathChestPro.isDisplayPlayerHead()) {
                     lineNumber += 1;
                 }*/
 
-                this.setLine(lineNumber, line.replaceAll("%timeleft%", timeLeft == -1 ? "∞" : new Time(timeLeft, TimeUnit.SECONDS).toString()));
-            } else if (line.contains("%locked%")) {
-                this.setLine(i, line.replaceAll("%locked%", deathChest.getLockedString())
-                        .replaceAll("%item_count%", String.valueOf(deathChest.getItemCount())));
+                line = line.replaceAll("%timeleft%", timeLeft == -1 ? "∞" : new Time(timeLeft, TimeUnit.SECONDS).toString());
             }
+            if (line.contains("%locked%")) {
+                line = line.replaceAll("%locked%", deathChest.getLockedString());
+            }
+            if (line.contains("%item_count%")) {
+                line = line.replaceAll("%item_count%", String.valueOf(deathChest.getItemCount()));
+            }
+            if (line.contains("%player%")) {
+                line = line.replaceAll("%player%", this.deathChest.getOwner().getName());
+            }
+            this.setLine(i, line);
         }
     }
 
