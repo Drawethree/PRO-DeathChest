@@ -39,6 +39,7 @@ public class DeathChest {
     private boolean announced;
     private boolean locked;
     private int timeLeft;
+    private Date deathDate;
 
     public DeathChest(DeathChestPro plugin, Player p, OfflinePlayer killer, List<ItemStack> items) {
         this.plugin = plugin;
@@ -47,6 +48,7 @@ public class DeathChest {
         this.killer = killer;
         this.locked = p.hasPermission("deathchestpro.lock");
         this.timeLeft = this.plugin.getSettings().getExpireTimeForPlayer(p);
+        this.deathDate = new Date();
 
         this.setupChest(false, p.getLocation(), items);
         this.setupHologram();
@@ -55,13 +57,14 @@ public class DeathChest {
         this.announced = false;
     }
 
-    public DeathChest(DeathChestPro plugin, UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, Location loc, boolean locked, int timeLeft, List<ItemStack> items) {
+    public DeathChest(DeathChestPro plugin, UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, Location loc, boolean locked, int timeLeft, long diedAt, List<ItemStack> items) {
         this.plugin = plugin;
         this.chestUUID = chestUuid;
         this.player = p;
         this.killer = killer;
         this.locked = locked;
         this.timeLeft = timeLeft;
+        this.deathDate = new Date(diedAt);
 
         this.setupChest(true, loc, items);
         this.setupHologram();
@@ -180,7 +183,7 @@ public class DeathChest {
 
                 locked = false;
                 if (hologram != null)
-                    hologram.updateHologram(timeLeft);
+                    hologram.updateHologram();
 
             }
         }.runTaskLater(this.plugin.getInstance(), this.plugin.getSettings().getUnlockChestAfter() * 20L);
@@ -205,7 +208,7 @@ public class DeathChest {
                 } else {
                     timeLeft--;
                     if (hologram != null) {
-                        hologram.updateHologram(timeLeft);
+                        hologram.updateHologram();
                     }
 
                     if (location.getBlock().getType() != Material.CHEST && !plugin.getSettings().isAllowBreakChests()) {
@@ -400,6 +403,7 @@ public class DeathChest {
         this.plugin.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".items", this.chestInventory.getContents());
         this.plugin.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".locked", this.locked);
         this.plugin.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".timeleft", this.timeLeft);
+        this.plugin.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".died", this.deathDate.getTime());
         this.plugin.getFileManager().getConfig("deathchests.yml").save();
     }
 
@@ -434,7 +438,7 @@ public class DeathChest {
 
     public void updateHologram() {
         if (this.hologram != null) {
-            this.hologram.updateHologram(this.timeLeft);
+            this.hologram.updateHologram();
         }
     }
 
@@ -450,4 +454,7 @@ public class DeathChest {
         return this.plugin;
     }
 
+    public Date getDeathDate() {
+        return this.deathDate;
+    }
 }
