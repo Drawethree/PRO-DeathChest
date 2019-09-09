@@ -108,7 +108,7 @@ public class DeathChestManager {
         if (page > 0) {
             if (amountOfChests >= (page * 45) - 45) {
                 Inventory inv = Bukkit.createInventory(null, 54, Message.DEATHCHEST_LIST_INV_TITLE.getMessage() + page);
-                List<DeathChest> deathChestsList = getPlayerDeathChests(whoseChests);
+                List<DeathChest> deathChestsList = this.getPlayerDeathChests(whoseChests);
                 int index = 0;
 
                 for (int i = (page * 45) - 45; i < page * 45; i++) {
