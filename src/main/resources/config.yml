@@ -59,10 +59,10 @@ hologram:
   death_date_format: "dd.MM.yyyy hh:mm"
   #Lines displayed on hologram. Accepts placeholders %locked%, %death_date%, %player%, %timeleft%
   lines:
-  - "%locked%"
-  - "%item_count% Items"
-  - "Died %death_date%"
-  - "Owner: %player%"
-  - "%timeleft% left"
+    - "%locked%"
+    - "%item_count% Items"
+    - "Died %death_date%"
+    - "Owner: %player%"
+    - "%timeleft% left"
 #Name of chest's inventory
 deathchest_inv_title: "&7%player%'s DeathChest"
