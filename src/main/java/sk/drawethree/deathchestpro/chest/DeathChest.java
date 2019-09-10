@@ -1,11 +1,13 @@
 package sk.drawethree.deathchestpro.chest;
 
+import lombok.Getter;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -39,15 +41,18 @@ public class DeathChest {
     private boolean announced;
     private boolean locked;
     private int timeLeft;
+    @Getter
+    private int playerExp;
     private Date deathDate;
 
-    public DeathChest(DeathChestPro plugin, Player p, OfflinePlayer killer, List<ItemStack> items) {
+    public DeathChest(DeathChestPro plugin, Player p, OfflinePlayer killer, List<ItemStack> items, int playerExp) {
         this.plugin = plugin;
         this.chestUUID = UUID.randomUUID();
         this.player = p;
         this.killer = killer;
         this.locked = p.hasPermission("deathchestpro.lock");
         this.timeLeft = this.plugin.getSettings().getExpireTimeForPlayer(p);
+        this.playerExp = playerExp;
         this.deathDate = new Date();
 
         this.setupChest(false, p.getLocation(), items);
@@ -57,13 +62,14 @@ public class DeathChest {
         this.announced = false;
     }
 
-    public DeathChest(DeathChestPro plugin, UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, Location loc, boolean locked, int timeLeft, long diedAt, List<ItemStack> items) {
+    public DeathChest(DeathChestPro plugin, UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, Location loc, boolean locked, int timeLeft, long diedAt, List<ItemStack> items, int playerExp) {
         this.plugin = plugin;
         this.chestUUID = chestUuid;
         this.player = p;
         this.killer = killer;
         this.locked = locked;
         this.timeLeft = timeLeft;
+        this.playerExp = playerExp;
         this.deathDate = new Date(diedAt);
 
         this.setupChest(true, loc, items);
@@ -252,6 +258,11 @@ public class DeathChest {
         }
 
         replacedBlock.update(true);
+
+        if(this.playerExp != 0) {
+            ExperienceOrb experienceOrb = location.getWorld().spawn(location, ExperienceOrb.class);
+            experienceOrb.setExperience(this.playerExp);
+        }
     }
 
     public void removeDeathChest(boolean closeInventories) {
@@ -355,6 +366,7 @@ public class DeathChest {
             p.playSound(p.getLocation(), CompSound.ITEM_PICKUP.getSound(), 1F, 1F);
 
             if (isChestEmpty()) {
+                restoreExp(p);
                 removeDeathChest(true);
             } else {
                 p.sendMessage(Message.DEATHCHEST_FASTLOOT_COMPLETE.getChatMessage().replaceAll("%amount%", String.valueOf(DeathChestManager.getAmountOfItems(chestInventory))));
@@ -404,6 +416,7 @@ public class DeathChest {
         this.plugin.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".locked", this.locked);
         this.plugin.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".timeleft", this.timeLeft);
         this.plugin.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".died", this.deathDate.getTime());
+        this.plugin.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".exp", this.playerExp);
         this.plugin.getFileManager().getConfig("deathchests.yml").save();
     }
 
@@ -456,5 +469,11 @@ public class DeathChest {
 
     public Date getDeathDate() {
         return this.deathDate;
+    }
+
+
+    public void restoreExp(Player p) {
+        p.giveExp(this.playerExp);
+        this.playerExp = 0;
     }
 }
