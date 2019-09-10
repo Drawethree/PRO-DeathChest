@@ -21,6 +21,7 @@ import sk.drawethree.deathchestpro.chest.DeathChest;
 import sk.drawethree.deathchestpro.chest.DeathChestHologram;
 import sk.drawethree.deathchestpro.misc.DCHook;
 import sk.drawethree.deathchestpro.utils.CompSound;
+import sk.drawethree.deathchestpro.utils.ExperienceUtil;
 import sk.drawethree.deathchestpro.utils.Items;
 import sk.drawethree.deathchestpro.utils.Message;
 
@@ -33,7 +34,7 @@ public class DeathChestManager {
     @Getter
     private HashMap<UUID, DeathChest> deathChestsByUUID;
     private HashMap<Player, OfflinePlayer> openedInventories;
-    
+
     public DeathChestManager(DeathChestPro plugin) {
         this.plugin = plugin;
         deathChests = new HashMap<>();
@@ -80,12 +81,13 @@ public class DeathChestManager {
             int timeLeft = this.plugin.getFileManager().getConfig("deathchests.yml").get().getInt("chests." + key + ".timeleft");
             long diedAt = this.plugin.getFileManager().getConfig("deathchests.yml").get().getLong("chests." + key + ".died");
 
-            if(diedAt == 0) {
+            if (diedAt == 0) {
                 diedAt = new Date().getTime();
             }
 
+            int playerExp = this.plugin.getFileManager().getConfig("deathchests.yml").get().getInt("chests." + key + ".exp");
             List<ItemStack> items = (ArrayList<ItemStack>) this.plugin.getFileManager().getConfig("deathchests.yml").get().get("chests." + key + ".items");
-            createDeathChest(chestUuid, player, killer, locked, loc, timeLeft, diedAt, items);
+            createDeathChest(chestUuid, player, killer, locked, loc, timeLeft, diedAt, items, playerExp);
             this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded DeathChest at location " + loc.toString() + "!");
         }
         this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded!");
@@ -212,7 +214,13 @@ public class DeathChestManager {
 
         ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
 
-        DeathChest dc = new DeathChest(this.plugin, p, killer, drops);
+        int exp = 0;
+
+        if(this.plugin.getSettings().isStoreExperience()) {
+            exp = ExperienceUtil.getExp(p);
+        }
+
+        DeathChest dc = new DeathChest(this.plugin, p, killer, drops, exp);
 
         currentChests.add(dc);
         deathChests.put(p.getUniqueId(), currentChests);
@@ -228,7 +236,7 @@ public class DeathChestManager {
 
     }
 
-    private boolean createDeathChest(UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, boolean locked, Location loc, int timeLeft, long diedAt, List<ItemStack> items) {
+    private boolean createDeathChest(UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, boolean locked, Location loc, int timeLeft, long diedAt, List<ItemStack> items, int playerExp) {
 
         if (deathChests.get(p.getUniqueId()) == null) {
             deathChests.put(p.getUniqueId(), new ArrayList<>());
@@ -236,7 +244,7 @@ public class DeathChestManager {
 
         ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
 
-        DeathChest dc = new DeathChest(this.plugin, chestUuid, p, killer, loc, locked, timeLeft, diedAt, items);
+        DeathChest dc = new DeathChest(this.plugin, chestUuid, p, killer, loc, locked, timeLeft, diedAt, items, playerExp);
         currentChests.add(dc);
 
         deathChests.put(p.getUniqueId(), currentChests);
