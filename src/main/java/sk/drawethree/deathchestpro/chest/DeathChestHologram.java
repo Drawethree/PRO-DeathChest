@@ -69,6 +69,7 @@ public class DeathChestHologram {
                 .replaceAll("%player%", deathChest.getOwner().getName())
                 .replaceAll("%item_count%", String.valueOf(deathChest.getItemCount()))
                 .replaceAll("%death_date%", this.deathChest.getPlugin().getSettings().getDeathDateFormat().format(this.deathChest.getDeathDate()))
+                .replaceAll("%xp%", String.valueOf(deathChest.getPlayerExp()))
                 .replaceAll("%timeleft%", deathChest.getTimeLeft() == -1 ? "∞" : new Time(deathChest.getTimeLeft(), TimeUnit.SECONDS).toString());
         return s;
     }
