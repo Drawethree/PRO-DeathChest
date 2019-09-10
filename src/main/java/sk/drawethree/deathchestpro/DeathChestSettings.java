@@ -33,6 +33,7 @@ public class DeathChestSettings {
 	private boolean debugMode;
 	private boolean hologramEnabled;
 	private boolean startTimerAtDeath;
+	private boolean storeExperience;
 	private SimpleDateFormat deathDateFormat;
 	private List<String> hologramLines;
 	private String deathChestInvTitle;
@@ -58,6 +59,7 @@ public class DeathChestSettings {
 		lavaSpawning = true;
 		debugMode = true;
 		hologramEnabled = true;
+		storeExperience = false;
 		startTimerAtDeath = false;
 		deathDateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
 		hologramLines = new ArrayList<>();
@@ -99,6 +101,7 @@ public class DeathChestSettings {
 			allowKillerLooting = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("allow_killer_looting");
 			startTimerAtDeath = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("start_timer_at_death");
 			teleportCost = this.plugin.getFileManager().getConfig("config.yml").get().getDouble("teleport_cost");
+			storeExperience = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("store_experience");
 			//saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
 			this.loadExpireGroups();
 		}
