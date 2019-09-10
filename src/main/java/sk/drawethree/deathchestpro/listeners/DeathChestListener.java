@@ -66,6 +66,7 @@ public class DeathChestListener implements Listener {
         final DeathChest dc = this.plugin.getDeathChestManager().getDeathChestByInventory(inv);
         if (dc != null) {
             if (dc.isChestEmpty()) {
+                dc.restoreExp(p);
                 dc.removeDeathChest(false);
             } else {
                 dc.updateHologram();
@@ -88,6 +89,11 @@ public class DeathChestListener implements Listener {
 
             if (this.plugin.getDeathChestManager().createDeathChest(p, p.getKiller(), new ArrayList<>(e.getDrops()))) {
                 this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest created");
+
+                if(this.plugin.getSettings().isStoreExperience()) {
+                    e.setDroppedExp(0);
+                    e.setKeepLevel(false);
+                }
 
                 e.getDrops().clear();
                 e.setKeepInventory(true);
