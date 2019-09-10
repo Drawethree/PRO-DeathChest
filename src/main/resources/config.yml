@@ -35,6 +35,8 @@ teleport_cost: 0
 spawn_chest_on_highest_block: false
 #Should the chest countdown start right after player died or after he respawns?
 start_timer_at_death: false
+#Should also player experience be stored? They will be restored once player loots his chest.
+store_experience: false
 #Deatchest firework settings
 deathchest_fireworks:
   #Should fireworks spawn?
@@ -60,7 +62,7 @@ hologram:
   #Lines displayed on hologram. Accepts placeholders %locked%, %death_date%, %player%, %timeleft%
   lines:
     - "%locked%"
-    - "%item_count% Items"
+    - "%item_count% Items / %xp% XP"
     - "Died %death_date%"
     - "Owner: %player%"
     - "%timeleft% left"
