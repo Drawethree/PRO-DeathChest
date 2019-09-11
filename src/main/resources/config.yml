@@ -4,12 +4,6 @@ config_version: 1
 debug_messages: false
 #Expire groups and permissions for each group. Please sort groups from highest permission to lowest. Last group should be default.
 expire_groups:
-  admin:
-    permission: deathchestpro.expire.admin
-    time: -1
-  vip:
-    permission: deathchestpro.expire.vip
-    time: 180
   default:
     permission: deathchestpro.expire.default
     time: 60
