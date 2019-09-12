@@ -2,8 +2,6 @@ package sk.drawethree.deathchestpro;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import sk.drawethree.deathchestpro.commands.DeathChestCommand;
 import sk.drawethree.deathchestpro.listeners.DeathChestHologramListener;
@@ -14,9 +12,6 @@ import sk.drawethree.deathchestpro.misc.DCHook;
 import sk.drawethree.deathchestpro.utils.Items;
 import sk.drawethree.deathchestpro.utils.Message;
 import sk.drawethree.deathchestpro.utils.Metrics;
-
-import java.text.SimpleDateFormat;
-import java.util.List;
 
 @Getter
 public final class DeathChestPro extends JavaPlugin {
