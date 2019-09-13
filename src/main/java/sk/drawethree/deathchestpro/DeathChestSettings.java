@@ -39,6 +39,7 @@ public class DeathChestSettings {
 	private String deathChestInvTitle;
 	private int fireworkInterval;
 	private int unlockChestAfter;
+	private int maxPlayerChests;
 	private boolean allowKillerLooting;
 	private double teleportCost;
 
@@ -68,6 +69,7 @@ public class DeathChestSettings {
 		unlockChestAfter = -1;
 		allowKillerLooting = false;
 		teleportCost = 0;
+		maxPlayerChests = 1;
 	}
 
 	public void loadSettings() {
@@ -102,6 +104,7 @@ public class DeathChestSettings {
 			startTimerAtDeath = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("start_timer_at_death");
 			teleportCost = this.plugin.getFileManager().getConfig("config.yml").get().getDouble("teleport_cost");
 			storeExperience = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("store_experience");
+			maxPlayerChests = this.plugin.getFileManager().getConfig("config.yml").get().getInt("max_player_chests");
 			//saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
 			this.loadExpireGroups();
 		}
