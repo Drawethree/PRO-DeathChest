@@ -317,4 +317,11 @@ public class DeathChestManager {
             }
         }
     }
+
+    public int getAmountOfPlayerChests(Player p) {
+        if(!deathChests.containsKey(p.getUniqueId())) {
+            return 0;
+        }
+        return deathChests.get(p.getUniqueId()).size();
+    }
 }
