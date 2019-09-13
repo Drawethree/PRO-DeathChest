@@ -31,6 +31,8 @@ spawn_chest_on_highest_block: false
 start_timer_at_death: false
 #Should also player experience be stored? They will be restored once player loots his chest.
 store_experience: false
+#How many chests can players have maximally at one time ?
+max_player_chests: 3
 #Deatchest firework settings
 deathchest_fireworks:
   #Should fireworks spawn?
