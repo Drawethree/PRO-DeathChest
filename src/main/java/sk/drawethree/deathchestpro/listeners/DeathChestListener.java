@@ -23,7 +23,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
-import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.utils.CompMaterial;
 import sk.drawethree.deathchestpro.utils.CompSound;
 import sk.drawethree.deathchestpro.utils.Items;
@@ -79,31 +78,41 @@ public class DeathChestListener implements Listener {
     public void onPlayerDeath(final PlayerDeathEvent e) {
         final Player p = e.getEntity();
         this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " died.");
-        if (!this.plugin.getSettings().getDisabledworlds().contains(p.getLocation().getWorld().getName()) && (p.hasPermission("deathchestpro.chest")) && (e.getDrops().size() > 0)) {
 
-            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player has permission to have chest, has some items in inventory and is not in restricted world");
+        //Check for maximum chests allowed at one time
+        if (!p.isOp() && (this.plugin.getDeathChestManager().getAmountOfPlayerChests(p) >= this.plugin.getSettings().getMaxPlayerChests())) {
+            return;
+        }
 
-            if (((e.getEntity().getLastDamageCause() != null) && (e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID) && (!this.plugin.getSettings().isVoidSpawning())) || (p.getLocation().getBlock().getType() == CompMaterial.LAVA.getMaterial()) && (!this.plugin.getSettings().isLavaSpawning())) {
-                return;
+        //Check for restricted world, permission and drops size
+        if (this.plugin.getSettings().getDisabledworlds().contains(p.getLocation().getWorld().getName()) || (!p.hasPermission("deathchestpro.chest")) || (e.getDrops().size() == 0)) {
+            return;
+        }
+
+        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player has permission to have chest, has some items in inventory and is not in restricted world");
+
+        //Check for damage
+        if (((e.getEntity().getLastDamageCause() != null) && (e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID) && (!this.plugin.getSettings().isVoidSpawning())) || (p.getLocation().getBlock().getType() == CompMaterial.LAVA.getMaterial()) && (!this.plugin.getSettings().isLavaSpawning())) {
+            return;
+        }
+
+        if (this.plugin.getDeathChestManager().createDeathChest(p, p.getKiller(), new ArrayList<>(e.getDrops()))) {
+            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest created");
+
+            if (this.plugin.getSettings().isStoreExperience()) {
+                e.setDroppedExp(0);
+                e.setKeepLevel(false);
             }
 
-            if (this.plugin.getDeathChestManager().createDeathChest(p, p.getKiller(), new ArrayList<>(e.getDrops()))) {
-                this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest created");
+            e.getDrops().clear();
+            e.setKeepInventory(true);
+            p.getInventory().setArmorContents(null);
+            p.getInventory().clear();
+            p.updateInventory();
 
-                if(this.plugin.getSettings().isStoreExperience()) {
-                    e.setDroppedExp(0);
-                    e.setKeepLevel(false);
-                }
-
-                e.getDrops().clear();
-                e.setKeepInventory(true);
-                p.getInventory().setArmorContents(null);
-                p.getInventory().clear();
-                p.updateInventory();
-
-            }
         }
     }
+
 
     @EventHandler
     public void onFireworkDamage(final EntityDamageByEntityEvent e) {
