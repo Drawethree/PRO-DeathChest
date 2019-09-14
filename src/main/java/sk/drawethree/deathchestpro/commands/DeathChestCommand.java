@@ -4,10 +4,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import sk.drawethree.deathchestpro.DeathChestPro;
-import sk.drawethree.deathchestpro.commands.subcommands.DeathChestSubCommand;
-import sk.drawethree.deathchestpro.commands.subcommands.ListSubCommand;
-import sk.drawethree.deathchestpro.commands.subcommands.ReloadSubCommand;
-import sk.drawethree.deathchestpro.commands.subcommands.TeleportSubCommand;
+import sk.drawethree.deathchestpro.commands.subcommands.*;
 import sk.drawethree.deathchestpro.utils.Message;
 
 import java.util.Arrays;
@@ -24,7 +21,7 @@ public class DeathChestCommand implements CommandExecutor {
         availableSubCommands.put("list", new ListSubCommand());
         availableSubCommands.put("reload", new ReloadSubCommand());
         availableSubCommands.put("teleport", new TeleportSubCommand());
-        //availableSubCommands.put("test", new TestSubCommand());
+        availableSubCommands.put("test", new TestSubCommand());
     }
 
     public DeathChestCommand(DeathChestPro plugin) {

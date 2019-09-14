@@ -14,6 +14,15 @@ permissions:
       deathchestpro.see: true
       deathchestpro.reload: true
       deathchestpro.teleport: true
+  deathchestpro.player:
+    description: Default player permissions
+    default: op
+    children:
+      deathchestpro.chest: true
+      deathchestpro.lock: true
+      deathchestpro.list: true
+      deathchestpro.fastloot: true
+      deathchestpro.expire.default: true
   deathchestpro.chest:
     description: Allows to spawn a chest after player's death
     default: op
