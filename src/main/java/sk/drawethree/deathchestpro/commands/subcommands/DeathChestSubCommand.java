@@ -8,7 +8,6 @@ import sk.drawethree.deathchestpro.DeathChestPro;
 @Getter
 public abstract class DeathChestSubCommand {
 
-
     private String subCommandName;
     private String description;
 
