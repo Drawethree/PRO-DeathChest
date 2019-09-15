@@ -1,6 +1,7 @@
 package sk.drawethree.deathchestpro.chest;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -16,6 +17,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import sk.drawethree.deathchestpro.DeathChestPro;
+import sk.drawethree.deathchestpro.chest.tasks.ChestRemoveTask;
+import sk.drawethree.deathchestpro.chest.tasks.ChestUnlockTask;
+import sk.drawethree.deathchestpro.chest.tasks.HologramUpdateTask;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.misc.DCHook;
 import sk.drawethree.deathchestpro.misc.DCVaultHook;
@@ -29,6 +33,7 @@ import java.util.UUID;
 public class DeathChest {
 
     private DeathChestPro plugin;
+
     private UUID chestUUID;
     private OfflinePlayer player;
     private OfflinePlayer killer;
@@ -36,14 +41,21 @@ public class DeathChest {
     private Location location;
     private BlockState replacedBlock;
     private Inventory chestInventory;
-    private BukkitTask removeTask;
+
+    private BukkitTask hologramUpdateTask;
+    private BukkitTask chestRemoveTask;
+    private BukkitTask unlockTask;
+
     private ItemStack listItem;
     private boolean announced;
     private boolean locked;
+
+    @Setter
     private int timeLeft;
     @Getter
     private int playerExp;
     private Date deathDate;
+
 
     public DeathChest(DeathChestPro plugin, Player p, OfflinePlayer killer, List<ItemStack> items, int playerExp) {
         this.plugin = plugin;
@@ -107,6 +119,7 @@ public class DeathChest {
         }
 
         this.hologram = new DeathChestHologram(this);
+        this.hologramUpdateTask = new HologramUpdateTask(this).runTaskTimer(this.plugin, 20, 20);
 
         /*if (this.plugin.isDisplayPlayerHead()) {
             hologram.appendItemLine(ItemUtil.getPlayerSkull(player, null, null));
@@ -177,22 +190,8 @@ public class DeathChest {
             return;
         }
 
-        new BukkitRunnable() {
+        this.unlockTask = new ChestUnlockTask(this).runTaskLater(this.plugin, this.plugin.getSettings().getUnlockChestAfter()*20);
 
-            @Override
-            public void run() {
-
-                //Check if chest exists
-                if (plugin.getDeathChestManager().getDeathChest(chestUUID.toString()) == null) {
-                    return;
-                }
-
-                locked = false;
-                if (hologram != null)
-                    hologram.updateHologram();
-
-            }
-        }.runTaskLater(this.plugin.getInstance(), this.plugin.getSettings().getUnlockChestAfter() * 20L);
     }
 
     public void runRemoveTask() {
@@ -202,36 +201,7 @@ public class DeathChest {
             return;
         }
 
-        this.removeTask = new BukkitRunnable() {
-            int nextFireworkIn = plugin.getSettings().getFireworkInterval();
-
-            @Override
-            public void run() {
-
-                if (timeLeft == 0) {
-                    removeDeathChest(true);
-                    cancel();
-                } else {
-                    timeLeft--;
-                    if (hologram != null) {
-                        hologram.updateHologram();
-                    }
-
-                    if (location.getBlock().getType() != Material.CHEST && !plugin.getSettings().isAllowBreakChests()) {
-                        location.getBlock().setType(Material.CHEST);
-                        location.getBlock().getState().update(true);
-                    }
-
-                    if (plugin.getSettings().isDeathchestFireworks()) {
-                        nextFireworkIn--;
-                        if (nextFireworkIn == 0) {
-                            FireworkUtil.spawnRandomFirework(hologram.getLocation());
-                            nextFireworkIn = plugin.getSettings().getFireworkInterval();
-                        }
-                    }
-                }
-            }
-        }.runTaskTimer(this.plugin.getInstance(), 20L, 20L);
+        this.chestRemoveTask = new ChestRemoveTask(this).runTaskTimer(this.plugin, 20L, 20L);
 
     }
 
@@ -267,9 +237,7 @@ public class DeathChest {
 
     public void removeDeathChest(boolean closeInventories) {
 
-        if (removeTask != null) {
-            removeTask.cancel();
-        }
+        this.stopAllTasks();
 
         if (hologram != null) {
             this.hologram.despawn();
@@ -282,6 +250,15 @@ public class DeathChest {
         }
 
         this.plugin.getDeathChestManager().removeDeathChest(this);
+    }
+
+    private void stopAllTasks() {
+        if (this.hologramUpdateTask != null)
+            this.hologramUpdateTask.cancel();
+        if (this.chestRemoveTask != null)
+            this.chestRemoveTask.cancel();
+        if  (this.unlockTask != null)
+            this.unlockTask.cancel();
     }
 
     public boolean isAnnounced() {
@@ -475,5 +452,11 @@ public class DeathChest {
     public void restoreExp(Player p) {
         p.giveExp(this.playerExp);
         this.playerExp = 0;
+    }
+
+    public void unlock() {
+        if (this.locked) {
+            this.locked = false;
+        }
     }
 }
