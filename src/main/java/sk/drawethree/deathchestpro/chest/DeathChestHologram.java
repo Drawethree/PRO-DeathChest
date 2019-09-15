@@ -156,12 +156,16 @@ public class DeathChestHologram {
     }
 
     public void updateHologram() {
-        for (int i = 0; i < this.deathChest.getPlugin().getSettings().getHologramLines().size(); i++) {
+
+        this.despawn();
+        this.spawn();
+
+        /*for (int i = 0; i < this.deathChest.getPlugin().getSettings().getHologramLines().size(); i++) {
             String line = this.deathChest.getPlugin().getSettings().getHologramLines().get(i);
             line = this.replaceHologramPlaceholders(line);
             line = this.replacePlaceholderAPI(line);
             this.setLine(i, line);
-        }
+        }*/
     }
 
 }
