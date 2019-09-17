@@ -52,7 +52,7 @@ public class DeathChestHologram {
             this.appendTextLine(s);
         }
 
-        this.teleport(LocationUtil.getCenter(this.location.clone().add(0, 0.5 + this.getHeight(), 0)));
+        this.teleport(LocationUtil.getCenter(this.deathChest.getLocation().clone().add(0, 0.5 + this.getHeight(), 0)));
 
         this.spawned = true;
     }
