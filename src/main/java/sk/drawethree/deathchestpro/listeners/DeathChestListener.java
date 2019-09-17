@@ -84,6 +84,8 @@ public class DeathChestListener implements Listener {
             return;
         }
 
+        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player has less than maximum allowed chests.");
+
         //Check for restricted world, permission and drops size
         if (this.plugin.getSettings().getDisabledworlds().contains(p.getLocation().getWorld().getName()) || (!p.hasPermission("deathchestpro.chest")) || (e.getDrops().size() == 0)) {
             return;
