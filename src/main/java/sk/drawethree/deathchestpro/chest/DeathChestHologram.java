@@ -12,7 +12,6 @@ import sk.drawethree.deathchestpro.utils.LocationUtil;
 import sk.drawethree.deathchestpro.utils.Time;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class DeathChestHologram {
@@ -133,6 +132,10 @@ public class DeathChestHologram {
             as = null;
         }
 
+        this.spawned = false;
+    }
+
+    public void unload() {
         this.spawned = false;
     }
 
