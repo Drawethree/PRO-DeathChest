@@ -9,7 +9,6 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
-import sk.drawethree.deathchestpro.managers.DeathChestManager;
 
 
 public class DeathChestHologramListener implements Listener {
