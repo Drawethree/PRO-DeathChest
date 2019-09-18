@@ -4,12 +4,13 @@ import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Entity;
 import org.bukkit.metadata.FixedMetadataValue;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.misc.DCHook;
 import sk.drawethree.deathchestpro.utils.LocationUtil;
 import sk.drawethree.deathchestpro.utils.Time;
+import sk.drawethree.deathchestpro.utils.VersionResolver;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -21,14 +22,12 @@ public class DeathChestHologram {
     private static final double ARMOR_STAND_HEIGHT = 2.0;
 
     private DeathChest deathChest;
-    private Location location;
     @Getter
     private boolean spawned;
     private ArrayList<ArmorStand> armorStands;
 
     public DeathChestHologram(DeathChest deathChest) {
         this.deathChest = deathChest;
-        this.location = deathChest.getLocation().clone();
         this.spawn();
     }
 
@@ -41,7 +40,6 @@ public class DeathChestHologram {
 
         this.deathChest.getPlugin().broadcast(DeathChestPro.BroadcastType.DEBUG, "Spawning hologram.");
         this.armorStands = new ArrayList<>();
-        this.location = this.deathChest.getLocation().clone();
 
         for (String s : this.deathChest.getPlugin().getSettings().getHologramLines()) {
 
@@ -51,8 +49,7 @@ public class DeathChestHologram {
             this.appendTextLine(s);
         }
 
-        this.teleport(LocationUtil.getCenter(this.deathChest.getLocation().clone().add(0, 0.5 + this.getHeight(), 0)));
-
+        this.show();
         this.spawned = true;
     }
 
@@ -79,14 +76,22 @@ public class DeathChestHologram {
     }
 
     private void appendTextLine(String text) {
-        ArmorStand as = (ArmorStand) this.location.getWorld().spawnEntity(this.location.clone().subtract(0, this.armorStands.size() * LINE_SPACER, 0), EntityType.ARMOR_STAND);
+        ArmorStand as = this.deathChest.getLocation().getWorld().spawn(this.deathChest.getLocation().clone().subtract(0, this.armorStands.size() * LINE_SPACER, 0), ArmorStand.class);
 
-        as.setGravity(false);
-        as.setCanPickupItems(false);
-        as.setBasePlate(false);
-        as.setCustomName(text);
-        as.setCustomNameVisible(true);
         as.setVisible(false);
+        as.setCustomNameVisible(false);
+        as.setSmall(true);
+        as.setMarker(true);
+        as.setArms(false);
+        as.setBasePlate(false);
+        as.setGravity(false);
+        as.setCustomName(text);
+
+        if(VersionResolver.isAtLeast1_9()) {
+            as.setAI(false);
+            as.setCollidable(false);
+            as.setInvulnerable(true);
+        }
 
         as.setMetadata(DeathChestHologram.ENTITY_METADATA, new FixedMetadataValue(DeathChestPro.getInstance(), DeathChestHologram.ENTITY_METADATA));
 
@@ -95,21 +100,20 @@ public class DeathChestHologram {
         this.update();
     }
 
+    private void show() {
+        this.armorStands.forEach(armorStand -> armorStand.setCustomNameVisible(true));
+    }
+
+    private void hide() {
+        this.armorStands.forEach(armorStand -> armorStand.setCustomNameVisible(true));
+    }
+
     private void update() {
+        Location center = LocationUtil.getCenter(this.deathChest.getLocation().clone().add(0, 1.0 + this.getHeight(), 0));
         for (int i = 0; i < this.armorStands.size(); i++) {
             ArmorStand as = this.armorStands.get(i);
-            as.teleport(this.location.clone().subtract(0, ARMOR_STAND_HEIGHT + (i * LINE_SPACER), 0));
+            as.teleport(center.subtract(0, LINE_SPACER, 0));
         }
-    }
-
-
-    private void teleport(Location newLocation) {
-        this.location = newLocation;
-        this.update();
-    }
-
-    public Location getLocation() {
-        return location;
     }
 
     private double getHeight() {
@@ -125,17 +129,9 @@ public class DeathChestHologram {
 
         this.deathChest.getPlugin().broadcast(DeathChestPro.BroadcastType.DEBUG, "Despawning hologram.");
 
-        for (ArmorStand as : new ArrayList<>(this.armorStands)) {
-            this.deathChest.getPlugin().broadcast(DeathChestPro.BroadcastType.DEBUG, "Removing hologram line.");
-            armorStands.remove(as);
-            as.remove();
-            as = null;
-        }
+        this.armorStands.forEach(Entity::remove);
+        this.armorStands.clear();
 
-        this.spawned = false;
-    }
-
-    public void unload() {
         this.spawned = false;
     }
 
@@ -160,15 +156,16 @@ public class DeathChestHologram {
 
     public void updateHologram() {
 
-        this.despawn();
-        this.spawn();
+        if(!this.spawned || deathChest.isUnloaded()) {
+            return;
+        }
 
-        /*for (int i = 0; i < this.deathChest.getPlugin().getSettings().getHologramLines().size(); i++) {
+        for (int i = 0; i < this.deathChest.getPlugin().getSettings().getHologramLines().size(); i++) {
             String line = this.deathChest.getPlugin().getSettings().getHologramLines().get(i);
             line = this.replaceHologramPlaceholders(line);
             line = this.replacePlaceholderAPI(line);
             this.setLine(i, line);
-        }*/
+        }
     }
 
 }
