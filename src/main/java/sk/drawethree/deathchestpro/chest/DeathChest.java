@@ -56,6 +56,8 @@ public class DeathChest {
     @Getter
     private int playerExp;
     private Date deathDate;
+    @Getter
+    private boolean unloaded;
 
 
     public DeathChest(DeathChestPro plugin, Player p, OfflinePlayer killer, List<ItemStack> items, int playerExp) {
@@ -120,7 +122,7 @@ public class DeathChest {
         }
 
         this.hologram = new DeathChestHologram(this);
-        this.hologramUpdateTask = new HologramUpdateTask(this).runTaskTimer(this.plugin, 20, 20);
+        this.hologramUpdateTask = new HologramUpdateTask(this).runTaskTimer(this.plugin, 20L, 20L);
 
         /*if (this.plugin.isDisplayPlayerHead()) {
             hologram.appendItemLine(ItemUtil.getPlayerSkull(player, null, null));
@@ -191,7 +193,7 @@ public class DeathChest {
             return;
         }
 
-        this.unlockTask = new ChestUnlockTask(this).runTaskLater(this.plugin, this.plugin.getSettings().getUnlockChestAfter()*20);
+        this.unlockTask = new ChestUnlockTask(this).runTaskLater(this.plugin, this.plugin.getSettings().getUnlockChestAfter() * 20);
 
     }
 
@@ -230,7 +232,7 @@ public class DeathChest {
 
         replacedBlock.update(true);
 
-        if(this.playerExp != 0) {
+        if (this.playerExp != 0) {
             ExperienceOrb experienceOrb = location.getWorld().spawn(location, ExperienceOrb.class);
             experienceOrb.setExperience(this.playerExp);
         }
@@ -258,7 +260,7 @@ public class DeathChest {
             this.hologramUpdateTask.cancel();
         if (this.chestRemoveTask != null)
             this.chestRemoveTask.cancel();
-        if  (this.unlockTask != null)
+        if (this.unlockTask != null)
             this.unlockTask.cancel();
     }
 
@@ -268,15 +270,12 @@ public class DeathChest {
 
     public void announce() {
 
-        if (this.location.getBlock().getType() != CompMaterial.CHEST.getMaterial()) {
-            this.location.getBlock().setType(CompMaterial.CHEST.getMaterial());
-        }
-
         if (!this.getOwner().isOnline()) {
             return;
         }
 
         if (this.plugin.getSettings().isClickableMessage()) {
+
             BaseComponent[] msg = TextComponent.fromLegacyText(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
             for (BaseComponent bc : msg) {
                 bc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Message.DEATHCHEST_LOCATED_HOVER.getMessage()).create()));
@@ -458,6 +457,20 @@ public class DeathChest {
     public void unlock() {
         if (this.locked) {
             this.locked = false;
+        }
+    }
+
+    public void unload() {
+        this.unloaded = true;
+        if (this.hologram != null) {
+            this.hologram.despawn();
+        }
+    }
+
+    public void load() {
+        this.unloaded = false;
+        if(this.hologram != null) {
+            this.hologram.spawn();
         }
     }
 }
