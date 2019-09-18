@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 import sk.drawethree.deathchestpro.chest.DeathChest;
 import sk.drawethree.deathchestpro.utils.FireworkUtil;
+import sk.drawethree.deathchestpro.utils.LocationUtil;
 
 public class ChestRemoveTask extends BukkitRunnable {
 
@@ -23,6 +24,10 @@ public class ChestRemoveTask extends BukkitRunnable {
 		} else {
 			this.deathChest.setTimeLeft(this.deathChest.getTimeLeft()-1);
 
+			if(deathChest.isUnloaded()) {
+				return;
+			}
+
 			if (this.deathChest.getLocation().getBlock().getType() != Material.CHEST && !this.deathChest.getPlugin().getSettings().isAllowBreakChests()) {
 				this.deathChest.getLocation().getBlock().setType(Material.CHEST);
 				this.deathChest.getLocation().getBlock().getState().update(true);
@@ -31,7 +36,7 @@ public class ChestRemoveTask extends BukkitRunnable {
 			if (this.deathChest.getPlugin().getSettings().isDeathchestFireworks() && this.deathChest.getLocation().getChunk().isLoaded()) {
 				this.nextFireworkIn--;
 				if (this.nextFireworkIn == 0) {
-					FireworkUtil.spawnRandomFirework(this.deathChest.getLocation());
+					FireworkUtil.spawnRandomFirework(LocationUtil.getCenter(this.deathChest.getLocation().clone().add(0,1,0)));
 					this.nextFireworkIn = this.deathChest.getPlugin().getSettings().getFireworkInterval();
 				}
 			}
