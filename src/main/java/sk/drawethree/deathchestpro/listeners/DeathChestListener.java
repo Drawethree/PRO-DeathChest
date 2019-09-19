@@ -81,6 +81,7 @@ public class DeathChestListener implements Listener {
 
         //Check for maximum chests allowed at one time
         if (!p.isOp() && (this.plugin.getDeathChestManager().getAmountOfPlayerChests(p) >= this.plugin.getSettings().getMaxPlayerChests())) {
+            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest will not be spawned, player has maximum allowed chests.");
             return;
         }
 
@@ -88,6 +89,7 @@ public class DeathChestListener implements Listener {
 
         //Check for restricted world, permission and drops size
         if (this.plugin.getSettings().getDisabledworlds().contains(p.getLocation().getWorld().getName()) || (!p.hasPermission("deathchestpro.chest")) || (e.getDrops().size() == 0)) {
+            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest will not be spawned, player is in disabled world, does not have permission 'deathchestpro.chest' or has empty dropped items.");
             return;
         }
 
@@ -99,7 +101,7 @@ public class DeathChestListener implements Listener {
         }
 
         if (this.plugin.getDeathChestManager().createDeathChest(p, p.getKiller(), new ArrayList<>(e.getDrops()))) {
-            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest created");
+            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "DeathChest created");
 
             if (this.plugin.getSettings().isStoreExperience()) {
                 e.setDroppedExp(0);
