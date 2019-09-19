@@ -1,6 +1,5 @@
-.idea
+.idea/*
 .idea/libraries
 target
 *.iml
 .DS_Store
-TestSubCommand.java
