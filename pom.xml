@@ -6,12 +6,12 @@
 
     <groupId>sk.drawethree</groupId>
     <artifactId>DeathChestPro</artifactId>
-    <version>3.3.5</version>
+    <version>3.3.7</version>
     <packaging>jar</packaging>
 
     <name>DeathChestPro</name>
 
-    <description>Spawns a deatchest after player death</description>
+    <description>Spawns a deathchest after player death</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
