@@ -6,6 +6,7 @@ debug_messages: false
 expire_groups:
   default:
     permission: deathchestpro.expire.default
+    teleport_cost: 0
     time: 60
 #Can chest be broken?
 allow_break_chests: false
@@ -23,8 +24,8 @@ void_spawning_chest: true
 auto_equip_armor: true
 #Should players click on message to teleport to their chest?
 clickable_message: true
-#Cost of teleportation to chest
-teleport_cost: 0
+#Should chests be unlocked after certain time in seconds?
+unlock_chest_after: -1
 #Should the chest be spawned on highest possible block, or where player died?
 spawn_chest_on_highest_block: false
 #Should the chest countdown start right after player died or after he respawns?

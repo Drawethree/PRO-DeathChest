@@ -66,7 +66,7 @@ public class DeathChest {
         this.player = p;
         this.killer = killer;
         this.locked = p.hasPermission("deathchestpro.lock");
-        this.timeLeft = this.plugin.getSettings().getExpireTimeForPlayer(p);
+        this.timeLeft = this.plugin.getSettings().getExpireGroup(p).getExpireTime();
         this.playerExp = playerExp;
         this.deathDate = new Date();
 
@@ -301,13 +301,15 @@ public class DeathChest {
         if (p.hasPermission("deathchestpro.teleport")) {
             DCVaultHook vaultHook = (DCVaultHook) DCHook.getHookByName("Vault");
 
+            double cost = this.plugin.getSettings().getExpireGroup(p).getTeleportCost();
+
             if (vaultHook.getEconomy() != null) {
-                if (!vaultHook.getEconomy().has(p, this.plugin.getSettings().getTeleportCost())) {
+                if (!vaultHook.getEconomy().has(p, cost)) {
                     p.sendMessage(Message.DEATHCHEST_TELEPORT_NO_MONEY.getChatMessage());
                     return false;
                 }
 
-                vaultHook.getEconomy().withdrawPlayer(p, this.plugin.getSettings().getTeleportCost());
+                vaultHook.getEconomy().withdrawPlayer(p, cost);
             }
 
             p.teleport(this.location.clone().add(0, 1, 0));

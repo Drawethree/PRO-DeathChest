@@ -4,7 +4,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
-import sk.drawethree.deathchestpro.managers.DeathChestManager;
 
 public class TeleportSubCommand extends DeathChestSubCommand {
 
@@ -19,10 +18,12 @@ public class TeleportSubCommand extends DeathChestSubCommand {
         }
         Player p = (Player) sender;
         DeathChest dc = plugin.getDeathChestManager().getDeathChest(args[0]);
+
         if (dc != null) {
             dc.teleportPlayer(p);
             return true;
         }
+
         return false;
     }
 }

@@ -64,6 +64,7 @@ public final class DeathChestPro extends JavaPlugin {
         fileManager.getConfig("config.yml").get().set("remove_chest_time", null);
         fileManager.getConfig("config.yml").get().set("protect_chests", null);
         fileManager.getConfig("config.yml").get().set("hologram.display_player_head", null);
+        fileManager.getConfig("config.yml").get().set("teleport_cost", null);
         fileManager.getConfig("config.yml").save();
     }
 
