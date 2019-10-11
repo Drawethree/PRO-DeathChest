@@ -5,7 +5,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import sk.drawethree.deathchestpro.DeathChestPro;
-import sk.drawethree.deathchestpro.utils.Message;
+import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 
 public class ListSubCommand extends DeathChestSubCommand {
 
@@ -38,7 +38,7 @@ public class ListSubCommand extends DeathChestSubCommand {
                 plugin.getDeathChestManager().openDeathchestList(whoChests, p, 1);
                 return true;
             } else {
-                p.sendMessage(Message.NO_PERMISSION.getChatMessage());
+                p.sendMessage(DeathChestMessage.NO_PERMISSION.getChatMessage());
             }
         }
         return false;

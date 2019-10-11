@@ -1,9 +1,9 @@
-package sk.drawethree.deathchestpro.utils;
+package sk.drawethree.deathchestpro.enums;
 
 import org.bukkit.ChatColor;
 import sk.drawethree.deathchestpro.DeathChestPro;
 
-public enum Message {
+public enum DeathChestMessage {
 
     PREFIX("prefix"),
     DEATHCHEST_LIST_INV_TITLE("deathchest_list_inv_title"),
@@ -29,7 +29,7 @@ public enum Message {
     private String path;
     private String message;
 
-    Message(String path) {
+    DeathChestMessage(String path) {
         this.path = path;
         this.message = ChatColor.translateAlternateColorCodes('&', DeathChestPro.getInstance().getFileManager().getConfig("messages.yml").get().getString(path));
     }
@@ -47,7 +47,7 @@ public enum Message {
     }
 
     public static void reload() {
-        for (Message m : values()) {
+        for (DeathChestMessage m : values()) {
             m.setMessage(ChatColor.translateAlternateColorCodes('&', DeathChestPro.getInstance().getFileManager().getConfig("messages.yml").get().getString(m.getPath())));
         }
     }

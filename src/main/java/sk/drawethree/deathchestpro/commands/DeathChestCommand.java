@@ -5,7 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.commands.subcommands.*;
-import sk.drawethree.deathchestpro.utils.Message;
+import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 
 import java.util.Arrays;
 import java.util.TreeMap;
@@ -46,7 +46,7 @@ public class DeathChestCommand implements CommandExecutor {
     }
 
     private boolean invalidUsage(CommandSender sender) {
-        sender.sendMessage(Message.INVALID_USAGE.getChatMessage());
+        sender.sendMessage(DeathChestMessage.INVALID_USAGE.getChatMessage());
         return true;
     }
 

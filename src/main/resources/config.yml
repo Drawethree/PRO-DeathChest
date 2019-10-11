@@ -7,6 +7,7 @@ expire_groups:
   default:
     permission: deathchestpro.expire.default
     teleport_cost: 0
+    unlock_after: -1
     time: 60
 #Can chest be broken?
 allow_break_chests: false
@@ -24,8 +25,6 @@ void_spawning_chest: true
 auto_equip_armor: true
 #Should players click on message to teleport to their chest?
 clickable_message: true
-#Should chests be unlocked after certain time in seconds?
-unlock_chest_after: -1
 #Should the chest be spawned on highest possible block, or where player died?
 spawn_chest_on_highest_block: false
 #Should the chest countdown start right after player died or after he respawns?
@@ -59,7 +58,7 @@ hologram:
   #Lines displayed on hologram. Accepts placeholders %locked%, %death_date%, %player%, %timeleft%
   lines:
     - "%locked%"
-    - "%item_count% Items / %xp% XP"
+    - "%item_count% DeathChestItems / %xp% XP"
     - "Died %death_date%"
     - "Owner: %player%"
     - "%timeleft% left"

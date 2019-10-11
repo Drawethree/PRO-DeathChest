@@ -1,8 +1,9 @@
-package sk.drawethree.deathchestpro.utils;
+package sk.drawethree.deathchestpro.utils.comp;
 
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import sk.drawethree.deathchestpro.utils.VersionResolver;
 
 import java.util.HashMap;
 

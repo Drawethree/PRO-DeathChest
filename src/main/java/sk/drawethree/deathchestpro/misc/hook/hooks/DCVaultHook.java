@@ -1,8 +1,9 @@
-package sk.drawethree.deathchestpro.misc;
+package sk.drawethree.deathchestpro.misc.hook.hooks;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import sk.drawethree.deathchestpro.DeathChestPro;
+import sk.drawethree.deathchestpro.misc.hook.DCHook;
 
 public class DCVaultHook extends DCHook {
 

@@ -7,7 +7,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.metadata.FixedMetadataValue;
 import sk.drawethree.deathchestpro.DeathChestPro;
-import sk.drawethree.deathchestpro.misc.DCHook;
+import sk.drawethree.deathchestpro.misc.hook.DCHook;
 import sk.drawethree.deathchestpro.utils.LocationUtil;
 import sk.drawethree.deathchestpro.utils.Time;
 import sk.drawethree.deathchestpro.utils.VersionResolver;

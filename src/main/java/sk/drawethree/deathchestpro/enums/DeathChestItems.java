@@ -1,8 +1,9 @@
-package sk.drawethree.deathchestpro.utils;
+package sk.drawethree.deathchestpro.enums;
 
 import org.bukkit.inventory.ItemStack;
+import sk.drawethree.deathchestpro.utils.ItemUtil;
 
-public enum Items {
+public enum DeathChestItems {
 
     PREV_ITEM("items.prev_item"),
     NEXT_ITEM("items.next_item"),
@@ -12,7 +13,7 @@ public enum Items {
     private ItemStack itemStack;
     private String path;
 
-    Items(String path) {
+    DeathChestItems(String path) {
         this.path = path;
         this.itemStack = ItemUtil.loadItemFromConfig("items.yml", path);
     }
@@ -23,7 +24,7 @@ public enum Items {
 
 
     public static void reload() {
-        for (Items i : values()) {
+        for (DeathChestItems i : values()) {
             i.setItemStack(ItemUtil.loadItemFromConfig("items.yml", i.path));
         }
     }

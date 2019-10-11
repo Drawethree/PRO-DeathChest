@@ -1,4 +1,4 @@
-package sk.drawethree.deathchestpro.utils;
+package sk.drawethree.deathchestpro.utils.comp;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.FallingBlock;
+import sk.drawethree.deathchestpro.utils.VersionResolver;
 
 /**
  * A mostly reflection-based class for version-specific various API methods.

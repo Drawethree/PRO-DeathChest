@@ -16,14 +16,14 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.region.IWrappedRegion;
+import sk.drawethree.deathchestpro.enums.DeathChestItems;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
 import sk.drawethree.deathchestpro.chest.DeathChestHologram;
-import sk.drawethree.deathchestpro.misc.DCHook;
-import sk.drawethree.deathchestpro.utils.CompSound;
+import sk.drawethree.deathchestpro.misc.hook.DCHook;
+import sk.drawethree.deathchestpro.utils.comp.CompSound;
 import sk.drawethree.deathchestpro.utils.ExperienceUtil;
-import sk.drawethree.deathchestpro.utils.Items;
-import sk.drawethree.deathchestpro.utils.Message;
+import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 
 import java.util.*;
 
@@ -115,7 +115,7 @@ public class DeathChestManager {
         int amountOfChests = deathChests.get(whoseChests.getUniqueId()) == null ? 0 : deathChests.get(whoseChests.getUniqueId()).size();
         if (page > 0) {
             if (amountOfChests >= (page * 45) - 45) {
-                Inventory inv = Bukkit.createInventory(null, 54, Message.DEATHCHEST_LIST_INV_TITLE.getMessage() + page);
+                Inventory inv = Bukkit.createInventory(null, 54, DeathChestMessage.DEATHCHEST_LIST_INV_TITLE.getMessage() + page);
                 List<DeathChest> deathChestsList = this.getPlayerDeathChests(whoseChests);
                 int index = 0;
 
@@ -127,8 +127,8 @@ public class DeathChestManager {
                         break;
                     }
                 }
-                inv.setItem(45, Items.PREV_ITEM.getItemStack());
-                inv.setItem(53, Items.NEXT_ITEM.getItemStack());
+                inv.setItem(45, DeathChestItems.PREV_ITEM.getItemStack());
+                inv.setItem(53, DeathChestItems.NEXT_ITEM.getItemStack());
                 openTo.playSound(openTo.getLocation(), CompSound.ORB_PICKUP.getSound(), 1, 1);
                 openTo.openInventory(inv);
                 openedInventories.put(openTo, whoseChests);
@@ -145,7 +145,7 @@ public class DeathChestManager {
     }
 
     public int getPageNumber(InventoryView inv) {
-        return Integer.parseInt(inv.getTitle().replaceAll(Message.DEATHCHEST_LIST_INV_TITLE.getMessage(), "").replaceAll(" ", ""));
+        return Integer.parseInt(inv.getTitle().replaceAll(DeathChestMessage.DEATHCHEST_LIST_INV_TITLE.getMessage(), "").replaceAll(" ", ""));
     }
 
     public void removeDeathChest(DeathChest dc) {

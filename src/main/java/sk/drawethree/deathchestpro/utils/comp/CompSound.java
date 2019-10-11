@@ -1,4 +1,4 @@
-package sk.drawethree.deathchestpro.utils;
+package sk.drawethree.deathchestpro.utils.comp;
 
 import org.bukkit.Sound;
 

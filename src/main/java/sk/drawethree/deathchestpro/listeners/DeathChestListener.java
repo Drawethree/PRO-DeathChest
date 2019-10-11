@@ -21,12 +21,12 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
+import sk.drawethree.deathchestpro.enums.DeathChestItems;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
-import sk.drawethree.deathchestpro.utils.CompMaterial;
-import sk.drawethree.deathchestpro.utils.CompSound;
-import sk.drawethree.deathchestpro.utils.Items;
-import sk.drawethree.deathchestpro.utils.Message;
+import sk.drawethree.deathchestpro.utils.comp.CompMaterial;
+import sk.drawethree.deathchestpro.utils.comp.CompSound;
+import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -156,7 +156,7 @@ public class DeathChestListener implements Listener {
             if (dc != null) {
                 if (!this.plugin.getSettings().isAllowBreakChests() || (dc.isLocked() && !dc.getOwner().getUniqueId().equals(p.getUniqueId()))) {
                     e.setCancelled(true);
-                    p.sendMessage(Message.DEATHCHEST_CANNOT_BREAK.getChatMessage());
+                    p.sendMessage(DeathChestMessage.DEATHCHEST_CANNOT_BREAK.getChatMessage());
                 } else {
                     e.setCancelled(true);
                     dc.removeDeathChest(true);
@@ -167,7 +167,7 @@ public class DeathChestListener implements Listener {
 
     @EventHandler
     public void onInvClick(final InventoryClickEvent e) {
-        if (!(e.getWhoClicked() instanceof Player) || e.getInventory() == null || e.getView() == null || !e.getView().getTitle().contains(Message.DEATHCHEST_LIST_INV_TITLE.getMessage())) {
+        if (!(e.getWhoClicked() instanceof Player) || e.getInventory() == null || e.getView() == null || !e.getView().getTitle().contains(DeathChestMessage.DEATHCHEST_LIST_INV_TITLE.getMessage())) {
             return;
         }
 
@@ -179,9 +179,9 @@ public class DeathChestListener implements Listener {
             final DeathChest clickedChest = this.plugin.getDeathChestManager().getDeathChest(e.getCurrentItem());
             if (clickedChest != null) {
                 clickedChest.teleportPlayer(p);
-            } else if (e.getCurrentItem().isSimilar(Items.NEXT_ITEM.getItemStack())) {
+            } else if (e.getCurrentItem().isSimilar(DeathChestItems.NEXT_ITEM.getItemStack())) {
                 this.plugin.getDeathChestManager().openDeathchestList(this.plugin.getDeathChestManager().getOpenedInventory(p), p, page + 1);
-            } else if (e.getCurrentItem().isSimilar(Items.PREV_ITEM.getItemStack())) {
+            } else if (e.getCurrentItem().isSimilar(DeathChestItems.PREV_ITEM.getItemStack())) {
                 this.plugin.getDeathChestManager().openDeathchestList(this.plugin.getDeathChestManager().getOpenedInventory(p), p, page - 1);
             }
         }
@@ -206,7 +206,7 @@ public class DeathChestListener implements Listener {
                         this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player can open the chest.");
                     } else {
                         e.setCancelled(true);
-                        p.sendMessage(Message.DEATHCHEST_CANNOT_OPEN.getChatMessage());
+                        p.sendMessage(DeathChestMessage.DEATHCHEST_CANNOT_OPEN.getChatMessage());
                         return;
                     }
                 }

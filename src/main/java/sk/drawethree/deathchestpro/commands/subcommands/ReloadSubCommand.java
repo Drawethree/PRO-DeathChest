@@ -2,7 +2,7 @@ package sk.drawethree.deathchestpro.commands.subcommands;
 
 import org.bukkit.command.CommandSender;
 import sk.drawethree.deathchestpro.DeathChestPro;
-import sk.drawethree.deathchestpro.utils.Message;
+import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 
 public class ReloadSubCommand extends DeathChestSubCommand {
 
@@ -14,10 +14,10 @@ public class ReloadSubCommand extends DeathChestSubCommand {
     public boolean execute(DeathChestPro plugin, CommandSender sender, String[] args) {
         if (sender.hasPermission("deathchestpro.reload")) {
             plugin.reloadPlugin();
-            sender.sendMessage(Message.PREFIX.getMessage() + "Plugin reloaded !");
+            sender.sendMessage(DeathChestMessage.PREFIX.getMessage() + "Plugin reloaded !");
             return true;
         } else {
-            sender.sendMessage(Message.NO_PERMISSION.getChatMessage());
+            sender.sendMessage(DeathChestMessage.NO_PERMISSION.getChatMessage());
         }
         return false;
     }

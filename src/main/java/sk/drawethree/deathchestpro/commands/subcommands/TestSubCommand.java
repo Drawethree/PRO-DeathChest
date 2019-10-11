@@ -5,8 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import sk.drawethree.deathchestpro.DeathChestPro;
-import sk.drawethree.deathchestpro.utils.CompMaterial;
-import sk.drawethree.deathchestpro.utils.Message;
+import sk.drawethree.deathchestpro.utils.comp.CompMaterial;
+import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 
 public class TestSubCommand extends DeathChestSubCommand {
 
@@ -22,7 +22,7 @@ public class TestSubCommand extends DeathChestSubCommand {
             Player p = (Player) sender;
 
             if(!DeathChestPro.getInstance().getDescription().getVersion().contains("TEST")) {
-                p.sendMessage(Message.PREFIX + "§cThis is not a test version. This command is not supported.");
+                p.sendMessage(DeathChestMessage.PREFIX + "§cThis is not a test version. This command is not supported.");
                 return false;
             }
 
@@ -38,7 +38,7 @@ public class TestSubCommand extends DeathChestSubCommand {
             p.getInventory().addItem(new ItemStack(CompMaterial.DIAMOND_SWORD.toMaterial(), 1));
             p.setLevel(10);
 
-            p.sendMessage(Message.PREFIX + "§aTest items given. Sorry, but in order to see how it works, you need to die :(");
+            p.sendMessage(DeathChestMessage.PREFIX + "§aTest items given. Sorry, but in order to see how it works, you need to die :(");
 
             new BukkitRunnable() {
 

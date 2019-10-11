@@ -1,8 +1,9 @@
-package sk.drawethree.deathchestpro.misc;
+package sk.drawethree.deathchestpro.misc.hook;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import sk.drawethree.deathchestpro.DeathChestPro;
+import sk.drawethree.deathchestpro.misc.hook.hooks.*;
 
 import java.util.HashMap;
 

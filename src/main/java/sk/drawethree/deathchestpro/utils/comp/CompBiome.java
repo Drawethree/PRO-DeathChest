@@ -1,6 +1,7 @@
-package sk.drawethree.deathchestpro.utils;
+package sk.drawethree.deathchestpro.utils.comp;
 
 import org.bukkit.block.Biome;
+import sk.drawethree.deathchestpro.utils.VersionResolver;
 
 public enum CompBiome {
 

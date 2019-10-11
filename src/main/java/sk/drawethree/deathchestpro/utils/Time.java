@@ -1,6 +1,6 @@
 package sk.drawethree.deathchestpro.utils;
 
-import sk.drawethree.deathchestpro.DeathChestPro;
+import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -86,18 +86,18 @@ public class Time {
 
         long time = this.milliseconds;
 
-        time = this.appendTime(time, YEAR_MS, Message.YEARS.getMessage(), timeString);
-        time = this.appendTime(time, DAY_MS, Message.DAYS.getMessage(), timeString);
-        time = this.appendTime(time, HOUR_MS, Message.HOURS.getMessage(), timeString);
-        time = this.appendTime(time, MINUTE_MS, Message.MINUTES.getMessage(), timeString);
-        time = this.appendTime(time, SECOND_MS, Message.SECONDS.getMessage(), timeString);
+        time = this.appendTime(time, YEAR_MS, DeathChestMessage.YEARS.getMessage(), timeString);
+        time = this.appendTime(time, DAY_MS, DeathChestMessage.DAYS.getMessage(), timeString);
+        time = this.appendTime(time, HOUR_MS, DeathChestMessage.HOURS.getMessage(), timeString);
+        time = this.appendTime(time, MINUTE_MS, DeathChestMessage.MINUTES.getMessage(), timeString);
+        time = this.appendTime(time, SECOND_MS, DeathChestMessage.SECONDS.getMessage(), timeString);
 
         if (time != 0) {
             timeString.append(", ").append(time).append(" ms");
         }
 
         if (timeString.length() == 0) {
-            return "0 " + Message.SECONDS.getMessage();
+            return "0 " + DeathChestMessage.SECONDS.getMessage();
         }
 
         return timeString.substring(2);

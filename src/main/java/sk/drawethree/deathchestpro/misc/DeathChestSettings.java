@@ -1,8 +1,9 @@
-package sk.drawethree.deathchestpro;
+package sk.drawethree.deathchestpro.misc;
 
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.utils.Common;
 
 import java.text.SimpleDateFormat;
@@ -38,7 +39,6 @@ public class DeathChestSettings {
     private List<String> hologramLines;
     private String deathChestInvTitle;
     private int fireworkInterval;
-    private int unlockChestAfter;
     private int maxPlayerChests;
     private boolean allowKillerLooting;
 
@@ -65,7 +65,6 @@ public class DeathChestSettings {
         hologramLines = new ArrayList<>();
         deathChestInvTitle = "&7%player%'s DeathChest";
         fireworkInterval = 5;
-        unlockChestAfter = -1;
         allowKillerLooting = false;
         maxPlayerChests = 1;
     }
@@ -93,7 +92,6 @@ public class DeathChestSettings {
             deathChestInvTitle = ChatColor.translateAlternateColorCodes('&', this.plugin.getFileManager().getConfig("config.yml").get().getString("deathchest_inv_title"));
             lavaProtection = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("lava_protection");
             voidSpawning = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("void_spawning_chest");
-            unlockChestAfter = this.plugin.getFileManager().getConfig("config.yml").get().getInt("unlock_chest_after");
             autoEquipArmor = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("auto_equip_armor");
             lavaSpawning = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("lava_spawning");
             debugMode = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("debug_messages");
@@ -113,9 +111,10 @@ public class DeathChestSettings {
 
             String permission = this.plugin.getFileManager().getConfig("config.yml").get().getString("expire_groups." + key + ".permission");
             int time = this.plugin.getFileManager().getConfig("config.yml").get().getInt("expire_groups." + key + ".time");
+            int unlockAfter = this.plugin.getFileManager().getConfig("config.yml").get().getInt("expire_groups." + key + ".unlock_after");
             double teleportCost = this.plugin.getFileManager().getConfig("config.yml").get().getDouble("expire_groups." + key + ".teleport_cost");
 
-            DeathChestExpireGroup group = new DeathChestExpireGroup(key, permission, time, teleportCost);
+            DeathChestExpireGroup group = new DeathChestExpireGroup(key, permission, unlockAfter,time, teleportCost);
             this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, group.toString());
 
             expireGroups.put(permission, group);
@@ -123,6 +122,11 @@ public class DeathChestSettings {
     }
 
     public DeathChestExpireGroup getExpireGroup(Player p) {
+
+        if (p == null) {
+            return DeathChestExpireGroup.DEFAULT_GROUP;
+        }
+
         for (DeathChestExpireGroup group : this.expireGroups.values()) {
             if (p.hasPermission(group.getRequiredPermission())) {
                 return group;

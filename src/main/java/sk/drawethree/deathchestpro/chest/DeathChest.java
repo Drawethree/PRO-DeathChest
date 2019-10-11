@@ -19,12 +19,12 @@ import sk.drawethree.deathchestpro.chest.tasks.ChestRemoveTask;
 import sk.drawethree.deathchestpro.chest.tasks.ChestUnlockTask;
 import sk.drawethree.deathchestpro.chest.tasks.HologramUpdateTask;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
-import sk.drawethree.deathchestpro.misc.DCHook;
-import sk.drawethree.deathchestpro.misc.DCVaultHook;
-import sk.drawethree.deathchestpro.utils.CompMaterial;
-import sk.drawethree.deathchestpro.utils.CompSound;
-import sk.drawethree.deathchestpro.utils.Items;
-import sk.drawethree.deathchestpro.utils.Message;
+import sk.drawethree.deathchestpro.misc.hook.DCHook;
+import sk.drawethree.deathchestpro.misc.hook.hooks.DCVaultHook;
+import sk.drawethree.deathchestpro.utils.comp.CompMaterial;
+import sk.drawethree.deathchestpro.utils.comp.CompSound;
+import sk.drawethree.deathchestpro.enums.DeathChestItems;
+import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -98,7 +98,7 @@ public class DeathChest {
     }
 
     private ItemStack createListItem() {
-        final ItemStack returnItem = Items.DEATHCHEST_LIST_ITEM.getItemStack().clone();
+        final ItemStack returnItem = DeathChestItems.DEATHCHEST_LIST_ITEM.getItemStack().clone();
         final ItemMeta meta = returnItem.getItemMeta();
         meta.setDisplayName(meta.getDisplayName().replaceAll("%player%", player.getName()));
         final List<String> lore = meta.getLore();
@@ -189,11 +189,13 @@ public class DeathChest {
 
     public void runUnlockTask() {
 
-        if (this.plugin.getSettings().getUnlockChestAfter() <= 0) {
+        int unlockAfter = this.plugin.getSettings().getExpireGroup(this.getPlayer()).getUnlockAfter();
+
+        if (unlockAfter == -1) {
             return;
         }
 
-        this.unlockTask = new ChestUnlockTask(this).runTaskLater(this.plugin, this.plugin.getSettings().getUnlockChestAfter() * 20);
+        this.unlockTask = new ChestUnlockTask(this).runTaskLater(this.plugin, unlockAfter * 20);
 
     }
 
@@ -249,7 +251,7 @@ public class DeathChest {
         this.removeChests(closeInventories);
 
         if (this.player.isOnline()) {
-            this.player.getPlayer().sendMessage(Message.DEATHCHEST_DISAPPEARED.getChatMessage());
+            this.player.getPlayer().sendMessage(DeathChestMessage.DEATHCHEST_DISAPPEARED.getChatMessage());
         }
 
         this.plugin.getDeathChestManager().removeDeathChest(this);
@@ -276,25 +278,25 @@ public class DeathChest {
 
         if (this.plugin.getSettings().isClickableMessage()) {
 
-            BaseComponent[] msg = TextComponent.fromLegacyText(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
+            BaseComponent[] msg = TextComponent.fromLegacyText(DeathChestMessage.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
             for (BaseComponent bc : msg) {
-                bc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Message.DEATHCHEST_LOCATED_HOVER.getMessage()).create()));
+                bc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(DeathChestMessage.DEATHCHEST_LOCATED_HOVER.getMessage()).create()));
                 bc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/dc teleport " + chestUUID.toString()));
             }
             player.getPlayer().spigot().sendMessage(msg);
         } else {
-            player.getPlayer().sendMessage(Message.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
+            player.getPlayer().sendMessage(DeathChestMessage.DEATHCHEST_LOCATED.getChatMessage().replaceAll("%xloc%", String.valueOf(this.location.getBlockX())).replaceAll("%yloc%", String.valueOf(this.location.getBlockY())).replaceAll("%zloc%", String.valueOf(this.location.getBlockZ())).replaceAll("%world%", this.location.getWorld().getName()));
         }
 
         if (timeLeft != -1) {
-            player.getPlayer().sendMessage(Message.DEATHCHEST_WILL_DISAPPEAR.getChatMessage().replaceAll("%time%", timeLeft == -1 ? "∞" : String.valueOf(this.timeLeft)));
+            player.getPlayer().sendMessage(DeathChestMessage.DEATHCHEST_WILL_DISAPPEAR.getChatMessage().replaceAll("%time%", timeLeft == -1 ? "∞" : String.valueOf(this.timeLeft)));
         }
 
         this.announced = true;
     }
 
     public String getLockedString() {
-        return locked ? Message.DEATHCHEST_LOCKED.getMessage() : Message.DEATHCHEST_UNLOCKED.getMessage();
+        return locked ? DeathChestMessage.DEATHCHEST_LOCKED.getMessage() : DeathChestMessage.DEATHCHEST_UNLOCKED.getMessage();
     }
 
     public boolean teleportPlayer(Player p) {
@@ -305,7 +307,7 @@ public class DeathChest {
 
             if (vaultHook.getEconomy() != null) {
                 if (!vaultHook.getEconomy().has(p, cost)) {
-                    p.sendMessage(Message.DEATHCHEST_TELEPORT_NO_MONEY.getChatMessage());
+                    p.sendMessage(DeathChestMessage.DEATHCHEST_TELEPORT_NO_MONEY.getChatMessage());
                     return false;
                 }
 
@@ -313,10 +315,10 @@ public class DeathChest {
             }
 
             p.teleport(this.location.clone().add(0, 1, 0));
-            p.sendMessage(Message.DEATHCHEST_TELEPORTED.getChatMessage());
+            p.sendMessage(DeathChestMessage.DEATHCHEST_TELEPORTED.getChatMessage());
             return true;
         } else {
-            p.sendMessage(Message.NO_PERMISSION.getChatMessage());
+            p.sendMessage(DeathChestMessage.NO_PERMISSION.getChatMessage());
             return false;
         }
     }
@@ -348,11 +350,11 @@ public class DeathChest {
                 restoreExp(p);
                 removeDeathChest(true);
             } else {
-                p.sendMessage(Message.DEATHCHEST_FASTLOOT_COMPLETE.getChatMessage().replaceAll("%amount%", String.valueOf(DeathChestManager.getAmountOfItems(chestInventory))));
+                p.sendMessage(DeathChestMessage.DEATHCHEST_FASTLOOT_COMPLETE.getChatMessage().replaceAll("%amount%", String.valueOf(DeathChestManager.getAmountOfItems(chestInventory))));
             }
 
         } else {
-            p.sendMessage(Message.NO_PERMISSION.getChatMessage());
+            p.sendMessage(DeathChestMessage.NO_PERMISSION.getChatMessage());
         }
     }
 
