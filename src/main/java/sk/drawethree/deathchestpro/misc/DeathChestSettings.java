@@ -35,6 +35,7 @@ public class DeathChestSettings {
     private boolean hologramEnabled;
     private boolean startTimerAtDeath;
     private boolean storeExperience;
+    //private boolean displayChestsForOthers;
     private SimpleDateFormat deathDateFormat;
     private List<String> hologramLines;
     private String deathChestInvTitle;
@@ -60,6 +61,7 @@ public class DeathChestSettings {
         debugMode = true;
         hologramEnabled = true;
         storeExperience = false;
+        //displayChestsForOthers = true;
         startTimerAtDeath = false;
         deathDateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
         hologramLines = new ArrayList<>();
@@ -94,6 +96,7 @@ public class DeathChestSettings {
             voidSpawning = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("void_spawning_chest");
             autoEquipArmor = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("auto_equip_armor");
             lavaSpawning = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("lava_spawning");
+            //displayChestsForOthers = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("display_chests_for_others");
             debugMode = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("debug_messages");
             hologramEnabled = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("hologram.enabled");
             allowKillerLooting = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("allow_killer_looting");

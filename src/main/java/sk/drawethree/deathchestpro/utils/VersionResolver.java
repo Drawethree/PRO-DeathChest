@@ -2,6 +2,7 @@ package sk.drawethree.deathchestpro.utils;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 
 /**
