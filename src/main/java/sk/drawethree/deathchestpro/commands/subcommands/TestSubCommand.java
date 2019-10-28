@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import sk.drawethree.deathchestpro.DeathChestPro;
+import sk.drawethree.deathchestpro.commands.DeathChestSubCommand;
 import sk.drawethree.deathchestpro.utils.comp.CompMaterial;
 import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 

@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.BlockState;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -20,14 +19,13 @@ import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.tasks.ChestRemoveTask;
 import sk.drawethree.deathchestpro.chest.tasks.ChestUnlockTask;
 import sk.drawethree.deathchestpro.chest.tasks.HologramUpdateTask;
+import sk.drawethree.deathchestpro.enums.DeathChestItems;
+import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.misc.hook.DCHook;
 import sk.drawethree.deathchestpro.misc.hook.hooks.DCVaultHook;
-import sk.drawethree.deathchestpro.utils.VersionResolver;
 import sk.drawethree.deathchestpro.utils.comp.CompMaterial;
 import sk.drawethree.deathchestpro.utils.comp.CompSound;
-import sk.drawethree.deathchestpro.enums.DeathChestItems;
-import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -479,5 +477,15 @@ public class DeathChest {
         if(this.hologram != null) {
             this.hologram.spawn();
         }
+    }
+
+    @Override
+    public String toString() {
+        return "DeathChest{" +
+                "chestUUID=" + chestUUID +
+                ", player=" + player +
+                ", location=" + location +
+                ", locked=" + locked +
+                '}';
     }
 }

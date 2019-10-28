@@ -1,4 +1,4 @@
-package sk.drawethree.deathchestpro.commands.subcommands;
+package sk.drawethree.deathchestpro.commands;
 
 import lombok.Getter;
 import org.bukkit.command.CommandSender;

@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
+import sk.drawethree.deathchestpro.commands.DeathChestSubCommand;
 
 public class TeleportSubCommand extends DeathChestSubCommand {
 

@@ -5,6 +5,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import sk.drawethree.deathchestpro.DeathChestPro;
+import sk.drawethree.deathchestpro.commands.DeathChestSubCommand;
 import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 
 public class ListSubCommand extends DeathChestSubCommand {
