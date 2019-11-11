@@ -1413,7 +1413,7 @@ public enum CompMaterial {
 
     public static boolean isChestPlate(Material type) {
         String n = type.toString();
-        return n.endsWith("_CHESTPLATE") || n.equalsIgnoreCase("CHESTPLATE");
+        return n.endsWith("_CHESTPLATE") || n.equalsIgnoreCase("CHESTPLATE") || n.equalsIgnoreCase("ELYTRA");
     }
 
     public static boolean isBoots(Material type) {

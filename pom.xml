@@ -6,7 +6,7 @@
 
     <groupId>sk.drawethree</groupId>
     <artifactId>DeathChestPro</artifactId>
-    <version>3.3.10</version>
+    <version>3.3.12</version>
     <packaging>jar</packaging>
 
     <name>DeathChestPro</name>
