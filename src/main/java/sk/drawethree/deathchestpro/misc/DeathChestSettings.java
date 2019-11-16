@@ -111,7 +111,6 @@ public class DeathChestSettings {
     private void loadExpireGroups() {
         expireGroups = new LinkedHashMap<>();
         for (String key : this.plugin.getFileManager().getConfig("config.yml").get().getConfigurationSection("expire_groups").getKeys(false)) {
-
             String permission = this.plugin.getFileManager().getConfig("config.yml").get().getString("expire_groups." + key + ".permission");
             int time = this.plugin.getFileManager().getConfig("config.yml").get().getInt("expire_groups." + key + ".time");
             int unlockAfter = this.plugin.getFileManager().getConfig("config.yml").get().getInt("expire_groups." + key + ".unlock_after");
@@ -135,6 +134,7 @@ public class DeathChestSettings {
                 return group;
             }
         }
+
         return DeathChestExpireGroup.DEFAULT_GROUP;
     }
 

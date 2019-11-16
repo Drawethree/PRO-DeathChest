@@ -29,6 +29,7 @@ public final class DeathChestPro extends JavaPlugin {
         this.fileManager = new FileManager(this);
 
         this.loadAllConfigs();
+        this.reloadAllConfigs();
         this.approveConfigChanges();
 
         this.settings = new DeathChestSettings(this);
