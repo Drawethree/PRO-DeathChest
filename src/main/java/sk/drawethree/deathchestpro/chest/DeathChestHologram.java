@@ -9,8 +9,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.misc.hook.DCHook;
 import sk.drawethree.deathchestpro.utils.LocationUtil;
+import sk.drawethree.deathchestpro.utils.MinecraftVersion;
 import sk.drawethree.deathchestpro.utils.Time;
-import sk.drawethree.deathchestpro.utils.VersionResolver;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -87,7 +87,7 @@ public class DeathChestHologram {
         as.setGravity(false);
         as.setCustomName(text);
 
-        if(VersionResolver.isAtLeast1_9()) {
+        if(MinecraftVersion.atLeast(MinecraftVersion.V.v1_9)) {
             as.setAI(false);
             as.setCollidable(false);
             as.setInvulnerable(true);

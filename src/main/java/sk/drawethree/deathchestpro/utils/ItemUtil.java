@@ -11,7 +11,6 @@ import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.utils.comp.CompMaterial;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ItemUtil {
@@ -49,28 +48,6 @@ public class ItemUtil {
         return create(m, amount, displayName, lore, enchants);
     }
 
-    public static int getInventorySizeBasedOnList(List<?> list) {
-        int size = 9;
-        while (list.size() > size) {
-            if (size == 54) {
-                break;
-            }
-            size += 9;
-        }
-        return size;
-    }
-
-    public static int getInventorySize(int i) {
-        int size = 9;
-        while (i > size) {
-            if (size == 54) {
-                break;
-            }
-            size += 9;
-        }
-        return size;
-    }
-
 
     public static List<String> convertLore(List<String> list) {
         List<String> lore = new ArrayList<>();
@@ -80,11 +57,6 @@ public class ItemUtil {
             }
         }
         return lore;
-    }
-
-
-    public static List<String> makeLore(String... string) {
-        return Arrays.asList(string);
     }
 
 
@@ -136,25 +108,5 @@ public class ItemUtil {
         n = n.toUpperCase();
         Enchantment ench = Enchantment.getByName(n);
         return ench;
-    }
-
-    public static List<String> makeTeamLore(String... string) {
-        return Arrays.asList(string);
-    }
-
-    public static boolean isHelmet(ItemStack i) {
-        return CompMaterial.isHelmet(i.getType());
-    }
-
-    public static boolean isChestplate(ItemStack i) {
-        return CompMaterial.isChestPlate(i.getType());
-    }
-
-    public static boolean isBoots(ItemStack i) {
-        return CompMaterial.isBoots(i.getType());
-    }
-
-    public static boolean isLeggings(ItemStack i) {
-        return CompMaterial.isLeggings(i.getType());
     }
 }
