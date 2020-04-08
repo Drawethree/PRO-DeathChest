@@ -58,7 +58,7 @@ hologram:
   #Lines displayed on hologram. Accepts placeholders %locked%, %death_date%, %player%, %timeleft%
   lines:
     - "%locked%"
-    - "%item_count% DeathChestItems / %xp% XP"
+    - "%item_count% DeathChestMenuItems / %xp% XP"
     - "Died %death_date%"
     - "Owner: %player%"
     - "%timeleft% left"

@@ -19,7 +19,7 @@ import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.tasks.ChestRemoveTask;
 import sk.drawethree.deathchestpro.chest.tasks.ChestUnlockTask;
 import sk.drawethree.deathchestpro.chest.tasks.HologramUpdateTask;
-import sk.drawethree.deathchestpro.enums.DeathChestItems;
+import sk.drawethree.deathchestpro.enums.DeathChestMenuItems;
 import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.misc.hook.DCHook;
@@ -99,7 +99,7 @@ public class DeathChest {
     }
 
     private ItemStack createListItem() {
-        final ItemStack returnItem = DeathChestItems.DEATHCHEST_LIST_ITEM.getItemStack().clone();
+        final ItemStack returnItem = DeathChestMenuItems.DEATHCHEST_LIST_ITEM.getItemStack().clone();
         final ItemMeta meta = returnItem.getItemMeta();
         meta.setDisplayName(meta.getDisplayName().replaceAll("%player%", player.getName()));
         final List<String> lore = meta.getLore();
@@ -134,6 +134,11 @@ public class DeathChest {
     private void setupChest(boolean fromConfig, Location loc, List<ItemStack> items) {
 
         if (!fromConfig) {
+
+            if (loc.getY() <= 0) {
+                loc.setY(1);
+            }
+
             if (this.plugin.getSettings().isSpawnChestOnHighestBlock() || loc.getY() <= 0) {
                 loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
             }

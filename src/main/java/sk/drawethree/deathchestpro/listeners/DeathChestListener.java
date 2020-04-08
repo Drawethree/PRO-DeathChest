@@ -21,7 +21,7 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
-import sk.drawethree.deathchestpro.enums.DeathChestItems;
+import sk.drawethree.deathchestpro.enums.DeathChestMenuItems;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
 import sk.drawethree.deathchestpro.utils.comp.CompMaterial;
@@ -179,9 +179,9 @@ public class DeathChestListener implements Listener {
             final DeathChest clickedChest = this.plugin.getDeathChestManager().getDeathChest(e.getCurrentItem());
             if (clickedChest != null) {
                 clickedChest.teleportPlayer(p);
-            } else if (e.getCurrentItem().isSimilar(DeathChestItems.NEXT_ITEM.getItemStack())) {
+            } else if (e.getCurrentItem().isSimilar(DeathChestMenuItems.NEXT_ITEM.getItemStack())) {
                 this.plugin.getDeathChestManager().openDeathchestList(this.plugin.getDeathChestManager().getOpenedInventory(p), p, page + 1);
-            } else if (e.getCurrentItem().isSimilar(DeathChestItems.PREV_ITEM.getItemStack())) {
+            } else if (e.getCurrentItem().isSimilar(DeathChestMenuItems.PREV_ITEM.getItemStack())) {
                 this.plugin.getDeathChestManager().openDeathchestList(this.plugin.getDeathChestManager().getOpenedInventory(p), p, page - 1);
             }
         }

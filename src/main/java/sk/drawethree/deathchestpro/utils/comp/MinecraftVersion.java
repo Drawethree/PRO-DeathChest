@@ -1,4 +1,4 @@
-package sk.drawethree.deathchestpro.utils;
+package sk.drawethree.deathchestpro.utils.comp;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;

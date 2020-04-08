@@ -6,7 +6,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import sk.drawethree.deathchestpro.utils.MinecraftVersion;
 
 import java.util.HashMap;
 

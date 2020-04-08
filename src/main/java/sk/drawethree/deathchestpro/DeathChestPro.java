@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import sk.drawethree.deathchestpro.commands.DeathChestCommand;
-import sk.drawethree.deathchestpro.enums.DeathChestItems;
+import sk.drawethree.deathchestpro.enums.DeathChestMenuItems;
 import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 import sk.drawethree.deathchestpro.listeners.DeathChestHologramListener;
 import sk.drawethree.deathchestpro.listeners.DeathChestListener;
@@ -86,7 +86,7 @@ public final class DeathChestPro extends JavaPlugin {
     public void reloadPlugin() {
         reloadAllConfigs();
         DeathChestMessage.reload();
-        DeathChestItems.reload();
+        DeathChestMenuItems.reload();
         this.settings.loadSettings();
     }
 

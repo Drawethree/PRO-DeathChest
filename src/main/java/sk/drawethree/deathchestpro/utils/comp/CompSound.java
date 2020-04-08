@@ -4,7 +4,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import sk.drawethree.deathchestpro.utils.MinecraftVersion;
 
 /**
  * Version independent Spigot sounds.

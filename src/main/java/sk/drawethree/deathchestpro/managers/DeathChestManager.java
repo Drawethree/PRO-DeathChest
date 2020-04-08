@@ -16,7 +16,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import org.codemc.worldguardwrapper.region.IWrappedRegion;
-import sk.drawethree.deathchestpro.enums.DeathChestItems;
+import sk.drawethree.deathchestpro.enums.DeathChestMenuItems;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
 import sk.drawethree.deathchestpro.chest.DeathChestHologram;
@@ -127,8 +127,8 @@ public class DeathChestManager {
                         break;
                     }
                 }
-                inv.setItem(45, DeathChestItems.PREV_ITEM.getItemStack());
-                inv.setItem(53, DeathChestItems.NEXT_ITEM.getItemStack());
+                inv.setItem(45, DeathChestMenuItems.PREV_ITEM.getItemStack());
+                inv.setItem(53, DeathChestMenuItems.NEXT_ITEM.getItemStack());
                 openTo.playSound(openTo.getLocation(), CompSound.ORB_PICKUP.getSound(), 1, 1);
                 openTo.openInventory(inv);
                 openedInventories.put(openTo, whoseChests);
