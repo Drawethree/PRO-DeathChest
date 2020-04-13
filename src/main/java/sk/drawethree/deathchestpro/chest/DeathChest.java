@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.tasks.ChestRemoveTask;
@@ -59,7 +60,6 @@ public class DeathChest {
     private Date deathDate;
     @Getter
     private boolean unloaded;
-
 
     public DeathChest(DeathChestPro plugin, Player p, OfflinePlayer killer, List<ItemStack> items, int playerExp) {
         this.plugin = plugin;
@@ -135,12 +135,13 @@ public class DeathChest {
 
         if (!fromConfig) {
 
-            if (loc.getY() <= 0) {
-                loc.setY(1);
-            }
 
             if (this.plugin.getSettings().isSpawnChestOnHighestBlock() || loc.getY() <= 0) {
                 loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
+            }
+
+            if (loc.getY() <= 0) {
+                loc.setY(1);
             }
 
             if (loc.getY() > 255) {
@@ -238,7 +239,14 @@ public class DeathChest {
             location.getWorld().playSound(location, CompSound.ITEM_PICKUP.getSound(), 1F, 1F);
         }
 
-        replacedBlock.update(true);
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                replacedBlock.update(true);
+            }
+        }.runTaskLater(this.getPlugin(), 20L);
+
 
         if (this.playerExp != 0) {
             ExperienceOrb experienceOrb = location.getWorld().spawn(location, ExperienceOrb.class);
