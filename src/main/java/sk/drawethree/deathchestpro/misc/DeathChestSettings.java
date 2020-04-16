@@ -35,6 +35,7 @@ public class DeathChestSettings {
     private boolean hologramEnabled;
     private boolean startTimerAtDeath;
     private boolean storeExperience;
+    private boolean spawnOnPVP;
     //private boolean displayChestsForOthers;
     private SimpleDateFormat deathDateFormat;
     private List<String> hologramLines;
@@ -69,6 +70,7 @@ public class DeathChestSettings {
         fireworkInterval = 5;
         allowKillerLooting = false;
         maxPlayerChests = 1;
+        spawnOnPVP = true;
     }
 
     public void loadSettings() {
@@ -103,6 +105,7 @@ public class DeathChestSettings {
             startTimerAtDeath = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("start_timer_at_death");
             storeExperience = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("store_experience");
             maxPlayerChests = this.plugin.getFileManager().getConfig("config.yml").get().getInt("max_player_chests");
+            spawnOnPVP = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("spawn_chest_on_pvp_kill");
             //saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
             this.loadExpireGroups();
         }

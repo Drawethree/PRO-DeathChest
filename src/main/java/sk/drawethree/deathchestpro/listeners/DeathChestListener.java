@@ -79,6 +79,13 @@ public class DeathChestListener implements Listener {
         final Player p = e.getEntity();
         this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " died.");
 
+
+        //Check for PvP
+        if (p.getKiller() != null && !this.plugin.getSettings().isSpawnOnPVP()) {
+            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest will not be spawned, player was killed in PvP and its disabled in config.");
+            return;
+        }
+
         //Check for maximum chests allowed at one time
         if (!p.isOp() && (this.plugin.getDeathChestManager().getAmountOfPlayerChests(p) >= this.plugin.getSettings().getMaxPlayerChests())) {
             this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest will not be spawned, player " + p.getName() + " has maximum allowed chests.");

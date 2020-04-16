@@ -27,6 +27,8 @@ auto_equip_armor: true
 clickable_message: true
 #Should the chest be spawned on highest possible block, or where player died?
 spawn_chest_on_highest_block: false
+#Should the chest be spawned when player killed player ?
+spawn_chest_on_pvp_kill: true
 #Should the chest countdown start right after player died or after he respawns?
 start_timer_at_death: false
 #Should also player experience be stored? They will be restored once player loots his chest.
