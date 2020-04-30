@@ -3,14 +3,17 @@ package sk.drawethree.deathchestpro.commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.commands.subcommands.*;
 import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
-public class DeathChestCommand implements CommandExecutor {
+public class DeathChestCommand implements CommandExecutor, TabCompleter {
 
 
     private static final TreeMap<String, DeathChestSubCommand> availableSubCommands = new TreeMap<>();
@@ -26,7 +29,7 @@ public class DeathChestCommand implements CommandExecutor {
     }
 
     public DeathChestCommand(DeathChestPro plugin) {
-        this.plugin =  plugin;
+        this.plugin = plugin;
     }
 
     @Override
@@ -53,5 +56,17 @@ public class DeathChestCommand implements CommandExecutor {
 
     private DeathChestSubCommand getSubCommand(String subCommandName) {
         return availableSubCommands.get(subCommandName.toLowerCase());
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (!command.getName().equalsIgnoreCase("deathchest")) {
+            return null;
+        }
+
+        if (args.length == 1) {
+            return availableSubCommands.keySet().stream().filter(s -> !s.equalsIgnoreCase("test")).collect(Collectors.toList());
+        }
+        return null;
     }
 }

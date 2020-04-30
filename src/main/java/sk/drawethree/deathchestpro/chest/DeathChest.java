@@ -27,13 +27,18 @@ import sk.drawethree.deathchestpro.misc.hook.DCHook;
 import sk.drawethree.deathchestpro.misc.hook.hooks.DCVaultHook;
 import sk.drawethree.deathchestpro.utils.comp.CompMaterial;
 import sk.drawethree.deathchestpro.utils.comp.CompSound;
+import sk.drawethree.deathchestpro.utils.cooldown.Cooldown;
+import sk.drawethree.deathchestpro.utils.cooldown.CooldownMap;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class DeathChest {
+
+    private static final CooldownMap<Player> teleportCooldown = CooldownMap.create(Cooldown.of(DeathChestPro.getInstance().getSettings().getTeleportCooldown(), TimeUnit.SECONDS));
 
     private DeathChestPro plugin;
 
@@ -307,6 +312,8 @@ public class DeathChest {
         }
 
         this.announced = true;
+        teleportCooldown.reset(getOwner().getPlayer());
+        teleportCooldown.test(getOwner().getPlayer());
     }
 
     public String getLockedString() {
@@ -315,6 +322,12 @@ public class DeathChest {
 
     public boolean teleportPlayer(Player p) {
         if (p.hasPermission("deathchestpro.teleport")) {
+
+            if (!teleportCooldown.test(p)) {
+                p.sendMessage(DeathChestMessage.DEATHCHEST_TELEPORT_COOLDOWN.getChatMessage().replace("%time%", String.valueOf(teleportCooldown.remainingTime(p, TimeUnit.SECONDS))));
+                return false;
+            }
+
             DCVaultHook vaultHook = (DCVaultHook) DCHook.getHookByName("Vault");
 
             double cost = this.plugin.getSettings().getExpireGroup(p).getTeleportCost();
@@ -479,6 +492,7 @@ public class DeathChest {
     }
 
     public void unload() {
+        DeathChestPro.getInstance().broadcast(DeathChestPro.BroadcastType.DEBUG, "Unloading hologram at %s", this);
         this.unloaded = true;
         if (this.hologram != null) {
             this.hologram.despawn();
@@ -486,8 +500,9 @@ public class DeathChest {
     }
 
     public void load() {
+        DeathChestPro.getInstance().broadcast(DeathChestPro.BroadcastType.DEBUG, "Loading hologram at %s", this);
         this.unloaded = false;
-        if(this.hologram != null) {
+        if (this.hologram != null) {
             this.hologram.spawn();
         }
     }

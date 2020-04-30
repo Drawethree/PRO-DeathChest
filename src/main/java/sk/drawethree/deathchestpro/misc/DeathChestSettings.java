@@ -42,6 +42,7 @@ public class DeathChestSettings {
     private String deathChestInvTitle;
     private int fireworkInterval;
     private int maxPlayerChests;
+    private int teleportCooldown;
     private boolean allowKillerLooting;
 
     public DeathChestSettings(DeathChestPro plugin) {
@@ -98,6 +99,7 @@ public class DeathChestSettings {
             voidSpawning = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("void_spawning_chest");
             autoEquipArmor = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("auto_equip_armor");
             lavaSpawning = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("lava_spawning");
+            teleportCooldown = this.plugin.getFileManager().getConfig("config.yml").get().getInt("teleport_cooldown");
             //displayChestsForOthers = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("display_chests_for_others");
             debugMode = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("debug_messages");
             hologramEnabled = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("hologram.enabled");

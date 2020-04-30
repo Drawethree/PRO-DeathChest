@@ -6,7 +6,7 @@
 
     <groupId>sk.drawethree</groupId>
     <artifactId>DeathChestPro</artifactId>
-    <version>3.4.2</version>
+    <version>3.4.5</version>
     <packaging>jar</packaging>
 
     <name>DeathChestPro</name>
@@ -117,6 +117,11 @@
             <groupId>org.codemc.worldguardwrapper</groupId>
             <artifactId>worldguardwrapper</artifactId>
             <version>${worldguardwrapper.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.TechFortress</groupId>
+            <artifactId>GriefPrevention</artifactId>
+            <version>16.13.0</version>
         </dependency>
     </dependencies>
 </project>

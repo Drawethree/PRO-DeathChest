@@ -35,6 +35,8 @@ start_timer_at_death: false
 store_experience: false
 #How many chests can players have maximally at one time ?
 max_player_chests: 3
+#Teleport cooldown
+teleport_cooldown: 10
 #Deatchest firework settings
 deathchest_fireworks:
   #Should fireworks spawn?

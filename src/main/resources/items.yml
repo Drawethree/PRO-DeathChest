@@ -23,4 +23,5 @@ items:
     - "&e  World: %world%"
     - "&7Locked: &e%locked%"
     - ""
-    - "&7Click to teleport to this DeathChest!"
+    - "&eRight-Click &7to open inventory"
+    - "&eLeft-Click &7to teleport"

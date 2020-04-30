@@ -293,7 +293,16 @@ public class DeathChestManager {
     }
 
     public DeathChest getDeathChest(String id) {
-        return this.deathChestsByUUID.get(UUID.fromString(id));
+        UUID uuid;
+
+        try {
+            uuid = UUID.fromString(id);
+        } catch (Exception e) {
+            //Invalid uuid
+            return null;
+        }
+
+        return this.deathChestsByUUID.get(uuid);
     }
 
     public void removeFromOpenedInventories(Player p) {
