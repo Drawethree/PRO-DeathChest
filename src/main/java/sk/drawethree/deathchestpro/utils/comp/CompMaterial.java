@@ -1434,11 +1434,6 @@ public enum CompMaterial {
 
         String name = type.toString() + "_SPAWN_EGG";
 
-        // Special cases
-        if (type == EntityType.PIG_ZOMBIE)
-            name = "ZOMBIE_PIGMAN_SPAWN_EGG";
-        else if (type == EntityType.MUSHROOM_COW)
-            name = "MOOSHROOM_SPAWN_EGG";
 
         // Parse normally, backwards compatible
         final CompMaterial mat = fromString(name);
@@ -1455,15 +1450,6 @@ public enum CompMaterial {
      */
     public static EntityType makeEntityType(CompMaterial monsterEgg) {
         final String name = monsterEgg.toString().replace("_SPAWN_EGG", "");
-
-        // Special cases
-        if (name == "ZOMBIE_PIGMAN_SPAWN_EGG")
-            return EntityType.PIG_ZOMBIE;
-
-        else if (name == "MOOSHROOM_SPAWN_EGG")
-            return EntityType.MUSHROOM_COW;
-
-        else
             // Parse normally, backwards compatible
             try {
                 return EntityType.valueOf(name);
@@ -1477,8 +1463,6 @@ public enum CompMaterial {
     /**
      * Return a {@link CompMaterial} from the given block, also comparing the data value
      *
-     * @param block
-     * @return
      */
     public static final CompMaterial fromBlock(Block block) {
         try {
