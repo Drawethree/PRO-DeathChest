@@ -217,7 +217,7 @@ public class DeathChestListener implements Listener {
             if (dc != null) {
 
                 if (dc.isLocked()) {
-                    if ((this.plugin.getSettings().isAllowKillerLooting() && dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId())) || dc.getOwner().getUniqueId().equals(p.getUniqueId()) || dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId()) && dc.getOwner().getUniqueId().equals(p.getUniqueId())) {
+                    if (dc.getOwner().getUniqueId().equals(p.getUniqueId()) || (this.plugin.getSettings().isAllowKillerLooting() && dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId())) || (dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId()) && dc.getOwner().getUniqueId().equals(p.getUniqueId()))) {
                         this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " can open the " + dc);
                     } else {
                         e.setCancelled(true);
