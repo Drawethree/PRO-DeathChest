@@ -76,7 +76,7 @@ public class DeathChestHologram {
     }
 
     private void appendTextLine(String text) {
-        ArmorStand as = this.deathChest.getLocation().getWorld().spawn(this.deathChest.getLocation().clone().subtract(0, this.armorStands.size() * LINE_SPACER, 0), ArmorStand.class);
+        ArmorStand as = this.deathChest.getLocation().getWorld().spawn(LocationUtil.getCenter(this.deathChest.getLocation().clone().subtract(0, this.armorStands.size() * LINE_SPACER, 0)), ArmorStand.class);
 
         as.setVisible(false);
         as.setCustomNameVisible(false);

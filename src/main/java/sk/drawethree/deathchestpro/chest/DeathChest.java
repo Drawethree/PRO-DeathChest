@@ -25,6 +25,7 @@ import sk.drawethree.deathchestpro.enums.DeathChestMessage;
 import sk.drawethree.deathchestpro.managers.DeathChestManager;
 import sk.drawethree.deathchestpro.misc.hook.DCHook;
 import sk.drawethree.deathchestpro.misc.hook.hooks.DCVaultHook;
+import sk.drawethree.deathchestpro.utils.LocationUtil;
 import sk.drawethree.deathchestpro.utils.comp.CompMaterial;
 import sk.drawethree.deathchestpro.utils.comp.CompSound;
 import sk.drawethree.deathchestpro.utils.cooldown.Cooldown;
@@ -77,7 +78,6 @@ public class DeathChest {
         this.deathDate = new Date();
 
         this.setupChest(false, p.getLocation(), items);
-        this.setupHologram();
 
         this.listItem = this.createListItem();
         this.announced = false;
@@ -94,7 +94,6 @@ public class DeathChest {
         this.deathDate = new Date(diedAt);
 
         this.setupChest(true, loc, items);
-        this.setupHologram();
 
         this.listItem = this.createListItem();
 
@@ -175,6 +174,8 @@ public class DeathChest {
             if (i == null || i.getItemMeta().hasEnchant(Enchantment.getByName("VANISHING_CURSE"))) continue;
             this.chestInventory.addItem(i);
         }
+
+        this.setupHologram();
     }
 
     private void buildProtectionCage(Location loc) {
@@ -341,7 +342,7 @@ public class DeathChest {
                 vaultHook.getEconomy().withdrawPlayer(p, cost);
             }
 
-            p.teleport(this.location.clone().add(0, 1, 0));
+            p.teleport(LocationUtil.getCenter(this.location.clone().add(0, 1, 0)));
             p.sendMessage(DeathChestMessage.DEATHCHEST_TELEPORTED.getChatMessage());
             return true;
         } else {

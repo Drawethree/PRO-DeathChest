@@ -4,6 +4,7 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -16,7 +17,7 @@ public class FireworkUtil {
     private static final String FIREWORK_METADATA = "deathchestfw";
 
     public static void spawnRandomFirework(Location location) {
-        Firework f = location.getWorld().spawn(location, Firework.class);
+        Firework f = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
         FireworkMeta fm = f.getFireworkMeta();
         fm.addEffect(FireworkEffect.builder().flicker(randomBoolean()).trail(randomBoolean()).with(randomType())
                 .withColor(randomColor()).withFade(randomColor()).build());

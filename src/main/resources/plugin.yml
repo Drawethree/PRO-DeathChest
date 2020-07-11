@@ -33,14 +33,14 @@ permissions:
     description: Allows to bypass a lock
     default: op
   deathchestpro.see:
-    description: Allows player to see content of deathchests
+    description: Allows player to see content of deathchests from list
     default: op
   deathchestpro.reload:
     description: Allows to reload plugin
     default: op
   deathchestpro.list:
     description: Allows to open up your deathchest list
-    default: true
+    default: op
   deathchestpro.teleport:
     description: Allows to teleport to your deathchest
     default: op

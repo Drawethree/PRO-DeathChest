@@ -188,7 +188,11 @@ public class DeathChestListener implements Listener {
                 if (e.getClick().isLeftClick()) {
                     clickedChest.teleportPlayer(p);
                 } else if (e.getClick().isRightClick()) {
-                    p.openInventory(clickedChest.getChestInventory());
+                    if (p.hasPermission("deathchestpro.see")) {
+                        p.openInventory(clickedChest.getChestInventory());
+                    } else {
+                        p.sendMessage(DeathChestMessage.NO_PERMISSION.getChatMessage());
+                    }
                 }
             } else if (e.getCurrentItem().isSimilar(DeathChestMenuItems.NEXT_ITEM.getItemStack())) {
                 this.plugin.getDeathChestManager().openDeathchestList(this.plugin.getDeathChestManager().getOpenedInventory(p), p, page + 1);
@@ -213,7 +217,7 @@ public class DeathChestListener implements Listener {
             if (dc != null) {
 
                 if (dc.isLocked()) {
-                    if ((this.plugin.getSettings().isAllowKillerLooting() && dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId())) || dc.getOwner().getUniqueId().equals(p.getUniqueId()) || p.hasPermission("deathchestpro.see") || dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId()) && dc.getOwner().getUniqueId().equals(p.getUniqueId())) {
+                    if ((this.plugin.getSettings().isAllowKillerLooting() && dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId())) || dc.getOwner().getUniqueId().equals(p.getUniqueId()) || dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId()) && dc.getOwner().getUniqueId().equals(p.getUniqueId())) {
                         this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " can open the " + dc);
                     } else {
                         e.setCancelled(true);

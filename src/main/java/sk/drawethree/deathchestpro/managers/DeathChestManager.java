@@ -54,7 +54,7 @@ public class DeathChestManager {
     }
 
     public void loadDeathChests() {
-        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loading deathchests from file...");
+        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loading deathchests from file database...");
 
         for (String key : this.plugin.getFileManager().getConfig("deathchests.yml").get().getConfigurationSection("chests").getKeys(false)) {
 
