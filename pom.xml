@@ -6,7 +6,7 @@
 
     <groupId>sk.drawethree</groupId>
     <artifactId>DeathChestPro</artifactId>
-    <version>3.4.8</version>
+    <version>3.4.9</version>
     <packaging>jar</packaging>
 
     <name>DeathChestPro</name>
@@ -73,7 +73,7 @@
         </repository>
         <repository>
             <id>placeholderapi</id>
-            <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
         <repository>
             <id>codemc-repo</id>
@@ -103,7 +103,7 @@
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.9.2</version>
+            <version>2.10.9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

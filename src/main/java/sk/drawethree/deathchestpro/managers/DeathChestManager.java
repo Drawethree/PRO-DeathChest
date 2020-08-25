@@ -1,6 +1,7 @@
 package sk.drawethree.deathchestpro.managers;
 
 import com.bekvon.bukkit.residence.Residence;
+import com.bekvon.bukkit.residence.commands.list;
 import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import lombok.Getter;
@@ -149,8 +150,14 @@ public class DeathChestManager {
     }
 
     public void removeDeathChest(DeathChest dc) {
+
+        if (dc == null) {
+            return;
+        }
+
         ArrayList<DeathChest> list = deathChests.get(dc.getOwner().getUniqueId());
         list.remove(dc);
+
         if (list.isEmpty()) {
             deathChests.remove(dc.getOwner().getUniqueId());
         } else {

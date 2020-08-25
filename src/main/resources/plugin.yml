@@ -3,7 +3,7 @@ version: ${project.version}
 api-version: 1.13
 name: DeathChestPro
 author: TheRealDrawe
-softdepend: [Residence, DeathFeathers, WorldGuard, GriefPrevention, WorldEdit, FastAsyncWorldEdit, Vault]
+softdepend: [Residence, PlaceholderAPI, DeathFeathers, WorldGuard, GriefPrevention, WorldEdit, FastAsyncWorldEdit, Vault]
 permissions:
   deathchestpro.*:
     description: All DeathChestPro permissions
@@ -18,7 +18,7 @@ permissions:
     description: Default player permissions
     default: true
     children:
-      deathchestpro.chest: true
+      deathchestpro.chest: false
       deathchestpro.lock: false
       deathchestpro.list: false
       deathchestpro.fastloot: false
