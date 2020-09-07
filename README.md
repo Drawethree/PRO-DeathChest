@@ -1,5 +1,5 @@
 ![PRO DeathChest Header](https://i.imgur.com/8ibqUg2.png)
-# PRO DeathChest
+# PrisonRanks
 ![Issues](https://img.shields.io/github/issues/Drawethree/PrisonRanks?label=Issues&logo=GitHub)
 ![Discord](https://img.shields.io/discord/505846258867372033?label=Discord&logo=Discord)
 
