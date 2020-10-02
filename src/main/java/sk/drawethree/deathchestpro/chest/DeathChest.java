@@ -6,6 +6,7 @@ import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ExperienceOrb;
@@ -140,7 +141,7 @@ public class DeathChest {
         if (!fromConfig) {
 
 
-            if (this.plugin.getSettings().isSpawnChestOnHighestBlock() || loc.getY() <= 0) {
+            if (loc.getWorld().getEnvironment() != World.Environment.NETHER && (this.plugin.getSettings().isSpawnChestOnHighestBlock() || loc.getY() <= 0)) {
                 loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
             }
 
@@ -155,12 +156,17 @@ public class DeathChest {
             while (loc.getBlock().getType() == CompMaterial.CHEST.getMaterial()) {
                 loc.setY(loc.getY() + 1);
             }
+
+            if (this.plugin.getSettings().isLavaProtection() && !this.plugin.getSettings().isOldLavaProtection()) {
+                while (loc.getBlock().getType().name().contains("LAVA")) {
+                    loc.setY(loc.getY()+1);
+                }
+            }
         }
 
         this.replacedBlock = loc.getBlock().getState();
 
-        //Build glass cage if lava protection is on
-        if (loc.getBlock().getType() == CompMaterial.LAVA.getMaterial() && this.plugin.getSettings().isLavaProtection()) {
+        if (this.plugin.getSettings().isOldLavaProtection()) {
             this.buildProtectionCage(loc);
         }
 
@@ -352,7 +358,9 @@ public class DeathChest {
     }
 
     public void fastLoot(Player p) {
+        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " attempted to fast loot.");
         if (p.hasPermission("deathchestpro.fastloot")) {
+            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " has permission to fast loot.");
             for (ItemStack i : chestInventory.getContents()) {
                 if (i == null) continue;
 
@@ -382,6 +390,7 @@ public class DeathChest {
             }
 
         } else {
+            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " does not have permission to fast loot.");
             p.sendMessage(DeathChestMessage.NO_PERMISSION.getChatMessage());
         }
     }
@@ -482,7 +491,7 @@ public class DeathChest {
 
 
     public void restoreExp(Player p) {
-        p.giveExp(this.playerExp);
+        p.giveExp((int) (this.playerExp / 100.0 * this.plugin.getSettings().getStoreExperiencePercentage()));
         this.playerExp = 0;
     }
 

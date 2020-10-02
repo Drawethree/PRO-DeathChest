@@ -28,6 +28,7 @@ public class DeathChestSettings {
     private boolean dropItemsAfterExpire;
     private boolean clickableMessage;
     private boolean lavaProtection;
+    private boolean oldLavaProtection;
     private boolean voidSpawning;
     private boolean autoEquipArmor;
     private boolean lavaSpawning;
@@ -43,6 +44,7 @@ public class DeathChestSettings {
     private int fireworkInterval;
     private int maxPlayerChests;
     private int teleportCooldown;
+    private double storeExperiencePercentage;
     private boolean allowKillerLooting;
 
     public DeathChestSettings(DeathChestPro plugin) {
@@ -53,6 +55,7 @@ public class DeathChestSettings {
         disabledworlds = new ArrayList<>();
         expireGroups = new LinkedHashMap<>();
         DEFAULT_EXPIRE_TIME = 60;
+        storeExperiencePercentage = 50.0;
         spawnChestOnHighestBlock = true;
         dropItemsAfterExpire = false;
         clickableMessage = false;
@@ -95,6 +98,7 @@ public class DeathChestSettings {
             clickableMessage = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("clickable_message");
             deathDateFormat = new SimpleDateFormat(this.plugin.getFileManager().getConfig("config.yml").get().getString("hologram.death_date_format"));
             deathChestInvTitle = ChatColor.translateAlternateColorCodes('&', this.plugin.getFileManager().getConfig("config.yml").get().getString("deathchest_inv_title"));
+            oldLavaProtection = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("old_lava_protection");
             lavaProtection = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("lava_protection");
             voidSpawning = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("void_spawning_chest");
             autoEquipArmor = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("auto_equip_armor");
@@ -106,6 +110,7 @@ public class DeathChestSettings {
             allowKillerLooting = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("allow_killer_looting");
             startTimerAtDeath = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("start_timer_at_death");
             storeExperience = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("store_experience");
+            storeExperiencePercentage = this.plugin.getFileManager().getConfig("config.yml").get().getDouble("store_experience_percent");
             maxPlayerChests = this.plugin.getFileManager().getConfig("config.yml").get().getInt("max_player_chests");
             spawnOnPVP = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("spawn_chest_on_pvp_kill");
             //saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");

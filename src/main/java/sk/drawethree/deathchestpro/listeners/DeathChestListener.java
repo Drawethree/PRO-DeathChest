@@ -78,7 +78,13 @@ public class DeathChestListener implements Listener {
     public void onPlayerDeath(final PlayerDeathEvent e) {
         final Player p = e.getEntity();
         this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " died.");
+        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Keep Inventory Flag:  " + e.getKeepInventory());
 
+        //Check Keep Inventory Flag
+        if (e.getKeepInventory()) {
+            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest will not be spawned, player has keep inventory flag set to true.");
+            return;
+        }
 
         //Check for PvP
         if (p.getKiller() != null && !this.plugin.getSettings().isSpawnOnPVP()) {
