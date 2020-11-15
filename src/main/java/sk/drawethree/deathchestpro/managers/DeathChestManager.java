@@ -109,7 +109,7 @@ public class DeathChestManager {
     }
 
     public ArrayList<DeathChest> getPlayerDeathChests(OfflinePlayer p) {
-        return deathChests.get(p.getUniqueId());
+        return deathChests.getOrDefault(p.getUniqueId(), new ArrayList<>());
     }
 
     public void openDeathchestList(OfflinePlayer whoseChests, Player openTo, int page) {

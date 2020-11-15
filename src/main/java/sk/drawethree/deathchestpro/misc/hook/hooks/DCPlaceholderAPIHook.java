@@ -1,5 +1,7 @@
 package sk.drawethree.deathchestpro.misc.hook.hooks;
 
+import sk.drawethree.deathchestpro.DeathChestPro;
+import sk.drawethree.deathchestpro.misc.DCExpansion;
 import sk.drawethree.deathchestpro.misc.hook.DCHook;
 
 public class DCPlaceholderAPIHook extends DCHook {
@@ -10,6 +12,6 @@ public class DCPlaceholderAPIHook extends DCHook {
 
     @Override
     protected void runHookAction() {
-
+        new DCExpansion(DeathChestPro.getInstance()).register();
     }
 }

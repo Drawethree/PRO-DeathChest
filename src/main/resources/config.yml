@@ -72,3 +72,5 @@ hologram:
     - "%timeleft% left"
 #Name of chest's inventory
 deathchest_inv_title: "&7%player%'s DeathChest"
+placeholders_format:
+  location: "%x%, %y%, %z%, %world%"

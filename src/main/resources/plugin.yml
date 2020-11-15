@@ -35,6 +35,9 @@ permissions:
   deathchestpro.see:
     description: Allows player to see content of deathchests from list
     default: op
+  deathchestpro.see.others:
+    description: Allows to see others chest contents
+    default: op
   deathchestpro.reload:
     description: Allows to reload plugin
     default: op

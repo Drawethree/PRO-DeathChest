@@ -174,7 +174,7 @@ public class DeathChest {
 
         this.location = loc.getBlock().getLocation();
 
-        this.chestInventory = Bukkit.createInventory(null, items.size() > 27 ? 54 : 27, this.plugin.getSettings().getDeathChestInvTitle().replaceAll("%player%", player.getName()));
+        this.chestInventory = Bukkit.createInventory(null, items.size() > 27 ? 54 : 27, this.plugin.getSettings().getDeathChestInvTitle().replace("%player%", player.getName()));
 
         for (ItemStack i : items) {
             if (i == null || i.getItemMeta().hasEnchant(Enchantment.getByName("VANISHING_CURSE"))) continue;
