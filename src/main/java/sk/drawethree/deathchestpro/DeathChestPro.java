@@ -3,6 +3,8 @@ package sk.drawethree.deathchestpro;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import sk.drawethree.deathchestpro.api.DeathChestProAPI;
+import sk.drawethree.deathchestpro.api.DeathChestProAPIImpl;
 import sk.drawethree.deathchestpro.commands.DeathChestCommand;
 import sk.drawethree.deathchestpro.enums.DeathChestMenuItems;
 import sk.drawethree.deathchestpro.enums.DeathChestMessage;
@@ -21,6 +23,8 @@ public final class DeathChestPro extends JavaPlugin {
     private FileManager fileManager;
     private DeathChestManager deathChestManager;
     private DeathChestSettings settings;
+
+    private static DeathChestProAPI api;
 
     @Override
     public void onEnable() {
@@ -47,6 +51,8 @@ public final class DeathChestPro extends JavaPlugin {
 
         this.getCommand("deathchest").setExecutor(new DeathChestCommand(this));
         this.broadcast(BroadcastType.INFO, "§aThis server is using §e" + this.getName() + " §arunning on version §e" + this.getDescription().getVersion() + " §aby TheRealDrawe");
+
+        api = new DeathChestProAPIImpl(this);
     }
 
     private void hook() {
