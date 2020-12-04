@@ -25,6 +25,7 @@ import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
 import sk.drawethree.deathchestpro.enums.DeathChestMenuItems;
 import sk.drawethree.deathchestpro.enums.DeathChestMessage;
+import sk.drawethree.deathchestpro.utils.FireworkUtil;
 import sk.drawethree.deathchestpro.utils.comp.CompMaterial;
 import sk.drawethree.deathchestpro.utils.comp.CompSound;
 
@@ -135,7 +136,7 @@ public class DeathChestListener implements Listener {
     public void onFireworkDamage(final EntityDamageByEntityEvent e) {
         if (e.getEntity() instanceof Player && e.getDamager() instanceof Firework) {
             final Firework firework = (Firework) e.getDamager();
-            if (firework.getMetadata("deathchestfw") != null) {
+            if (firework.hasMetadata(FireworkUtil.FIREWORK_METADATA)) {
                 e.setCancelled(true);
             }
         }

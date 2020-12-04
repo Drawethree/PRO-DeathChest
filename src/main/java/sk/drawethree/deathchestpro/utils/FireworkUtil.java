@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class FireworkUtil {
 
-    private static final String FIREWORK_METADATA = "deathchestfw";
+    public static final String FIREWORK_METADATA = "deathchestfw";
 
     public static void spawnRandomFirework(Location location) {
         Firework f = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
@@ -22,8 +22,8 @@ public class FireworkUtil {
         fm.addEffect(FireworkEffect.builder().flicker(randomBoolean()).trail(randomBoolean()).with(randomType())
                 .withColor(randomColor()).withFade(randomColor()).build());
         fm.setPower(1);
-        f.setFireworkMeta(fm);
         f.setMetadata(FireworkUtil.FIREWORK_METADATA, new FixedMetadataValue(DeathChestPro.getInstance(), FireworkUtil.FIREWORK_METADATA));
+        f.setFireworkMeta(fm);
     }
 
     public static boolean randomBoolean() {
