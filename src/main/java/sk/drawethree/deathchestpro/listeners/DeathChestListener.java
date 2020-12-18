@@ -78,36 +78,36 @@ public class DeathChestListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDeath(final PlayerDeathEvent e) {
         final Player p = e.getEntity();
-        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " died.");
-        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Keep Inventory Flag:  " + e.getKeepInventory());
+        this.plugin.debug(p, "Player " + p.getName() + " died.");
+        this.plugin.debug(p, "Keep Inventory Flag:  " + e.getKeepInventory());
 
         //Check Keep Inventory Flag
         if (e.getKeepInventory()) {
-            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest will not be spawned, player has keep inventory flag set to true.");
+            this.plugin.debug(p, "Chest will not be spawned, player has keep inventory flag set to true.");
             return;
         }
 
         //Check for PvP
         if (p.getKiller() != null && !this.plugin.getSettings().isSpawnOnPVP()) {
-            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest will not be spawned, player was killed in PvP and its disabled in config.");
+            this.plugin.debug(p, "Chest will not be spawned, player was killed in PvP and its disabled in config.");
             return;
         }
 
         //Check for maximum chests allowed at one time
         if (!p.isOp() && (this.plugin.getDeathChestManager().getAmountOfPlayerChests(p) >= this.plugin.getSettings().getMaxPlayerChests())) {
-            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest will not be spawned, player " + p.getName() + " has maximum allowed chests.");
+            this.plugin.debug(p, "Chest will not be spawned, player " + p.getName() + " has maximum allowed chests.");
             return;
         }
 
-        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " has less than maximum allowed chests.");
+        this.plugin.debug(p, "Player " + p.getName() + " has less than maximum allowed chests.");
 
         //Check for restricted world, permission and drops size
         if (this.plugin.getSettings().getDisabledworlds().contains(p.getLocation().getWorld().getName()) || (!p.hasPermission("deathchestpro.chest")) || (e.getDrops().size() == 0)) {
-            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Chest will not be spawned, player " + p.getName() + " is in disabled world, does not have permission 'deathchestpro.chest' or has empty dropped items.");
+            this.plugin.debug(p, "Chest will not be spawned, player " + p.getName() + " is in disabled world, does not have permission 'deathchestpro.chest' or has empty dropped items.");
             return;
         }
 
-        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " has permission to have chest, has some items in inventory and is not in restricted world");
+        this.plugin.debug(p, "Player " + p.getName() + " has permission to have chest, has some items in inventory and is not in restricted world");
 
         //Check for damage
         if (((e.getEntity().getLastDamageCause() != null) && (e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID) && (!this.plugin.getSettings().isVoidSpawning())) || (p.getLocation().getBlock().getType() == CompMaterial.LAVA.getMaterial()) && (!this.plugin.getSettings().isLavaSpawning())) {
@@ -115,7 +115,7 @@ public class DeathChestListener implements Listener {
         }
 
         if (this.plugin.getDeathChestManager().createDeathChest(p, p.getKiller(), new ArrayList<>(e.getDrops()))) {
-            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "DeathChest created");
+            this.plugin.debug(p, "DeathChest created");
 
             if (this.plugin.getSettings().isStoreExperience()) {
                 e.setDroppedExp(0);
@@ -225,7 +225,7 @@ public class DeathChestListener implements Listener {
 
                 if (dc.isLocked()) {
                     if (p.hasPermission("deathchestpro.see.others") || dc.getOwner().getUniqueId().equals(p.getUniqueId()) || (this.plugin.getSettings().isAllowKillerLooting() && dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId())) || (dc.getKiller() != null && dc.getKiller().getUniqueId().equals(p.getUniqueId()) && dc.getOwner().getUniqueId().equals(p.getUniqueId()))) {
-                        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " can open the " + dc);
+                        this.plugin.debug(p, "Player " + p.getName() + " can open the " + dc);
                     } else {
                         e.setCancelled(true);
                         p.sendMessage(DeathChestMessage.DEATHCHEST_CANNOT_OPEN.getChatMessage());

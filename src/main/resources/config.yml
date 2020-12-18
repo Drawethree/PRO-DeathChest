@@ -75,3 +75,8 @@ deathchest_inv_title: "&7%player%'s DeathChest"
 #PlaceholderAPI placeholders formatting
 placeholders_format:
   location: "%x%, %y%, %z%, %world%"
+#List of blacklisted blocks where chest should not spawn. It will be spawned at nearest safe location.
+blacklisted_blocks:
+  - "portal"
+  - "bed"
+  - "sign"

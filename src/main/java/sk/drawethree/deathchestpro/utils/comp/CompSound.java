@@ -4,14 +4,17 @@ import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import sk.drawethree.deathchestpro.utils.comp.MinecraftVersion;
+
 
 /**
  * Version independent Spigot sounds.
- *
+ * <p>
  * Enum mapping to sound names for different
  * minecraft versions.
- *
+ * <p>
  * Source: https://gist.github.com/NiklasEi/7bd0ffd136f8459df0940e4501d47a8a
+ *
  * @author NiklasEi
  */
 public enum CompSound {
@@ -274,8 +277,9 @@ public enum CompSound {
 
     /**
      * Get the bukkit sound for current server version
-     *
+     * <p>
      * Caches sound on first call
+     *
      * @return corresponding {@link org.bukkit.Sound}
      */
     public final Sound getSound() {

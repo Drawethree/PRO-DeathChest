@@ -68,7 +68,7 @@ public class DeathChest {
     @Getter
     private boolean unloaded;
 
-    public DeathChest(DeathChestPro plugin, Player p, OfflinePlayer killer, List<ItemStack> items, int playerExp) {
+    public DeathChest(DeathChestPro plugin, Player p, Location locationToSpawn, OfflinePlayer killer, List<ItemStack> items, int playerExp) {
         this.plugin = plugin;
         this.chestUUID = UUID.randomUUID();
         this.player = p;
@@ -78,7 +78,7 @@ public class DeathChest {
         this.playerExp = playerExp;
         this.deathDate = new Date();
 
-        this.setupChest(false, p.getLocation(), items);
+        this.setupChest(false, locationToSpawn, items);
 
         this.listItem = this.createListItem();
         this.announced = false;
@@ -358,9 +358,9 @@ public class DeathChest {
     }
 
     public void fastLoot(Player p) {
-        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " attempted to fast loot.");
+        this.plugin.debug(p, "Player " + p.getName() + " attempted to fast loot.");
         if (p.hasPermission("deathchestpro.fastloot")) {
-            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " has permission to fast loot.");
+            this.plugin.debug(p, "Player " + p.getName() + " has permission to fast loot.");
             for (ItemStack i : chestInventory.getContents()) {
                 if (i == null) continue;
 
@@ -368,7 +368,7 @@ public class DeathChest {
                     break;
                 }
 
-                if (this.plugin.getSettings().isAutoEquipArmor() && (CompMaterial.isHelmet(i.getType()) || CompMaterial.isChestPlate(i.getType()) || CompMaterial.isLeggings(i.getType()) || CompMaterial.isBoots(i.getType()))) {
+                if (this.plugin.getSettings().isAutoEquipArmor() && (CompMaterial.is(i.getType(), "helmet") || CompMaterial.is(i.getType(), "chestplate") || CompMaterial.is(i.getType(), "leggings") || CompMaterial.is(i.getType(), "boots"))) {
                     if (!this.autoEquip(p, i)) {
                         p.getInventory().addItem(i);
                     }
@@ -390,22 +390,22 @@ public class DeathChest {
             }
 
         } else {
-            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player " + p.getName() + " does not have permission to fast loot.");
+            this.plugin.debug(p, "Player " + p.getName() + " does not have permission to fast loot.");
             p.sendMessage(DeathChestMessage.NO_PERMISSION.getChatMessage());
         }
     }
 
     private boolean autoEquip(Player p, ItemStack i) {
-        if (CompMaterial.isHelmet(i.getType()) && p.getInventory().getHelmet() == null) {
+        if (CompMaterial.is(i.getType(),"helmet") && p.getInventory().getHelmet() == null) {
             p.getInventory().setHelmet(i);
             return true;
-        } else if (CompMaterial.isChestPlate(i.getType()) && p.getInventory().getChestplate() == null) {
+        } else if (CompMaterial.is(i.getType(),"chestplate") && p.getInventory().getChestplate() == null) {
             p.getInventory().setChestplate(i);
             return true;
-        } else if (CompMaterial.isLeggings(i.getType()) && p.getInventory().getLeggings() == null) {
+        } else if (CompMaterial.is(i.getType(),"leggings") && p.getInventory().getLeggings() == null) {
             p.getInventory().setLeggings(i);
             return true;
-        } else if (CompMaterial.isBoots(i.getType()) && p.getInventory().getBoots() == null) {
+        } else if (CompMaterial.is(i.getType(),"boots") && p.getInventory().getBoots() == null) {
             p.getInventory().setBoots(i);
             return true;
         }
@@ -502,7 +502,7 @@ public class DeathChest {
     }
 
     public void unload() {
-        DeathChestPro.getInstance().broadcast(DeathChestPro.BroadcastType.DEBUG, "Unloading hologram at %s", this);
+        DeathChestPro.getInstance().debug(null, "Unloading hologram at %s", this);
         this.unloaded = true;
         if (this.hologram != null) {
             this.hologram.despawn();
@@ -510,7 +510,7 @@ public class DeathChest {
     }
 
     public void load() {
-        DeathChestPro.getInstance().broadcast(DeathChestPro.BroadcastType.DEBUG, "Loading hologram at %s", this);
+        DeathChestPro.getInstance().debug(null,"Loading hologram at %s", this);
         this.unloaded = false;
         if (this.hologram != null) {
             this.hologram.spawn();

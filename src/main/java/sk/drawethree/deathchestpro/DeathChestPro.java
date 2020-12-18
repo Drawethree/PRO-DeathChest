@@ -2,6 +2,7 @@ package sk.drawethree.deathchestpro;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import sk.drawethree.deathchestpro.api.DeathChestProAPI;
 import sk.drawethree.deathchestpro.api.DeathChestProAPIImpl;
@@ -60,12 +61,19 @@ public final class DeathChestPro extends JavaPlugin {
         new Metrics(this);
     }
 
-    public void broadcast(BroadcastType type, String message, Object... placeholders) {
-        if (type == BroadcastType.DEBUG && !this.settings.isDebugMode()) {
-            return;
-        }
-        Bukkit.getConsoleSender().sendMessage(type + " §cDeathChestPro " + getInstance().getDescription().getVersion() + " §8>> §c" + String.format(message, placeholders));
+    public void debug(Player p, String message, Object... placeholders) {
 
+            if (this.settings.isDebugMode()) {
+                Bukkit.getConsoleSender().sendMessage(BroadcastType.DEBUG + " §cDeathChestPro " + getInstance().getDescription().getVersion() + " §8>> §c" + String.format(message, placeholders));
+                if (p != null && p.isOp()) {
+                    p.sendMessage(BroadcastType.DEBUG + " §cDeathChestPro " + getInstance().getDescription().getVersion() + " §8>> §c" + String.format(message, placeholders));
+                }
+            }
+        }
+
+
+    public void broadcast(BroadcastType type, String message, Object... placeholders) {
+        Bukkit.getConsoleSender().sendMessage(type + " §cDeathChestPro " + getInstance().getDescription().getVersion() + " §8>> §c" + String.format(message, placeholders));
     }
 
     private void approveConfigChanges() {

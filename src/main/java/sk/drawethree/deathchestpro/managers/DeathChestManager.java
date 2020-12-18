@@ -5,10 +5,7 @@ import com.bekvon.bukkit.residence.commands.list;
 import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -55,7 +52,7 @@ public class DeathChestManager {
     }
 
     public void loadDeathChests() {
-        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loading deathchests from file database...");
+        this.plugin.debug(null, "Loading deathchests from file database...");
 
         for (String key : this.plugin.getFileManager().getConfig("deathchests.yml").get().getConfigurationSection("chests").getKeys(false)) {
 
@@ -89,15 +86,15 @@ public class DeathChestManager {
             int playerExp = this.plugin.getFileManager().getConfig("deathchests.yml").get().getInt("chests." + key + ".exp");
             List<ItemStack> items = (ArrayList<ItemStack>) this.plugin.getFileManager().getConfig("deathchests.yml").get().get("chests." + key + ".items");
             createDeathChest(chestUuid, player, killer, locked, loc, timeLeft, diedAt, items, playerExp);
-            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded DeathChest at location " + loc.toString() + "!");
+            this.plugin.debug(null,"Loaded DeathChest at location " + loc.toString() + "!");
         }
-        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Loaded!");
+        this.plugin.debug(null, "Loaded!");
 
     }
 
 
     public void saveDeathChests() {
-        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Saving deathchests...");
+        this.plugin.debug(null, "Saving deathchests...");
 
         for (DeathChest dc : this.deathChestsByUUID.values()) {
             dc.removeChest();
@@ -105,7 +102,7 @@ public class DeathChestManager {
             dc.save();
         }
 
-        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Saved!");
+        this.plugin.debug(null, "Saved!");
     }
 
     public ArrayList<DeathChest> getPlayerDeathChests(OfflinePlayer p) {
@@ -211,7 +208,14 @@ public class DeathChestManager {
 
     public boolean createDeathChest(Player p, Player killer, List<ItemStack> drops) {
 
-        if (!canPlace(p)) {
+        Location safeLoc = p.getLocation();
+
+        while(!isSafeMaterial(safeLoc.getBlock().getType())) {
+            safeLoc = safeLoc.clone().add(1,0,0);
+        }
+
+
+        if (!canPlace(safeLoc,p)) {
             return false;
         }
 
@@ -227,7 +231,7 @@ public class DeathChestManager {
             exp = ExperienceUtil.getExp(p);
         }
 
-        DeathChest dc = new DeathChest(this.plugin, p, killer, drops, exp);
+        DeathChest dc = new DeathChest(this.plugin, p, safeLoc, killer, drops, exp);
 
         currentChests.add(dc);
         deathChests.put(p.getUniqueId(), currentChests);
@@ -241,6 +245,16 @@ public class DeathChestManager {
 
         return true;
 
+    }
+
+
+    private boolean isSafeMaterial(Material type) {
+        for (String s : this.plugin.getSettings().getDisabledMaterials()) {
+            if (type.name().toLowerCase().contains(s.toLowerCase())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean createDeathChest(UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, boolean locked, Location loc, int timeLeft, long diedAt, List<ItemStack> items, int playerExp) {
@@ -260,25 +274,25 @@ public class DeathChestManager {
         return true;
     }
 
-    private boolean canPlace(Player p) {
+    private boolean canPlace(Location loc, Player player) {
         //Residence Check
-        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Checking Residence...");
+        this.plugin.debug(player, "Checking Residence...");
         if (DCHook.getHook("Residence")) {
-            final ClaimedResidence res = Residence.getInstance().getResidenceManager().getByLoc(p);
-            if (res != null && !res.getPermissions().playerHas(p, Flags.build, true)) {
-                this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player does not have permission to build in residence=" + res.getName());
+            final ClaimedResidence res = Residence.getInstance().getResidenceManager().getByLoc(loc);
+            if (res != null && !res.getPermissions().playerHas(player, Flags.build, true)) {
+                this.plugin.debug(player, "Player does not have permission to build in residence=" + res.getName());
                 return false;
             }
         }
-        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Residence OK");
+        this.plugin.debug(player, "Residence OK");
 
         //WorldGuard Check
-        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Checking WorldGuard...");
+        this.plugin.debug(player, "Checking WorldGuard...");
         if (DCHook.getHook("WorldGuard")) {
             Set<IWrappedRegion> regions = null;
 
             try {
-                regions = WorldGuardWrapper.getInstance().getRegions(p.getLocation());
+                regions = WorldGuardWrapper.getInstance().getRegions(loc);
             } catch (NoClassDefFoundError e) {
                 this.plugin.broadcast(DeathChestPro.BroadcastType.WARN, "Looks like you are using bad WorldEdit version!");
             }
@@ -286,15 +300,15 @@ public class DeathChestManager {
             if (regions != null) {
                 for (IWrappedRegion region : regions) {
                     if (this.plugin.getSettings().getDisabledRegions().contains(region.getId())) {
-                        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Player is in restriced region=" + region.getId());
+                        this.plugin.debug(player,"Player is in restriced region=" + region.getId());
                         return false;
                     }
                 }
             }
         }
 
-        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "WorldGuard OK");
-        this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Can place!");
+        this.plugin.debug(player, "WorldGuard OK");
+        this.plugin.debug(player, "Can place!");
 
         return true;
     }
@@ -327,7 +341,7 @@ public class DeathChestManager {
                     continue;
                 }
                 if (e.hasMetadata(DeathChestHologram.ENTITY_METADATA)) {
-                    this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, "Removing hologram entity.");
+                    this.plugin.debug(null, "Removing hologram entity.");
                     e.remove();
                 }
             }

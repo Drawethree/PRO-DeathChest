@@ -34,11 +34,11 @@ public class DeathChestHologram {
     public void spawn() {
 
         if (this.spawned) {
-            this.deathChest.getPlugin().broadcast(DeathChestPro.BroadcastType.DEBUG, "Cannot spawn hologram because its already spawned.");
+            this.deathChest.getPlugin().debug(null, "Cannot spawn hologram because its already spawned.");
             return;
         }
 
-        this.deathChest.getPlugin().broadcast(DeathChestPro.BroadcastType.DEBUG, "Spawning hologram.");
+        this.deathChest.getPlugin().debug(null, "Spawning hologram.");
         this.armorStands = new ArrayList<>();
 
         for (String s : this.deathChest.getPlugin().getSettings().getHologramLines()) {
@@ -123,11 +123,11 @@ public class DeathChestHologram {
     public void despawn() {
 
         if (!this.spawned) {
-            this.deathChest.getPlugin().broadcast(DeathChestPro.BroadcastType.DEBUG, "Cannot despawn hologram because its not spawned.");
+            this.deathChest.getPlugin().debug(null,"Cannot despawn hologram because its not spawned.");
             return;
         }
 
-        this.deathChest.getPlugin().broadcast(DeathChestPro.BroadcastType.DEBUG, "Despawning hologram.");
+        this.deathChest.getPlugin().debug(null, "Despawning hologram.");
 
         this.armorStands.forEach(Entity::remove);
         this.armorStands.clear();

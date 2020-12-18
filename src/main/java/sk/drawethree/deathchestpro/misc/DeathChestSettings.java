@@ -2,14 +2,17 @@ package sk.drawethree.deathchestpro.misc;
 
 import lombok.Getter;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.utils.Common;
+import sk.drawethree.deathchestpro.utils.comp.CompMaterial;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class DeathChestSettings {
@@ -22,6 +25,7 @@ public class DeathChestSettings {
     private LinkedHashMap<String, DeathChestExpireGroup> expireGroups;
     private List<String> disabledworlds;
     private List<String> disabledRegions;
+    private List<String> disabledMaterials;
     private boolean allowBreakChests;
     private boolean deathchestFireworks;
     private boolean spawnChestOnHighestBlock;
@@ -53,6 +57,7 @@ public class DeathChestSettings {
         allowBreakChests = false;
         disabledRegions = new ArrayList<>();
         disabledworlds = new ArrayList<>();
+        disabledMaterials = new ArrayList<>();
         expireGroups = new LinkedHashMap<>();
         DEFAULT_EXPIRE_TIME = 60;
         storeExperiencePercentage = 50.0;
@@ -63,7 +68,7 @@ public class DeathChestSettings {
         voidSpawning = false;
         autoEquipArmor = true;
         lavaSpawning = true;
-        debugMode = true;
+        debugMode = false;
         hologramEnabled = true;
         storeExperience = false;
         //displayChestsForOthers = true;
@@ -94,6 +99,7 @@ public class DeathChestSettings {
             fireworkInterval = this.plugin.getFileManager().getConfig("config.yml").get().getInt("deathchest_fireworks.interval");
             hologramLines = Common.color(this.plugin.getFileManager().getConfig("config.yml").get().getStringList("hologram.lines"));
             spawnChestOnHighestBlock = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("spawn_chest_on_highest_block");
+            disabledMaterials = this.plugin.getFileManager().getConfig("config.yml").get().getStringList("blacklisted_blocks");
             dropItemsAfterExpire = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("drop_items_after_expire");
             clickableMessage = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("clickable_message");
             deathDateFormat = new SimpleDateFormat(this.plugin.getFileManager().getConfig("config.yml").get().getString("hologram.death_date_format"));
@@ -127,7 +133,7 @@ public class DeathChestSettings {
             double teleportCost = this.plugin.getFileManager().getConfig("config.yml").get().getDouble("expire_groups." + key + ".teleport_cost");
 
             DeathChestExpireGroup group = new DeathChestExpireGroup(key, permission, unlockAfter,time, teleportCost);
-            this.plugin.broadcast(DeathChestPro.BroadcastType.DEBUG, group.toString());
+            this.plugin.debug(null, group.toString());
 
             expireGroups.put(permission, group);
         }

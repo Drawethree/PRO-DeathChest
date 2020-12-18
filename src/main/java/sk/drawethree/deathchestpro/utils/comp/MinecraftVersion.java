@@ -1,7 +1,8 @@
 package sk.drawethree.deathchestpro.utils.comp;
 
-import lombok.Getter;
 import org.bukkit.Bukkit;
+
+import lombok.Getter;
 
 /**
  * Represents the current Minecraft version the plugin loaded on
@@ -23,7 +24,8 @@ public final class MinecraftVersion {
      * The version wrapper
      */
     public enum V {
-        v1_16(16, false),
+        v1_17(17, false),
+        v1_16(16),
         v1_15(15),
         v1_14(14),
         v1_13(13),
@@ -41,7 +43,7 @@ public final class MinecraftVersion {
         /**
          * The numeric version (the second part of the 1.x number)
          */
-        private final int ver;
+        private final int minorVersionNumber;
 
         /**
          * Is this library tested with this Minecraft version?
@@ -65,22 +67,32 @@ public final class MinecraftVersion {
          * @param tested
          */
         V(int version, boolean tested) {
-            this.ver = version;
+            this.minorVersionNumber = version;
             this.tested = tested;
         }
 
         /**
          * Attempts to get the version from number
          *
-         * @throws RuntimeException if number not found
          * @param number
          * @return
+         * @throws RuntimeException if number not found
          */
         protected static V parse(int number) {
-            for (final V v : values())
-                if (v.ver == number)
+            for (final V v : values()) {
+                if (v.minorVersionNumber == number) {
                     return v;
-                return null;
+                }
+            }
+            return null;
+        }
+
+        /**
+         * @see java.lang.Enum#toString()
+         */
+        @Override
+        public String toString() {
+            return "1." + this.minorVersionNumber;
         }
     }
 
@@ -127,7 +139,7 @@ public final class MinecraftVersion {
     // Compares two versions by the number
     private static int compareWith(V version) {
         try {
-            return getCurrent().ver - version.ver;
+            return getCurrent().minorVersionNumber - version.minorVersionNumber;
 
         } catch (final Throwable t) {
             t.printStackTrace();
@@ -151,7 +163,7 @@ public final class MinecraftVersion {
 
             final String packageName = Bukkit.getServer() == null ? "" : Bukkit.getServer().getClass().getPackage().getName();
             final String curr = packageName.substring(packageName.lastIndexOf('.') + 1);
-            final boolean hasGatekeeper = !"craftbukkit".equals(curr);
+            final boolean hasGatekeeper = !"craftbukkit".equals(curr) && !"".equals(packageName);
 
             serverVersion = curr;
 
@@ -172,6 +184,7 @@ public final class MinecraftVersion {
                 for (final char ch : numericVersion.toCharArray())
                     if (ch == '.')
                         found++;
+
                 current = V.parse(Integer.parseInt(numericVersion.split("\\.")[1]));
 
             } else
