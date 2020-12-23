@@ -60,11 +60,11 @@ public class DCExpansion extends PlaceholderExpansion {
 		}
 
 
-		if(identifier.equals("expire")) {
+		if(identifier.equalsIgnoreCase("expire")) {
 			return new Time(firstDeathChest.get().getTimeLeft(), TimeUnit.SECONDS).toString();
 		}
 
-		if(identifier.equals("location")) {
+		if(identifier.equalsIgnoreCase("location")) {
 
 			int x = firstDeathChest.get().getLocation().getBlockX();
 			int y = firstDeathChest.get().getLocation().getBlockY();
@@ -76,6 +76,17 @@ public class DCExpansion extends PlaceholderExpansion {
 					.replace("%y%",String.valueOf(y))
 					.replace("%z%",String.valueOf(z))
 					.replace("%world%", world);
+		}
+
+		if (identifier.equalsIgnoreCase("unlock_after")) {
+			long unlockTime = firstDeathChest.get().getUnlockTime();
+
+			if (System.currentTimeMillis() >= unlockTime) {
+				return "";
+			} else {
+				return new Time(unlockTime-System.currentTimeMillis(),TimeUnit.MILLISECONDS).toString();
+
+			}
 		}
 
 		return null;

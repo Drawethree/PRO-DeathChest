@@ -92,10 +92,6 @@ public class Time {
         time = this.appendTime(time, MINUTE_MS, DeathChestMessage.MINUTES.getMessage(), timeString);
         time = this.appendTime(time, SECOND_MS, DeathChestMessage.SECONDS.getMessage(), timeString);
 
-        if (time != 0) {
-            timeString.append(", ").append(time).append(" ms");
-        }
-
         if (timeString.length() == 0) {
             return "0 " + DeathChestMessage.SECONDS.getMessage();
         }

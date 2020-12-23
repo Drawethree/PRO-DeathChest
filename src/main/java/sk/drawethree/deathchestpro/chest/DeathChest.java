@@ -67,6 +67,8 @@ public class DeathChest {
     private Date deathDate;
     @Getter
     private boolean unloaded;
+    @Getter
+    private long unlockTime;
 
     public DeathChest(DeathChestPro plugin, Player p, Location locationToSpawn, OfflinePlayer killer, List<ItemStack> items, int playerExp) {
         this.plugin = plugin;
@@ -137,6 +139,11 @@ public class DeathChest {
     }
 
     private void setupChest(boolean fromConfig, Location loc, List<ItemStack> items) {
+
+
+        if (items == null) {
+            items = new ArrayList<>();
+        }
 
         if (!fromConfig) {
 
@@ -215,6 +222,7 @@ public class DeathChest {
         }
 
         this.unlockTask = new ChestUnlockTask(this).runTaskLater(this.plugin, unlockAfter * 20);
+        this.unlockTime = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(unlockAfter);
 
     }
 
