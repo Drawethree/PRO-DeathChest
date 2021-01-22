@@ -153,6 +153,11 @@ public class DeathChestManager {
         }
 
         ArrayList<DeathChest> list = deathChests.get(dc.getOwner().getUniqueId());
+
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+
         list.remove(dc);
 
         if (list.isEmpty()) {

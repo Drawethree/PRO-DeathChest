@@ -118,6 +118,11 @@ public class DeathChestSettings {
             storeExperience = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("store_experience");
             storeExperiencePercentage = this.plugin.getFileManager().getConfig("config.yml").get().getDouble("store_experience_percent");
             maxPlayerChests = this.plugin.getFileManager().getConfig("config.yml").get().getInt("max_player_chests");
+
+            if (maxPlayerChests == -1) {
+                maxPlayerChests = Integer.MAX_VALUE;
+            }
+
             spawnOnPVP = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("spawn_chest_on_pvp_kill");
             //saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
             this.loadExpireGroups();

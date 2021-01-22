@@ -67,7 +67,7 @@ public class DeathChestListener implements Listener {
         if (dc != null) {
             if (dc.isChestEmpty()) {
                 dc.restoreExp(p);
-                dc.removeDeathChest(false);
+                dc.removeDeathChest(false, DeathChest.RemovalCause.LOOT);
             } else {
                 dc.updateHologram();
                 p.playSound(p.getLocation(), CompSound.CHEST_CLOSE.getSound(), 0.5F, 1F);
@@ -75,7 +75,7 @@ public class DeathChestListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerDeath(final PlayerDeathEvent e) {
         final Player p = e.getEntity();
         this.plugin.debug(p, "Player " + p.getName() + " died.");
@@ -84,6 +84,24 @@ public class DeathChestListener implements Listener {
         //Check Keep Inventory Flag
         if (e.getKeepInventory()) {
             this.plugin.debug(p, "Chest will not be spawned, player has keep inventory flag set to true.");
+            return;
+        }
+
+        //Check for perms
+        if (!p.hasPermission("deathchestpro.chest")) {
+            this.plugin.debug(p, "Chest will not be spawned, player " + p.getName() + " does not have permission 'deathchestpro.chest'");
+            return;
+        }
+
+        //Check for disabled worlds
+        if (this.plugin.getSettings().getDisabledworlds().contains(p.getLocation().getWorld().getName())) {
+            this.plugin.debug(p, "Chest will not be spawned, player " + p.getName() + " is in disabled world.");
+            return;
+        }
+
+        //Check for drops
+        if (e.getDrops().size() <= 0) {
+            this.plugin.debug(p, "Chest will not be spawned, player " + p.getName() + " has empty dropped items.");
             return;
         }
 
@@ -98,16 +116,6 @@ public class DeathChestListener implements Listener {
             this.plugin.debug(p, "Chest will not be spawned, player " + p.getName() + " has maximum allowed chests.");
             return;
         }
-
-        this.plugin.debug(p, "Player " + p.getName() + " has less than maximum allowed chests.");
-
-        //Check for restricted world, permission and drops size
-        if (this.plugin.getSettings().getDisabledworlds().contains(p.getLocation().getWorld().getName()) || (!p.hasPermission("deathchestpro.chest")) || (e.getDrops().size() == 0)) {
-            this.plugin.debug(p, "Chest will not be spawned, player " + p.getName() + " is in disabled world, does not have permission 'deathchestpro.chest' or has empty dropped items.");
-            return;
-        }
-
-        this.plugin.debug(p, "Player " + p.getName() + " has permission to have chest, has some items in inventory and is not in restricted world");
 
         //Check for damage
         if (((e.getEntity().getLastDamageCause() != null) && (e.getEntity().getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID) && (!this.plugin.getSettings().isVoidSpawning())) || (p.getLocation().getBlock().getType() == CompMaterial.LAVA.getMaterial()) && (!this.plugin.getSettings().isLavaSpawning())) {
@@ -173,7 +181,7 @@ public class DeathChestListener implements Listener {
                     p.sendMessage(DeathChestMessage.DEATHCHEST_CANNOT_BREAK.getChatMessage());
                 } else {
                     e.setCancelled(true);
-                    dc.removeDeathChest(true);
+                    dc.removeDeathChest(true, DeathChest.RemovalCause.EXPIRE);
                 }
             }
         }

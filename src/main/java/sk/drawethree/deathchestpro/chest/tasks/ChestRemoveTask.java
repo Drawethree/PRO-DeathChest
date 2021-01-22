@@ -19,7 +19,7 @@ public class ChestRemoveTask extends BukkitRunnable {
 	@Override
 	public void run() {
 		if (this.deathChest.getTimeLeft() == 0) {
-			this.deathChest.removeDeathChest(true);
+			this.deathChest.removeDeathChest(true, DeathChest.RemovalCause.EXPIRE);
 			this.cancel();
 		} else {
 			this.deathChest.setTimeLeft(this.deathChest.getTimeLeft()-1);

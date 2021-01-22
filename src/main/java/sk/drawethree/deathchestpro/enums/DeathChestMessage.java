@@ -10,6 +10,7 @@ public enum DeathChestMessage {
     DEATHCHEST_LOCATED("deathchest_located"),
     DEATHCHEST_WILL_DISAPPEAR("deathchest_will_disappear"),
     DEATHCHEST_DISAPPEARED("deathchest_disappeared"),
+    DEATHCHEST_LOOTED("deathchest_looted"),
     DEATHCHEST_CANNOT_BREAK("deathchest_cannot_break"),
     DEATHCHEST_CANNOT_OPEN("deathchest_cannot_open"),
     DEATHCHEST_LOCKED("deathchest_locked"),

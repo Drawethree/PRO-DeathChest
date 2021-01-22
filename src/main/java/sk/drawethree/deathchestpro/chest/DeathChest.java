@@ -1,5 +1,6 @@
 package sk.drawethree.deathchestpro.chest;
 
+import com.google.common.cache.RemovalCause;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.chat.*;
@@ -274,7 +275,7 @@ public class DeathChest {
         }
     }
 
-    public void removeDeathChest(boolean closeInventories) {
+    public void removeDeathChest(boolean closeInventories, DeathChest.RemovalCause cause) {
 
         this.stopAllTasks();
 
@@ -285,7 +286,11 @@ public class DeathChest {
         this.removeChests(closeInventories);
 
         if (this.player.isOnline()) {
-            this.player.getPlayer().sendMessage(DeathChestMessage.DEATHCHEST_DISAPPEARED.getChatMessage());
+            if (cause == RemovalCause.EXPIRE) {
+                this.player.getPlayer().sendMessage(DeathChestMessage.DEATHCHEST_DISAPPEARED.getChatMessage());
+            } else if (cause == RemovalCause.LOOT) {
+                this.player.getPlayer().sendMessage(DeathChestMessage.DEATHCHEST_LOOTED.getChatMessage());
+            }
         }
 
         this.plugin.getDeathChestManager().removeDeathChest(this);
@@ -392,7 +397,7 @@ public class DeathChest {
 
             if (isChestEmpty()) {
                 restoreExp(p);
-                removeDeathChest(true);
+                removeDeathChest(true, RemovalCause.LOOT);
             } else {
                 p.sendMessage(DeathChestMessage.DEATHCHEST_FASTLOOT_COMPLETE.getChatMessage().replaceAll("%amount%", String.valueOf(DeathChestManager.getAmountOfItems(chestInventory))));
             }
@@ -533,5 +538,10 @@ public class DeathChest {
                 ", location=" + location +
                 ", locked=" + locked +
                 '}';
+    }
+
+    public enum RemovalCause {
+        LOOT,
+        EXPIRE
     }
 }
