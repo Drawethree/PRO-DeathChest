@@ -421,6 +421,9 @@ public class DeathChest {
         } else if (CompMaterial.is(i.getType(),"boots") && p.getInventory().getBoots() == null) {
             p.getInventory().setBoots(i);
             return true;
+        } else if (CompMaterial.is(i.getType(), "elytra") && p.getInventory().getChestplate() == null) {
+            p.getInventory().setChestplate(i);
+            return true;
         }
         return false;
     }
