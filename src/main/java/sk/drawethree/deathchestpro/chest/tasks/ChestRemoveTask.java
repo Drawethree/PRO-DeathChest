@@ -2,7 +2,9 @@ package sk.drawethree.deathchestpro.chest.tasks;
 
 import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
+import sk.drawethree.deathchestpro.DeathChestPro;
 import sk.drawethree.deathchestpro.chest.DeathChest;
+import sk.drawethree.deathchestpro.misc.DeathChestSettings;
 import sk.drawethree.deathchestpro.utils.FireworkUtil;
 import sk.drawethree.deathchestpro.utils.LocationUtil;
 
@@ -28,8 +30,8 @@ public class ChestRemoveTask extends BukkitRunnable {
 				return;
 			}
 
-			if (this.deathChest.getLocation().getBlock().getType() != Material.CHEST && !this.deathChest.getPlugin().getSettings().isAllowBreakChests()) {
-				this.deathChest.getLocation().getBlock().setType(Material.CHEST);
+			if (this.deathChest.getLocation().getBlock().getType() != this.deathChest.getChestType() && !this.deathChest.getPlugin().getSettings().isAllowBreakChests()) {
+				this.deathChest.getLocation().getBlock().setType(this.deathChest.getChestType());
 				this.deathChest.getLocation().getBlock().getState().update(true);
 			}
 

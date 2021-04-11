@@ -79,13 +79,20 @@ public class DeathChestManager {
             int timeLeft = this.plugin.getFileManager().getConfig("deathchests.yml").get().getInt("chests." + key + ".timeleft");
             long diedAt = this.plugin.getFileManager().getConfig("deathchests.yml").get().getLong("chests." + key + ".died");
 
+            Material chestBlock;
+            try {
+                chestBlock = Material.valueOf(this.plugin.getFileManager().getConfig("deathchests.yml").get().getString("chests." + key + ".chest_block"));
+            } catch (Exception e) {
+                chestBlock = Material.CHEST;
+            }
+
             if (diedAt == 0) {
                 diedAt = new Date().getTime();
             }
 
             int playerExp = this.plugin.getFileManager().getConfig("deathchests.yml").get().getInt("chests." + key + ".exp");
             List<ItemStack> items = (ArrayList<ItemStack>) this.plugin.getFileManager().getConfig("deathchests.yml").get().get("chests." + key + ".items");
-            createDeathChest(chestUuid, player, killer, locked, loc, timeLeft, diedAt, items, playerExp);
+            createDeathChest(chestUuid, player, killer, locked, loc, timeLeft, diedAt, items, playerExp, chestBlock);
             this.plugin.debug(null,"Loaded DeathChest at location " + loc.toString() + "!");
         }
         this.plugin.debug(null, "Loaded!");
@@ -262,7 +269,7 @@ public class DeathChestManager {
         return true;
     }
 
-    private boolean createDeathChest(UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, boolean locked, Location loc, int timeLeft, long diedAt, List<ItemStack> items, int playerExp) {
+    private boolean createDeathChest(UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, boolean locked, Location loc, int timeLeft, long diedAt, List<ItemStack> items, int playerExp, Material chestBlock) {
 
         if (deathChests.get(p.getUniqueId()) == null) {
             deathChests.put(p.getUniqueId(), new ArrayList<>());
@@ -270,7 +277,7 @@ public class DeathChestManager {
 
         ArrayList<DeathChest> currentChests = deathChests.get(p.getUniqueId());
 
-        DeathChest dc = new DeathChest(this.plugin, chestUuid, p, killer, loc, locked, timeLeft, diedAt, items, playerExp);
+        DeathChest dc = new DeathChest(this.plugin, chestUuid, p, killer, loc, locked, timeLeft, diedAt, items, playerExp, chestBlock);
         currentChests.add(dc);
 
         deathChests.put(p.getUniqueId(), currentChests);

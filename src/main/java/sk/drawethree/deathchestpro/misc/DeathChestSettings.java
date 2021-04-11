@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @Getter
 public class DeathChestSettings {
@@ -84,7 +84,7 @@ public class DeathChestSettings {
 
     public void loadSettings() {
 
-        int configVersion = this.plugin.getFileManager().getConfig("config.yml").get().getInt("config_version");
+        int configVersion = this.plugin.getMainConfig().get().getInt("config_version");
 
         if (configVersion > this.CONFIG_VERSION) {
             this.plugin.broadcast(DeathChestPro.BroadcastType.WARN, "Config version %d is invalid ! Loading default config values.", configVersion);
@@ -92,38 +92,38 @@ public class DeathChestSettings {
         }
 
         if (configVersion == 1) {
-            allowBreakChests = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("allow_break_chests");
-            disabledworlds = this.plugin.getFileManager().getConfig("config.yml").get().getStringList("disabled_worlds");
-            disabledRegions = this.plugin.getFileManager().getConfig("config.yml").get().getStringList("disabled_regions");
-            deathchestFireworks = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("deathchest_fireworks.enabled");
-            fireworkInterval = this.plugin.getFileManager().getConfig("config.yml").get().getInt("deathchest_fireworks.interval");
-            hologramLines = Common.color(this.plugin.getFileManager().getConfig("config.yml").get().getStringList("hologram.lines"));
-            spawnChestOnHighestBlock = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("spawn_chest_on_highest_block");
-            disabledMaterials = this.plugin.getFileManager().getConfig("config.yml").get().getStringList("blacklisted_blocks");
-            dropItemsAfterExpire = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("drop_items_after_expire");
-            clickableMessage = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("clickable_message");
-            deathDateFormat = new SimpleDateFormat(this.plugin.getFileManager().getConfig("config.yml").get().getString("hologram.death_date_format"));
-            deathChestInvTitle = ChatColor.translateAlternateColorCodes('&', this.plugin.getFileManager().getConfig("config.yml").get().getString("deathchest_inv_title"));
-            oldLavaProtection = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("old_lava_protection");
-            lavaProtection = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("lava_protection");
-            voidSpawning = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("void_spawning_chest");
-            autoEquipArmor = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("auto_equip_armor");
-            lavaSpawning = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("lava_spawning");
-            teleportCooldown = this.plugin.getFileManager().getConfig("config.yml").get().getInt("teleport_cooldown");
-            //displayChestsForOthers = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("display_chests_for_others");
-            debugMode = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("debug_messages");
-            hologramEnabled = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("hologram.enabled");
-            allowKillerLooting = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("allow_killer_looting");
-            startTimerAtDeath = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("start_timer_at_death");
-            storeExperience = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("store_experience");
-            storeExperiencePercentage = this.plugin.getFileManager().getConfig("config.yml").get().getDouble("store_experience_percent");
-            maxPlayerChests = this.plugin.getFileManager().getConfig("config.yml").get().getInt("max_player_chests");
+            allowBreakChests = this.plugin.getMainConfig().get().getBoolean("allow_break_chests");
+            disabledworlds = this.plugin.getMainConfig().get().getStringList("disabled_worlds");
+            disabledRegions = this.plugin.getMainConfig().get().getStringList("disabled_regions");
+            deathchestFireworks = this.plugin.getMainConfig().get().getBoolean("deathchest_fireworks.enabled");
+            fireworkInterval = this.plugin.getMainConfig().get().getInt("deathchest_fireworks.interval");
+            hologramLines = Common.color(this.plugin.getMainConfig().get().getStringList("hologram.lines"));
+            spawnChestOnHighestBlock = this.plugin.getMainConfig().get().getBoolean("spawn_chest_on_highest_block");
+            disabledMaterials = this.plugin.getMainConfig().get().getStringList("blacklisted_blocks");
+            dropItemsAfterExpire = this.plugin.getMainConfig().get().getBoolean("drop_items_after_expire");
+            clickableMessage = this.plugin.getMainConfig().get().getBoolean("clickable_message");
+            deathDateFormat = new SimpleDateFormat(Objects.requireNonNull(this.plugin.getMainConfig().get().getString("hologram.death_date_format")));
+            deathChestInvTitle = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(this.plugin.getMainConfig().get().getString("deathchest_inv_title")));
+            oldLavaProtection = this.plugin.getMainConfig().get().getBoolean("old_lava_protection");
+            lavaProtection = this.plugin.getMainConfig().get().getBoolean("lava_protection");
+            voidSpawning = this.plugin.getMainConfig().get().getBoolean("void_spawning_chest");
+            autoEquipArmor = this.plugin.getMainConfig().get().getBoolean("auto_equip_armor");
+            lavaSpawning = this.plugin.getMainConfig().get().getBoolean("lava_spawning");
+            teleportCooldown = this.plugin.getMainConfig().get().getInt("teleport_cooldown");
+            //displayChestsForOthers = this.plugin.getMainConfig().get().getBoolean("display_chests_for_others");
+            debugMode = this.plugin.getMainConfig().get().getBoolean("debug_messages");
+            hologramEnabled = this.plugin.getMainConfig().get().getBoolean("hologram.enabled");
+            allowKillerLooting = this.plugin.getMainConfig().get().getBoolean("allow_killer_looting");
+            startTimerAtDeath = this.plugin.getMainConfig().get().getBoolean("start_timer_at_death");
+            storeExperience = this.plugin.getMainConfig().get().getBoolean("store_experience");
+            storeExperiencePercentage = this.plugin.getMainConfig().get().getDouble("store_experience_percent");
+            maxPlayerChests = this.plugin.getMainConfig().get().getInt("max_player_chests");
 
             if (maxPlayerChests == -1) {
                 maxPlayerChests = Integer.MAX_VALUE;
             }
 
-            spawnOnPVP = this.plugin.getFileManager().getConfig("config.yml").get().getBoolean("spawn_chest_on_pvp_kill");
+            spawnOnPVP = this.plugin.getMainConfig().get().getBoolean("spawn_chest_on_pvp_kill");
             //saveXP = fileManager.getConfig("config.yml").get().getBoolean("save_xp");
             this.loadExpireGroups();
         }
@@ -131,15 +131,23 @@ public class DeathChestSettings {
 
     private void loadExpireGroups() {
         expireGroups = new LinkedHashMap<>();
-        for (String key : this.plugin.getFileManager().getConfig("config.yml").get().getConfigurationSection("expire_groups").getKeys(false)) {
-            String permission = this.plugin.getFileManager().getConfig("config.yml").get().getString("expire_groups." + key + ".permission");
-            int time = this.plugin.getFileManager().getConfig("config.yml").get().getInt("expire_groups." + key + ".time");
-            int unlockAfter = this.plugin.getFileManager().getConfig("config.yml").get().getInt("expire_groups." + key + ".unlock_after");
-            double teleportCost = this.plugin.getFileManager().getConfig("config.yml").get().getDouble("expire_groups." + key + ".teleport_cost");
+        for (String key : this.plugin.getMainConfig().get().getConfigurationSection("expire_groups").getKeys(false)) {
+            String permission = this.plugin.getMainConfig().get().getString("expire_groups." + key + ".permission");
+            int time = this.plugin.getMainConfig().get().getInt("expire_groups." + key + ".time");
+            int unlockAfter = this.plugin.getMainConfig().get().getInt("expire_groups." + key + ".unlock_after");
+            double teleportCost = this.plugin.getMainConfig().get().getDouble("expire_groups." + key + ".teleport_cost");
 
-            DeathChestExpireGroup group = new DeathChestExpireGroup(key, permission, unlockAfter,time, teleportCost);
+            Material chestType;
+            try {
+                chestType = CompMaterial.fromString(this.plugin.getMainConfig().get().getString("expire_groups." + key + ".chest_block")).toMaterial();
+            } catch (Exception e) {
+                chestType = Material.CHEST;
+                this.plugin.getMainConfig().get().set("expire_groups." + key + ".chest_block", Material.CHEST.toString());
+                this.plugin.getMainConfig().save();
+            }
+
+            DeathChestExpireGroup group = new DeathChestExpireGroup(key, permission, unlockAfter, time, chestType, teleportCost);
             this.plugin.debug(null, group.toString());
-
             expireGroups.put(permission, group);
         }
     }

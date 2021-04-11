@@ -4,10 +4,7 @@ import com.google.common.cache.RemovalCause;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.chat.*;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ExperienceOrb;
@@ -52,6 +49,8 @@ public class DeathChest {
     private Location location;
     private BlockState replacedBlock;
     private Inventory chestInventory;
+    @Getter
+    private Material chestType;
 
     private BukkitTask hologramUpdateTask;
     private BukkitTask chestRemoveTask;
@@ -78,6 +77,7 @@ public class DeathChest {
         this.killer = killer;
         this.locked = p.hasPermission("deathchestpro.lock");
         this.timeLeft = this.plugin.getSettings().getExpireGroup(p).getExpireTime();
+        this.chestType = this.plugin.getSettings().getExpireGroup(p).getChestMaterial();
         this.playerExp = playerExp;
         this.deathDate = new Date();
 
@@ -87,7 +87,7 @@ public class DeathChest {
         this.announced = false;
     }
 
-    public DeathChest(DeathChestPro plugin, UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, Location loc, boolean locked, int timeLeft, long diedAt, List<ItemStack> items, int playerExp) {
+    public DeathChest(DeathChestPro plugin, UUID chestUuid, OfflinePlayer p, OfflinePlayer killer, Location loc, boolean locked, int timeLeft, long diedAt, List<ItemStack> items, int playerExp, Material chestType) {
         this.plugin = plugin;
         this.chestUUID = chestUuid;
         this.player = p;
@@ -95,6 +95,7 @@ public class DeathChest {
         this.locked = locked;
         this.timeLeft = timeLeft;
         this.playerExp = playerExp;
+        this.chestType = chestType;
         this.deathDate = new Date(diedAt);
 
         this.setupChest(true, loc, items);
@@ -161,7 +162,7 @@ public class DeathChest {
                 loc.setY(255);
             }
 
-            while (loc.getBlock().getType() == CompMaterial.CHEST.getMaterial()) {
+            while (loc.getBlock().getType() == this.chestType) {
                 loc.setY(loc.getY() + 1);
             }
 
@@ -178,7 +179,7 @@ public class DeathChest {
             this.buildProtectionCage(loc);
         }
 
-        loc.getBlock().setType(CompMaterial.CHEST.getMaterial());
+        loc.getBlock().setType(this.chestType);
 
         this.location = loc.getBlock().getLocation();
 
@@ -447,6 +448,7 @@ public class DeathChest {
             this.plugin.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".killer", this.getKiller().getUniqueId().toString());
         }
         this.plugin.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".items", this.chestInventory.getContents());
+        this.plugin.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".chest_block", this.chestType.toString());
         this.plugin.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".locked", this.locked);
         this.plugin.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".timeleft", this.timeLeft);
         this.plugin.getFileManager().getConfig("deathchests.yml").set("chests." + this.chestUUID.toString() + ".died", this.deathDate.getTime());

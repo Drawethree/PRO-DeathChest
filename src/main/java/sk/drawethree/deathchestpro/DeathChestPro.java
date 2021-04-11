@@ -27,6 +27,11 @@ public final class DeathChestPro extends JavaPlugin {
 
     private static DeathChestProAPI api;
 
+    private FileManager.Config mainConfig;
+    private FileManager.Config itemConfig;
+    private FileManager.Config deathChestsConfig;
+    private FileManager.Config messagesConfig;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -77,18 +82,23 @@ public final class DeathChestPro extends JavaPlugin {
     }
 
     private void approveConfigChanges() {
-        fileManager.getConfig("config.yml").get().set("remove_chest_time", null);
-        fileManager.getConfig("config.yml").get().set("protect_chests", null);
-        fileManager.getConfig("config.yml").get().set("hologram.display_player_head", null);
-        fileManager.getConfig("config.yml").get().set("teleport_cost", null);
-        fileManager.getConfig("config.yml").save();
+        this.mainConfig.get().set("remove_chest_time", null);
+        this.mainConfig.get().set("protect_chests", null);
+        this.mainConfig.get().set("hologram.display_player_head", null);
+        this.mainConfig.get().set("teleport_cost", null);
+        this.mainConfig.save();
     }
 
     private void loadAllConfigs() {
-        fileManager.getConfig("config.yml").copyDefaults(true).save();
-        fileManager.getConfig("items.yml").copyDefaults(true).save();
-        fileManager.getConfig("deathchests.yml").copyDefaults(true).save();
-        fileManager.getConfig("messages.yml").copyDefaults(true).save();
+        this.mainConfig = fileManager.getConfig("config.yml");
+        this.itemConfig = fileManager.getConfig("items.yml");
+        this.deathChestsConfig = fileManager.getConfig("deathchests.yml");
+        this.messagesConfig = fileManager.getConfig("messages.yml");
+
+        this.mainConfig.copyDefaults(true).save();
+        this.itemConfig .copyDefaults(true).save();
+        this.deathChestsConfig.copyDefaults(true).save();
+        this.messagesConfig.copyDefaults(true).save();
     }
 
     private void reloadAllConfigs() {
