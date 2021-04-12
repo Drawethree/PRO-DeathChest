@@ -220,7 +220,7 @@ public class DeathChestListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onTryingOpen(final PlayerInteractEvent e) {
 
-        if ((e.getClickedBlock() == null) || (!(e.getClickedBlock().getState() instanceof Chest))) {
+        if (e.getClickedBlock() == null) {
             return;
         }
 
