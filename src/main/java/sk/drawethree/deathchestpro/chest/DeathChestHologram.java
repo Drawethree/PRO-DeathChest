@@ -105,7 +105,7 @@ public class DeathChestHologram {
     }
 
     private void hide() {
-        this.armorStands.forEach(armorStand -> armorStand.setCustomNameVisible(true));
+        this.armorStands.forEach(armorStand -> armorStand.setCustomNameVisible(false));
     }
 
     private void update() {
