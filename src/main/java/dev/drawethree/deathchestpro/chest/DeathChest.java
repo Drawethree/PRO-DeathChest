@@ -177,7 +177,7 @@ public class DeathChest {
                     loc.setY(4);
                 }
 
-                if (loc.getY() > 123 && loc.getY() < 127) {
+                if (loc.getY() > 123 && loc.getY() < 127) { // prevent the chest from being covered by bedrock
                     loc.setY(123);
                 }
             } else {
