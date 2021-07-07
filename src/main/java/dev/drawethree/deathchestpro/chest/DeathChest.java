@@ -150,17 +150,27 @@ public class DeathChest {
 
 
 
-            if (this.plugin.getSettings().isNewHeight() && loc.getWorld().getEnvironment() == World.Environment.NORMAL) {
+            if (loc.getWorld().getEnvironment() == World.Environment.NORMAL) {
                 if (this.plugin.getSettings().isSpawnChestOnHighestBlock()) {
                     loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
                 }
 
-                if(loc.getY() <= -60) { // prevent the chest from being covered by bedrock
-                    loc.setY(-59);
-                }
+                if (this.plugin.getSettings().isNewHeight()) {
+                    if (loc.getY() <= -60) { // prevent the chest from being covered by bedrock
+                        loc.setY(-59);
+                    }
 
-                if(loc.getY() >= 320) {
-                    loc.setY(319);
+                    if (loc.getY() >= 320) {
+                        loc.setY(319);
+                    }
+                } else {
+                    if (loc.getY() <= 4) { // prevent the chest from being covered by bedrock
+                        loc.setY(5);
+                    }
+
+                    if (loc.getY() >= 256) {
+                        loc.setY(255);
+                    }
                 }
             } else {
                 if (loc.getWorld().getEnvironment() != World.Environment.NETHER && this.plugin.getSettings().isSpawnChestOnHighestBlock()) {
@@ -171,7 +181,7 @@ public class DeathChest {
                     loc.setY(1);
                 }
 
-                if (loc.getY() > 255) {
+                if (loc.getY() >= 256) {
                     loc.setY(255);
                 }
             }
