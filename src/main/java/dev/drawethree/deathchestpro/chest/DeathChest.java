@@ -149,16 +149,31 @@ public class DeathChest {
         if (!fromConfig) {
 
 
-            if (loc.getWorld().getEnvironment() != World.Environment.NETHER && (this.plugin.getSettings().isSpawnChestOnHighestBlock() || loc.getY() <= 0)) {
-                loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
-            }
 
-            if (loc.getY() <= 0) {
-                loc.setY(1);
-            }
+            if (this.plugin.getSettings().isNewHeight() && loc.getWorld().getEnvironment() == World.Environment.NORMAL) {
+                if (this.plugin.getSettings().isSpawnChestOnHighestBlock() || loc.getY() <= -64) {
+                    loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
+                }
 
-            if (loc.getY() > 255) {
-                loc.setY(255);
+                if(loc.getY() <= -64) {
+                    loc.setY(-63);
+                }
+
+                if(loc.getY() >= 320) {
+                    loc.setY(319);
+                }
+            } else {
+                if (loc.getWorld().getEnvironment() != World.Environment.NETHER && (this.plugin.getSettings().isSpawnChestOnHighestBlock() || loc.getY() <= 0)) {
+                    loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
+                }
+
+                if (loc.getY() <= 0) {
+                    loc.setY(1);
+                }
+
+                if (loc.getY() > 255) {
+                    loc.setY(255);
+                }
             }
 
             while (loc.getBlock().getType() == this.chestType) {
