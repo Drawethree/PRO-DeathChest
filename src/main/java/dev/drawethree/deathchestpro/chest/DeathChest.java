@@ -180,6 +180,10 @@ public class DeathChest {
                 if (loc.getY() > 123 && loc.getY() < 127) { // prevent the chest from being covered by bedrock
                     loc.setY(123);
                 }
+
+                if (loc.getY() >= 256) {
+                    loc.setY(255);
+                }
             } else {
                 if (this.plugin.getSettings().isSpawnChestOnHighestBlock()) {
                     loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
