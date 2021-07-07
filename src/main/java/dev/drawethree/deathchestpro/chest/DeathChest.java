@@ -173,7 +173,7 @@ public class DeathChest {
                     }
                 }
             } else if (loc.getWorld().getEnvironment() == World.Environment.NETHER) {
-                if (loc.getY() < 4) {
+                if (loc.getY() < 4) { // prevent the chest from being covered by bedrock
                     loc.setY(4);
                 }
 
