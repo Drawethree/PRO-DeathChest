@@ -36,7 +36,7 @@ spawn_chest_on_pvp_kill: true
 start_timer_at_death: false
 #Should also player experience be stored? They will be restored once player loots his chest.
 store_experience: false
-#Did you use datapack in overworld? (Server Version > 1.17)
+#Did you enable the new generator in overworld? (Server Version > 1.17)
 overworld_new_height: false
 #Percentage amount of player's experience stored. Modify only if 'store_experience' is true.
 store_experience_percent: 100.0
