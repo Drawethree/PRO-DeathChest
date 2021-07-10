@@ -4,6 +4,7 @@ import dev.drawethree.deathchestpro.misc.hook.hooks.*;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import dev.drawethree.deathchestpro.DeathChestPro;
+
 import java.util.HashMap;
 
 public abstract class DCHook {
