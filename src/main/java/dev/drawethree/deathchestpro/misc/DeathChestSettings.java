@@ -50,6 +50,7 @@ public class DeathChestSettings {
     private int teleportCooldown;
     private double storeExperiencePercentage;
     private boolean allowKillerLooting;
+    private boolean newHeight;
 
     public DeathChestSettings(DeathChestPro plugin) {
         this.plugin = plugin;
@@ -118,6 +119,7 @@ public class DeathChestSettings {
             storeExperience = this.plugin.getMainConfig().get().getBoolean("store_experience");
             storeExperiencePercentage = this.plugin.getMainConfig().get().getDouble("store_experience_percent");
             maxPlayerChests = this.plugin.getMainConfig().get().getInt("max_player_chests");
+            newHeight = this.plugin.getMainConfig().get().getBoolean("overworld_new_height");
 
             if (maxPlayerChests == -1) {
                 maxPlayerChests = Integer.MAX_VALUE;
