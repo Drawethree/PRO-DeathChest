@@ -1,4 +1,4 @@
-main: sk.drawethree.deathchestpro.DeathChestPro
+main: dev.drawethree.deathchestpro.DeathChestPro
 version: ${project.version}
 api-version: 1.13
 name: DeathChestPro

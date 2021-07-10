@@ -6,7 +6,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import sk.drawethree.deathchestpro.commands.subcommands.*;
 import dev.drawethree.deathchestpro.enums.DeathChestMessage;
 
 import java.util.Arrays;

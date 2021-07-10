@@ -29,6 +29,10 @@ public class DeathChestHologramListener implements Listener {
             return;
         }
 
+        if (this.plugin.getSettings().getDisabledworlds().contains(event.getWorld().getName())) {
+            return;
+        }
+
         Chunk chunk = event.getChunk();
 
         if (chunk == null || !chunk.isLoaded()) {
@@ -62,6 +66,10 @@ public class DeathChestHologramListener implements Listener {
 
 
         if (!this.plugin.getSettings().isHologramEnabled()) {
+            return;
+        }
+
+        if (this.plugin.getSettings().getDisabledworlds().contains(event.getWorld().getName())) {
             return;
         }
 

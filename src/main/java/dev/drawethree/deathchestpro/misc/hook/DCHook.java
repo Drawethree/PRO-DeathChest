@@ -4,7 +4,6 @@ import dev.drawethree.deathchestpro.misc.hook.hooks.*;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import dev.drawethree.deathchestpro.DeathChestPro;
-import sk.drawethree.deathchestpro.misc.hook.hooks.*;
 
 import java.util.HashMap;
 
