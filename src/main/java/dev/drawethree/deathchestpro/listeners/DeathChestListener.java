@@ -1,5 +1,7 @@
 package dev.drawethree.deathchestpro.listeners;
 
+import dev.drawethree.deathchestpro.api.event.DeathChestPreCreateEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Firework;
@@ -122,7 +124,21 @@ public class DeathChestListener implements Listener {
             return;
         }
 
-        if (this.plugin.getDeathChestManager().createDeathChest(p, p.getKiller(), new ArrayList<>(e.getDrops()))) {
+
+        //Other check from hooked plugins can be here (restricted items)
+        DeathChestPreCreateEvent event = new DeathChestPreCreateEvent(e.getEntity(),e.getDrops());
+
+        this.plugin.debug(p, "Calling DeathChestCreateEvent.");
+
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            this.plugin.debug(p, "DeathChestCreateEvent was cancelled.");
+            return;
+        }
+
+
+        if (this.plugin.getDeathChestManager().createDeathChest(p, p.getKiller(), new ArrayList<>(event.getContents()))) {
             this.plugin.debug(p, "DeathChest created");
 
             if (this.plugin.getSettings().isStoreExperience()) {
