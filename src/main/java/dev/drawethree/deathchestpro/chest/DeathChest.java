@@ -149,16 +149,53 @@ public class DeathChest {
         if (!fromConfig) {
 
 
-            if (loc.getWorld().getEnvironment() != World.Environment.NETHER && (this.plugin.getSettings().isSpawnChestOnHighestBlock() || loc.getY() <= 0)) {
-                loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
-            }
 
-            if (loc.getY() <= 0) {
-                loc.setY(1);
-            }
+            if (loc.getWorld().getEnvironment() == World.Environment.NORMAL) {
+                if (this.plugin.getSettings().isSpawnChestOnHighestBlock()) {
+                    loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
+                }
 
-            if (loc.getY() > 255) {
-                loc.setY(255);
+                if (this.plugin.getSettings().isNewHeight()) {
+                    if (loc.getY() < -60) { // prevent the chest from being covered by bedrock
+                        loc.setY(-60);
+                    }
+
+                    if (loc.getY() >= 320) {
+                        loc.setY(319);
+                    }
+                } else {
+                    if (loc.getY() < 4) { // prevent the chest from being covered by bedrock
+                        loc.setY(4);
+                    }
+
+                    if (loc.getY() >= 256) {
+                        loc.setY(255);
+                    }
+                }
+            } else if (loc.getWorld().getEnvironment() == World.Environment.NETHER) {
+                if (loc.getY() < 4) { // prevent the chest from being covered by bedrock
+                    loc.setY(4);
+                }
+
+                if (loc.getY() > 123 && loc.getY() < 127) { // prevent the chest from being covered by bedrock
+                    loc.setY(123);
+                }
+
+                if (loc.getY() >= 256) {
+                    loc.setY(255);
+                }
+            } else {
+                if (this.plugin.getSettings().isSpawnChestOnHighestBlock()) {
+                    loc = loc.getWorld().getHighestBlockAt(loc).getLocation();
+                }
+
+                if (loc.getY() <= 0) {
+                    loc.setY(1);
+                }
+
+                if (loc.getY() >= 256) {
+                    loc.setY(255);
+                }
             }
 
             while (loc.getBlock().getType() == this.chestType) {
