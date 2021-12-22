@@ -87,7 +87,7 @@ public class DeathChestHologram {
         as.setGravity(false);
         as.setCustomName(text);
 
-        if(MinecraftVersion.atLeast(MinecraftVersion.V.v1_9)) {
+        if(MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_9_R1)) {
             as.setAI(false);
             as.setCollidable(false);
             as.setInvulnerable(true);

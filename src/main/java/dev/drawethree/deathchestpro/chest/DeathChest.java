@@ -586,4 +586,5 @@ public class DeathChest {
         LOOT,
         EXPIRE
     }
+
 }

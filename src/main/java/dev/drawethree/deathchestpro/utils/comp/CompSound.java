@@ -301,7 +301,7 @@ public enum CompSound {
      * @return the level up sound
      */
     public static final Sound getFallback() {
-        return Sound.valueOf(MinecraftVersion.atLeast(MinecraftVersion.V.v1_9) ? "ENTITY_PLAYER_LEVELUP" : "LEVEL_UP");
+        return Sound.valueOf(MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_9_R1) ? "ENTITY_PLAYER_LEVELUP" : "LEVEL_UP");
     }
 
     /**
@@ -314,7 +314,7 @@ public enum CompSound {
         CompSound sound = null;
 
         // Test if we can convert it directly
-        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_9))
+        if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_9_R1))
             try {
                 return Sound.valueOf(soundName.toUpperCase());
             } catch (final IllegalArgumentException ex) {

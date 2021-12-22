@@ -2,196 +2,110 @@ package dev.drawethree.deathchestpro.utils.comp;
 
 import org.bukkit.Bukkit;
 
-import lombok.Getter;
-
 /**
- * Represents the current Minecraft version the plugin loaded on
+ * This class acts as the "Brain" of the NBTApi. It contains the main logger for
+ * other classes,registers bStats and checks rather Maven shading was done
+ * correctly.
+ *
+ * @author tr7zw
+ *
  */
-public final class MinecraftVersion {
+public enum MinecraftVersion {
 
-    /**
-     * The string representation of the version, for example V1_13
-     */
-    private static String serverVersion;
+    UNKNOWN(Integer.MAX_VALUE), // Use the newest known mappings
+    MC1_7_R4(174),
+    MC1_8_R3(183),
+    MC1_9_R1(191),
+    MC1_9_R2(192),
+    MC1_10_R1(1101),
+    MC1_11_R1(1111),
+    MC1_12_R1(1121),
+    MC1_13_R1(1131),
+    MC1_13_R2(1132),
+    MC1_14_R1(1141),
+    MC1_15_R1(1151),
+    MC1_16_R1(1161),
+    MC1_16_R2(1162),
+    MC1_16_R3(1163),
+    MC1_17_R1(1171),
+    MC1_18_R1(1181, true);
 
-    /**
-     * The wrapper representation of the version
-     */
-    @Getter
-    private static V current;
+    private static MinecraftVersion version;
 
-    /**
-     * The version wrapper
-     */
-    public enum V {
-        v1_17(17, false),
-        v1_16(16),
-        v1_15(15),
-        v1_14(14),
-        v1_13(13),
-        v1_12(12),
-        v1_11(11),
-        v1_10(10),
-        v1_9(9),
-        v1_8(8),
-        v1_7(7),
-        v1_6(6),
-        v1_5(5),
-        v1_4(4),
-        v1_3_AND_BELOW(3);
+    private final int versionId;
+    private final boolean mojangMapping;
 
-        /**
-         * The numeric version (the second part of the 1.x number)
-         */
-        private final int minorVersionNumber;
+    MinecraftVersion(int versionId) {
+        this(versionId, false);
+    }
 
-        /**
-         * Is this library tested with this Minecraft version?
-         */
-        @Getter
-        private final boolean tested;
-
-        /**
-         * Creates new enum for a MC version that is tested
-         *
-         * @param version
-         */
-        V(int version) {
-            this(version, true);
-        }
-
-        /**
-         * Creates new enum for a MC version
-         *
-         * @param version
-         * @param tested
-         */
-        V(int version, boolean tested) {
-            this.minorVersionNumber = version;
-            this.tested = tested;
-        }
-
-        /**
-         * Attempts to get the version from number
-         *
-         * @param number
-         * @return
-         * @throws RuntimeException if number not found
-         */
-        protected static V parse(int number) {
-            for (final V v : values()) {
-                if (v.minorVersionNumber == number) {
-                    return v;
-                }
-            }
-            return null;
-        }
-
-        /**
-         * @see java.lang.Enum#toString()
-         */
-        @Override
-        public String toString() {
-            return "1." + this.minorVersionNumber;
-        }
+    MinecraftVersion(int versionId, boolean mojangMapping) {
+        this.versionId = versionId;
+        this.mojangMapping = mojangMapping;
     }
 
     /**
-     * Does the current Minecraft version equal the given version?
+     * @return A simple comparable Integer, representing the version.
+     */
+    public int getVersionId() {
+        return versionId;
+    }
+
+    /**
+     * @return True if method names are in Mojang format and need to be remapped internally
+     */
+    public boolean isMojangMapping() {
+        return mojangMapping;
+    }
+
+    public String getPackageName() {
+        if (this == UNKNOWN) {
+            return values()[values().length - 1].name().replace("MC", "v");
+        }
+        return this.name().replace("MC", "v");
+    }
+
+    /**
+     * Returns true if the current versions is at least the given Version
      *
-     * @param version
+     * @param version The minimum version
      * @return
      */
-    public static boolean equals(V version) {
-        return compareWith(version) == 0;
+    public static boolean isAtLeastVersion(MinecraftVersion version) {
+        return getVersion().getVersionId() >= version.getVersionId();
     }
 
     /**
-     * Is the current Minecraft version older than the given version?
+     * Returns true if the current versions newer (not equal) than the given version
      *
-     * @param version
+     * @param version The minimum version
      * @return
      */
-    public static boolean olderThan(V version) {
-        return compareWith(version) < 0;
+    public static boolean isNewerThan(MinecraftVersion version) {
+        return getVersion().getVersionId() > version.getVersionId();
     }
 
     /**
-     * Is the current Minecraft version newer than the given version?
+     * Getter for this servers MinecraftVersion. Also init's bStats and checks the
+     * shading.
      *
-     * @param version
-     * @return
+     * @return The enum for the MinecraftVersion this server is running
      */
-    public static boolean newerThan(V version) {
-        return compareWith(version) > 0;
-    }
+    public static MinecraftVersion getVersion() {
+        if (version != null)
+            return version;
 
-    /**
-     * Is the current Minecraft version at equals or newer than the given version?
-     *
-     * @param version
-     * @return
-     */
-    public static boolean atLeast(V version) {
-        return equals(version) || newerThan(version);
-    }
+        final String ver = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 
-    // Compares two versions by the number
-    private static int compareWith(V version) {
         try {
-            return getCurrent().minorVersionNumber - version.minorVersionNumber;
+            version = MinecraftVersion.valueOf(ver.replace("v", "MC"));
 
-        } catch (final Throwable t) {
-            t.printStackTrace();
-
-            return 0;
+        } catch (final IllegalArgumentException ex) {
+            version = MinecraftVersion.UNKNOWN;
         }
-    }
 
-    /**
-     * Return the class versioning such as v1_14_R1
-     *
-     * @return
-     */
-    public static String getServerVersion() {
-        return serverVersion.equals("craftbukkit") ? "" : serverVersion;
-    }
-
-    // Initialize the version
-    static {
-        try {
-
-            final String packageName = Bukkit.getServer() == null ? "" : Bukkit.getServer().getClass().getPackage().getName();
-            final String curr = packageName.substring(packageName.lastIndexOf('.') + 1);
-            final boolean hasGatekeeper = !"craftbukkit".equals(curr) && !"".equals(packageName);
-
-            serverVersion = curr;
-
-            if (hasGatekeeper) {
-                int pos = 0;
-
-                for (final char ch : curr.toCharArray()) {
-                    pos++;
-
-                    if (pos > 2 && ch == 'R')
-                        break;
-                }
-
-                final String numericVersion = curr.substring(1, pos - 2).replace("_", ".");
-
-                int found = 0;
-
-                for (final char ch : numericVersion.toCharArray())
-                    if (ch == '.')
-                        found++;
-
-                current = V.parse(Integer.parseInt(numericVersion.split("\\.")[1]));
-
-            } else
-                current = V.v1_3_AND_BELOW;
-
-        } catch (final Throwable t) {
-
-        }
+        if (version == UNKNOWN)
+            Bukkit.getLogger().warning("[NBTAPI] Wasn't able to find NMS Support! Some functions may not work!");
+        return version;
     }
 }
