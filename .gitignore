@@ -1,7 +1,0 @@
-.idea/*
-.idea/libraries
-target
-*.iml
-.DS_Store
-.github/*
-dependency-reduced-pom.xml
